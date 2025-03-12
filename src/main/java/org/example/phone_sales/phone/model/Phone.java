@@ -6,7 +6,7 @@ import org.example.phone_sales.brand.model.Brand;
 import org.example.phone_sales.dimension.model.Dimension;
 import org.example.phone_sales.hardware.model.Hardware;
 import org.example.phone_sales.model.model.Model;
-import org.example.phone_sales.software.model.Software;
+import org.example.phone_sales.operatingsystem.model.OperatingSystem;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -44,9 +44,9 @@ public class Phone {
     @JoinColumn(name = "hardware_id", referencedColumnName = "id")
     private Hardware hardware;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "software_id", referencedColumnName = "id")
-    private Software software;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "operating_system_id", referencedColumnName = "id")
+    private OperatingSystem operatingSystem;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "dimension_id", referencedColumnName = "id")

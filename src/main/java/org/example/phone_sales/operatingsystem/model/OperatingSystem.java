@@ -2,8 +2,9 @@ package org.example.phone_sales.operatingsystem.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.phone_sales.software.model.Software;
+import org.example.phone_sales.phone.model.Phone;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -17,8 +18,8 @@ public class OperatingSystem {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(mappedBy = "operatingSystem")
-    private Software software;
+    @OneToMany(mappedBy = "operatingSystem")
+    private List<Phone> phones;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

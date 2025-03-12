@@ -47,4 +47,8 @@ public class Hardware {
 
     @Column(nullable = false)
     private int refreshRate;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SIMTypeEnum simType;
 }

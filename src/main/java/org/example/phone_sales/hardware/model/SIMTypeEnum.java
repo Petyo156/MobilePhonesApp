@@ -1,4 +1,4 @@
-package org.example.phone_sales.software.model;
+package org.example.phone_sales.hardware.model;
 
 import lombok.Getter;
 
