@@ -22,9 +22,8 @@ public class OperatingSystem {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private OperatingSystemTypeEnum type;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Version version;
+    private String version;
 }

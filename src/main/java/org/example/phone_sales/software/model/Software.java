@@ -23,7 +23,7 @@ public class Software {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private SIMType simType;
+    private SIMTypeEnum simType;
 
     @OneToOne
     @JoinColumn(name = "operatingsystem_id")

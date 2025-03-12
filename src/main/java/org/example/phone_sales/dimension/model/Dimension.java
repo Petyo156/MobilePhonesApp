@@ -20,4 +20,22 @@ public class Dimension {
     @OneToOne(mappedBy = "dimension")
     private Phone phone;
 
+    @Column(nullable = false)
+    private double height;
+
+    @Column(nullable = false)
+    private double width;
+
+    @Column(nullable = false)
+    private double thickness;
+
+    @Column(nullable = false)
+    private double weight;
+
+    @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
+    private boolean isWaterResistant;
+
 }

@@ -1,11 +1,11 @@
 package org.example.phone_sales.user.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.example.phone_sales.inventory.model.Inventory;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -18,4 +18,29 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
+    private String email;
+
+    @Column
+    private String city;
+
+    @Column
+    private String address;
+
+    @Size(max = 10)
+    @Column
+    private String phoneNumber;
+
+    @Column
+    private boolean isAdmin;
+
+    @OneToMany(mappedBy = "user")
+    private List<Inventory> inventories;
 }
