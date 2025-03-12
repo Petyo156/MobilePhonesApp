@@ -7,7 +7,6 @@ import org.example.phone_sales.phone.model.Phone;
 import org.example.phone_sales.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Builder

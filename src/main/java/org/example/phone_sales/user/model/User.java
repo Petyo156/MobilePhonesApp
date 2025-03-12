@@ -38,7 +38,7 @@ public class User {
     @Column
     private String phoneNumber;
 
-    @Column
+    @Column(nullable = false)
     private boolean isAdmin;
 
     @OneToMany(mappedBy = "user")

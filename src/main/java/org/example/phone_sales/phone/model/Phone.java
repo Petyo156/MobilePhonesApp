@@ -2,7 +2,6 @@ package org.example.phone_sales.phone.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.phone_sales.brand.model.Brand;
 import org.example.phone_sales.dimension.model.Dimension;
 import org.example.phone_sales.hardware.model.Hardware;
 import org.example.phone_sales.model.model.Model;
@@ -32,9 +31,9 @@ public class Phone {
     @Column(nullable = false)
     private LocalDateTime releaseDate;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id", nullable = false)
-    private Brand brand;
+//    @ManyToOne
+//    @JoinColumn(name = "brand_id", nullable = false)
+//    private Brand brand; // phone -> model -> brand
 
     @ManyToOne
     @JoinColumn(name = "model_id", nullable = false)
