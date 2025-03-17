@@ -35,3 +35,5 @@ build/
 src/main/resources/application.properties
 
 src/main/java/org/example/phone_sales/deliveryoption/.DS_Store
+
+src/main/java/org/example/phone_sales/deliveryoption/model/.DS_Store
