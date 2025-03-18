@@ -33,7 +33,9 @@ build/
 .vscode/
 
 src/main/resources/application.properties
+src/main/resources/.env
 
 src/main/java/org/example/phone_sales/deliveryoption/.DS_Store
 
 src/main/java/org/example/phone_sales/deliveryoption/model/.DS_Store
+/src/main/resources/
