@@ -1,11 +1,13 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.model;
 
+import bg.tu_varna.sit.usp.phone_sales.brand.model.Brand;
+import jakarta.persistence.*;
+import lombok.*;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.Hardware;
 import bg.tu_varna.sit.usp.phone_sales.model.model.Model;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
-import jakarta.persistence.*;
-import lombok.*;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,23 +33,20 @@ public class Phone {
     @Column(nullable = false)
     private LocalDateTime releaseDate;
 
-//    @ManyToOne
-//    @JoinColumn(name = "brand_id", nullable = false)
-//    private Brand brand; // phone -> model -> brand
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
 
     @ManyToOne
     @JoinColumn(name = "model_id", nullable = false)
     private Model model;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "hardware_id", referencedColumnName = "id")
     private Hardware hardware;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "operating_system_id", referencedColumnName = "id")
     private OperatingSystem operatingSystem;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "dimension_id", referencedColumnName = "id")
     private Dimension dimension;
 }
