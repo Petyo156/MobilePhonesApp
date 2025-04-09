@@ -1,11 +1,13 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
+import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
+import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.LoginRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.RegisterRequest;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +26,14 @@ public class IndexController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public String index() {
+    @GetMapping()
+    public ModelAndView getHomePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("home/index");
 
-        return "index/index";
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        modelAndView.addObject("user", user);
+
+        return modelAndView;
     }
 
     @GetMapping("/register")
