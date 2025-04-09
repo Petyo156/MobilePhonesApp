@@ -20,7 +20,6 @@ public class AuthenticationMetadata implements UserDetails {
     private String email;
     private String password;
     private UserRole role;
-    private boolean isActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -42,21 +41,21 @@ public class AuthenticationMetadata implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isActive;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isActive;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive;
+        return true;
     }
 }
