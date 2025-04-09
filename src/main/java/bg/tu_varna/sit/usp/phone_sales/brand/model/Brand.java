@@ -4,7 +4,6 @@ import bg.tu_varna.sit.usp.phone_sales.model.model.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
