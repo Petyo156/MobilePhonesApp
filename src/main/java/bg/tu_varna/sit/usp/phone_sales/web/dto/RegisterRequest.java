@@ -13,6 +13,9 @@ public class RegisterRequest {
     @Size(min = 3, message = "Password must be at least 3 symbols.")
     private String password;
 
+    @Size(min = 3, message = "Password must be at least 3 symbols.")
+    private String confirmPassword;
+
     @Email(message = "Invalid email address.")
     @NotNull
     private String email;
