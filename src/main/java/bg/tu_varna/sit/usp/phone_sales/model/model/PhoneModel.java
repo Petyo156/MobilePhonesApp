@@ -5,6 +5,7 @@ import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Model {
+public class PhoneModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -26,6 +27,6 @@ public class Model {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    @OneToMany(mappedBy = "model")
-    private List<Phone> phones;
+    @OneToMany(mappedBy = "phoneModel")
+    private List<Phone> phones = new ArrayList<>();
 }

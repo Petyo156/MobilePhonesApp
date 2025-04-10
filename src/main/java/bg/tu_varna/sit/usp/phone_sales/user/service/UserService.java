@@ -69,15 +69,35 @@ public class UserService implements UserDetailsService {
         return getByEmail(auth.getEmail());
     }
 
+    public boolean userCountMoreThanZero() {
+        return userRepository.count() > 0;
+    }
+
+    public void insertAdmin() {
+        User admin = initializeAdmin();
+        log.info("Inserting admin user");
+
+        userRepository.save(admin);
+    }
+
+    private User initializeAdmin() {
+        return User.builder()
+                .email("admin")
+                .password(passwordEncoder.encode("admin"))
+                .createdOn(LocalDateTime.now())
+                .role(UserRole.ADMIN)
+                .build();
+    }
+
     private void checkIfPasswordsMatch(String password, String confirmPassword) {
-        if(!password.equals(confirmPassword)) {
+        if (!password.equals(confirmPassword)) {
             throw new DomainException(ExceptionMessages.PASSWORDS_DO_NOT_MATCH);
         }
         log.info("Passwords match");
     }
 
     private void checkIfEmailAlreadyExists(String email) {
-        if(userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new DomainException(ExceptionMessages.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
         log.info("Email is valid");
