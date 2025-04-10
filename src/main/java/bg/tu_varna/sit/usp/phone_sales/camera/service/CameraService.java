@@ -27,7 +27,7 @@ public class CameraService {
     private Camera initializeCamera(SubmitCamera cameraInfo) {
         return Camera.builder()
                 .count(cameraInfo.getCount())
-                .resolution(cameraInfo.getVideoResolution())
+                .resolution(cameraInfo.getResolution())
                 .videoResolution(cameraInfo.getVideoResolution())
                 .build();
     }
