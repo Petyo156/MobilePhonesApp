@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,10 +32,6 @@ public class Phone {
 
     @Column(nullable = false)
     private Integer releaseYear;
-
-    @ManyToOne
-    @JoinColumn(name = "brand_id", nullable = false)
-    private Brand brand;
 
     @ManyToOne
     @JoinColumn(name = "model_id", nullable = false)

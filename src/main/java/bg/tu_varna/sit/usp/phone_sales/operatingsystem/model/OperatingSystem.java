@@ -4,6 +4,7 @@ import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ public class OperatingSystem {
     private UUID id;
 
     @OneToMany(mappedBy = "operatingSystem")
-    private List<Phone> phones;
+    private List<Phone> phones = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
