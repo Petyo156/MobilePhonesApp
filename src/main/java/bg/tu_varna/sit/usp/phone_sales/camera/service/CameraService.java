@@ -26,11 +26,8 @@ public class CameraService {
 
     private Camera initializeCamera(SubmitCamera cameraInfo) {
         return Camera.builder()
-                .autofocus(cameraInfo.getAutoFocus())
                 .count(cameraInfo.getCount())
-                .framerate(cameraInfo.getFramerate())
                 .resolution(cameraInfo.getVideoResolution())
-                .type(cameraInfo.getType())
                 .videoResolution(cameraInfo.getVideoResolution())
                 .build();
     }
