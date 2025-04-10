@@ -43,7 +43,4 @@ public class SubmitPhoneRequest {
     @NotNull
     @Min(1800)
     private Integer releaseYear;
-
-    @NotNull
-    private LocalDateTime addedDate;
 }

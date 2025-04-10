@@ -22,6 +22,7 @@ public class DimensionService {
                 .color(dimensions.getColor())
                 .height(dimensions.getHeight())
                 .width(dimensions.getWidth())
+                .weight(dimensions.getWeight())
                 .isWaterResistant(dimensions.getWaterResistance())
                 .thickness(dimensions.getThickness())
                 .build();
