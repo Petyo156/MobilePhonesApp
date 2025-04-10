@@ -4,7 +4,6 @@ import bg.tu_varna.sit.usp.phone_sales.model.model.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,5 +22,5 @@ public class Brand {
     private String name;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-    private List<Model> models = new ArrayList<>();
+    private List<Model> models;
 }

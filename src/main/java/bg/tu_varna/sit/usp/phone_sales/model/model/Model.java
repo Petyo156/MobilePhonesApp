@@ -5,7 +5,6 @@ import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public class Model {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne
@@ -28,5 +27,5 @@ public class Model {
     private Brand brand;
 
     @OneToMany(mappedBy = "model")
-    private List<Phone> phones = new ArrayList<>();
+    private List<Phone> phones;
 }

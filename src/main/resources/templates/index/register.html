@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body class="register-body">
+<div class="register-container">
+    <div class="register-content">
+        <form class="register-form" th:action="@{/register}" th:method="POST" th:object="${registerRequest}">
+            <h2>Register</h2>
+
+            <div class="form-group">
+                <label>
+                    <label for="email">Email</label>
+                    <input type="text" id="email" th:field="*{email}" placeholder="Enter your email" >
+                </label>
+                <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" placeholder="Enter your password" >
+                <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="password1">Confirm Password</label>
+                <input type="password" id="password1" th:field="*{confirmPassword}" placeholder="Confirm your password" >
+                <p class="alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+            </div>
+
+            <div th:if="${message}" class="alert alert-danger">
+                <p th:text="${message}"></p>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+
+            <p class="login-link">Already have an account? <a href="/login">Login</a>!</p>
+        </form>
+    </div>
+</div>
+</body>
+</html>

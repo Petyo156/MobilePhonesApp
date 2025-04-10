@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MPH Home</title>
+</head>
+<body>
+
+<h1>Welcome to PhoneSales</h1>
+
+<p>Welcome!</p>
+<p th:if="${null != user}">
+    Your email: <span th:text="${user.email}"></span>
+</p>
+
+</body>
+</html>
