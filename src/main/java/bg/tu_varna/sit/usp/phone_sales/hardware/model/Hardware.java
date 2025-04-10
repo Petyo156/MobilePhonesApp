@@ -2,7 +2,6 @@ package bg.tu_varna.sit.usp.phone_sales.hardware.model;
 
 import bg.tu_varna.sit.usp.phone_sales.camera.model.Camera;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
-import bg.tu_varna.sit.usp.phone_sales.processor.model.Processor;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,29 +25,28 @@ public class Hardware {
     @JoinColumn(name = "camera_id", referencedColumnName = "id")
     private Camera camera;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "processor_id", referencedColumnName = "id")
-    private Processor processor;
+    @Column(nullable = false)
+    private Integer ram;
 
     @Column(nullable = false)
-    private int ram;
+    private Integer storage;
 
     @Column(nullable = false)
-    private int storage;
+    private Integer batteryCapacity;
 
     @Column(nullable = false)
-    private int batteryCapacity;
+    private Double screenSize;
 
     @Column(nullable = false)
-    private int screenSize;
+    private Integer resolution;
 
     @Column(nullable = false)
-    private int resolution;
-
-    @Column(nullable = false)
-    private int refreshRate;
+    private Integer refreshRate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private SIMTypeEnum simType;
+    private SIMType simType;
+
+    @Column(nullable = false)
+    private Integer coreCount;
 }
