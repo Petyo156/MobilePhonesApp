@@ -49,13 +49,12 @@ public class AdminController {
     @PostMapping("/phone")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView submitPhone(@Valid @ModelAttribute SubmitPhoneRequest submitPhoneRequest,
-                                    BindingResult bindingResult,
-                                    RedirectAttributes redirectAttributes) {
+                                    BindingResult bindingResult) {
 
+        ModelAndView modelAndView = new ModelAndView("admin/add-phone");
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("submitPhoneRequest", submitPhoneRequest);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.submitPhoneRequest", bindingResult);
-            return new ModelAndView("redirect:/admin/phone");
+            modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
+            return modelAndView;
         }
 
         Phone phone = phoneService.submitPhone(submitPhoneRequest);
