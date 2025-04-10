@@ -24,17 +24,17 @@ public class Camera {
     private String type;
 
     @Column(nullable = false)
-    private int count;
+    private Integer count;
 
     @Column(nullable = false)
-    private boolean autofocus;
+    private Boolean autofocus;
 
     @Column(nullable = false)
-    private int resolution;
+    private Integer resolution;
 
     @Column(nullable = false)
-    private int videoResolution;
+    private Integer videoResolution;
 
     @Column(nullable = false)
-    private int framerate;
+    private Integer framerate;
 }

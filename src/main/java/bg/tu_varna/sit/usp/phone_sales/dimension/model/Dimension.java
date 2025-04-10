@@ -21,21 +21,21 @@ public class Dimension {
     private Phone phone;
 
     @Column(nullable = false)
-    private double height;
+    private Double height;
 
     @Column(nullable = false)
-    private double width;
+    private Double width;
 
     @Column(nullable = false)
-    private double thickness;
+    private Double thickness;
 
     @Column(nullable = false)
-    private double weight;
+    private Double weight;
 
     @Column(nullable = false)
     private String color;
 
     @Column(nullable = false)
-    private boolean isWaterResistant;
+    private Boolean isWaterResistant;
 
 }

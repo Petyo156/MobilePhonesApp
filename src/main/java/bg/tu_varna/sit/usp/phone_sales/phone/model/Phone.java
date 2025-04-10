@@ -31,7 +31,7 @@ public class Phone {
     private Integer quantity;
 
     @Column(nullable = false)
-    private LocalDateTime releaseDate;
+    private Integer releaseYear;
 
     @ManyToOne
     @JoinColumn(name = "brand_id", nullable = false)
@@ -49,4 +49,7 @@ public class Phone {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Dimension dimension;
+
+    @Column(nullable = false)
+    private LocalDateTime addedDate;
 }

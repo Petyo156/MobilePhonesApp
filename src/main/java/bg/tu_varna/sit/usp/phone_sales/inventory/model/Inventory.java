@@ -33,11 +33,11 @@ public class Inventory {
     private DeliveryOption deliveryOption;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
     @Column
-    private boolean inInventory;
+    private Boolean inInventory;
 }
