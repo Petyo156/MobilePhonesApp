@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add phone</title>
+</head>
+<body>
+<h1>Add Phone</h1>
+<form action="#" th:action="@{/admin/phone}" th:object="${submitPhoneRequest}" method="post">
+    <p>Brand: <input type="text" th:field="*{brandAndModel.brand}" /></p>
+    <p>Model: <input type="text" th:field="*{brandAndModel.model}" /></p>
+    <p>Price: <input type="number" th:field="*{price}" /></p>
+    <p>Quantity: <input type="number" th:field="*{quantity}" /></p>
+    <p>Year of release: <input type="number" th:field="*{releaseYear}" /></p>
+    <p>Dimensions</p>
+    <p>Color: <input type="text" th:field="*{dimensions.color}" /></p>
+    <p>Height: <input type="number" th:field="*{dimensions.height}" /></p>
+    <p>Weight: <input type="number" th:field="*{dimensions.weight}" /></p>
+    <p>Thickness: <input type="number" th:field="*{dimensions.thickness}" /></p>
+    <p>Weight: <input type="number" th:field="*{dimensions.weight}" /></p>
+    <p>Hardware</p>
+    <p>Water resistance: <input type="checkbox" th:field="*{dimensions.waterResistance}" /></p>
+    <p>OS type: <input type="text" th:field="*{operatingSystem.operatingSystemType}" /></p>
+    <p>OS version: <input type="number" th:field="*{operatingSystem.version}" /></p>
+    <p>RAM size: <input type="number" th:field="*{hardware.ram}" /></p>
+    <p>Storage size: <input type="number" th:field="*{hardware.storage}" /></p>
+    <p>Battery capacity: <input type="number" th:field="*{hardware.batteryCapacity}" /></p>
+    <p>Screen size: <input type="number" th:field="*{hardware.screenSize}" /></p>
+    <p>Resolution: <input type="number" th:field="*{hardware.resolution}" /></p>
+    <p>Refresh rate: <input type="number" th:field="*{hardware.refreshRate}" /></p>
+    <p>SIM type: <input type="text" th:field="*{hardware.simType}" /></p>
+    <p>Core count: <input type="number" th:field="*{hardware.coreCount}" /></p>
+    <p>Camera</p>
+    <p>Camera type: <input type="text" th:field="*{camera.count}" /></p>
+    <p>Camera video resolution: <input type="number" th:field="*{camera.videoResolution}" /></p>
+    <p>Main camera resolution: <input type="number" th:field="*{camera.resolution}" /></p>
+
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>
