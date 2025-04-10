@@ -1,11 +1,10 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.model;
 
-import bg.tu_varna.sit.usp.phone_sales.brand.model.Brand;
 import jakarta.persistence.*;
 import lombok.*;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.Hardware;
-import bg.tu_varna.sit.usp.phone_sales.model.model.Model;
+import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 
 
@@ -35,12 +34,12 @@ public class Phone {
 
     @ManyToOne
     @JoinColumn(name = "model_id", nullable = false)
-    private Model model;
+    private PhoneModel phoneModel;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Hardware hardware;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private OperatingSystem operatingSystem;
 
     @OneToOne(cascade = CascadeType.ALL)
