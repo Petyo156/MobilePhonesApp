@@ -13,18 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubmitCamera {
     @NotNull
-    private Boolean autoFocus;
-
-    @NotNull
     @Min(1)
     private Integer count;
 
     @NotNull
     @Min(1)
-    private Integer framerate;
-
-    @NotNull
-    private String type;
+    private Integer resolution;
 
     @NotNull
     @Min(1)

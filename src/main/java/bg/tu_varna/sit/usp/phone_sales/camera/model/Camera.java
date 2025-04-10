@@ -21,20 +21,11 @@ public class Camera {
     private Hardware hardware;
 
     @Column(nullable = false)
-    private String type;
-
-    @Column(nullable = false)
     private Integer count;
-
-    @Column(nullable = false)
-    private Boolean autofocus;
 
     @Column(nullable = false)
     private Integer resolution;
 
     @Column(nullable = false)
     private Integer videoResolution;
-
-    @Column(nullable = false)
-    private Integer framerate;
 }
