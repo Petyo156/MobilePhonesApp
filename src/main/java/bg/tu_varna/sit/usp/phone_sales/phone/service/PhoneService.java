@@ -1,6 +1,5 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.service;
 
-import bg.tu_varna.sit.usp.phone_sales.brand.model.Brand;
 import bg.tu_varna.sit.usp.phone_sales.brand.service.BrandService;
 import bg.tu_varna.sit.usp.phone_sales.camera.service.CameraService;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
@@ -28,7 +27,6 @@ public class PhoneService {
     private final HardwareService hardwareService;
     private final OperatingSystemService operatingSystemService;
     private final ModelService modelService;
-    private final BrandService brandService;
 
     @Autowired
     public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, BrandService brandService, CameraService cameraService) {
@@ -37,38 +35,38 @@ public class PhoneService {
         this.hardwareService = hardwareService;
         this.operatingSystemService = operatingSystemService;
         this.modelService = modelService;
-        this.brandService = brandService;
     }
 
     @Transactional
     public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest) {
+        Phone phone = Phone.builder().build();
+
         SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
         SubmitBrandAndModel brandAndModel = submitPhoneRequest.getBrandAndModel();
         SubmitHardware hardwareInfo = submitPhoneRequest.getHardware();
         SubmitCamera cameraInfo = submitPhoneRequest.getCamera();
         SubmitOperatingSystem operatingSystemInfo = submitPhoneRequest.getOperatingSystem();
 
-        Dimension dimension = dimensionService.submitDimension(dimensions);
+        Dimension dimension = dimensionService.submitDimension(dimensions, phone);
 
-        Model model = modelService.submitBrandAndModel(brandAndModel);
-        Brand brand = brandService.getBrandByBrandAndModel(brandAndModel);
+        //TODO
+        Model model = modelService.submitBrandAndModel(brandAndModel, phone);
 
-        Hardware hardware = hardwareService.submitHardware(hardwareInfo, cameraInfo);
+        Hardware hardware = hardwareService.submitHardware(hardwareInfo, cameraInfo, phone);
 
-        OperatingSystem operatingSystem = operatingSystemService.submitOperatingSystem(operatingSystemInfo);
+        OperatingSystem operatingSystem = operatingSystemService.submitOperatingSystem(operatingSystemInfo, phone);
 
-        Phone phone = initializePhone(submitPhoneRequest, hardware, operatingSystem, model, brand, dimension);
+        Phone initializePhone = initializePhone(phone, submitPhoneRequest, hardware, operatingSystem, model, dimension);
 
-        return phoneRepository.save(phone);
+        return phoneRepository.save(initializePhone);
     }
 
-    private Phone initializePhone(SubmitPhoneRequest submitPhoneRequest, Hardware hardware, OperatingSystem operatingSystem, Model model, Brand brand, Dimension dimension) {
-        return Phone.builder()
+    private Phone initializePhone(Phone phone, SubmitPhoneRequest submitPhoneRequest, Hardware hardware, OperatingSystem operatingSystem, Model model, Dimension dimension) {
+        return phone.toBuilder()
                 .dimension(dimension)
                 .hardware(hardware)
                 .operatingSystem(operatingSystem)
                 .model(model)
-                .brand(brand)
                 .price(BigDecimal.valueOf(submitPhoneRequest.getPrice()))
                 .quantity(submitPhoneRequest.getQuantity())
                 .releaseYear(submitPhoneRequest.getReleaseYear())
