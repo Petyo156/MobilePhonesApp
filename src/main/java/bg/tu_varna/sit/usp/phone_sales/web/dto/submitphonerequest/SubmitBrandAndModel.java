@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone;
+package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

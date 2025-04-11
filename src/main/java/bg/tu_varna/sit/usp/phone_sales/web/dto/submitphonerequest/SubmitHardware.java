@@ -1,9 +1,8 @@
-package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone;
+package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.SIMType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,6 +43,4 @@ public class SubmitHardware {
     @NotNull
     @Min(0)
     private Integer coreCount;
-
-    private String gpu;
 }

@@ -1,11 +1,9 @@
-package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone;
+package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder
