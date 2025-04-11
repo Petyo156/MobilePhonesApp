@@ -5,7 +5,8 @@ import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone.SubmitPhoneRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitPhoneRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -60,6 +61,19 @@ public class AdminController {
         Phone phone = phoneService.submitPhone(submitPhoneRequest);
 
         return new ModelAndView("redirect:/");
+    }
+
+    @GetMapping("/products")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getProductsPage() {
+        ModelAndView modelAndView = new ModelAndView("admin/manage-products");
+        List<GetPhoneResponse> allVisiblePhones = phoneService.getAllVisiblePhones();
+        List<GetPhoneResponse> allHiddenPhones = phoneService.getAllHiddenPhones();
+
+        modelAndView.addObject("allVisiblePhones", allVisiblePhones);
+        modelAndView.addObject("allHiddenPhones", allHiddenPhones);
+
+        return modelAndView;
     }
 
 
