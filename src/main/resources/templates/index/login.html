@@ -3,28 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
 </head>
 <body>
+<header th:replace="~{fragments/navbar :: header}"></header>
 <div class="login-container">
     <h2>Login</h2>
 
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
     <form th:action="@{/login}" method="post" th:object="${loginRequest}">
-        <div>
-            <label>
-                <input type="text" th:field="*{email}" placeholder="Email" required/>
-            </label>
+        <div class="input-group">
+            <input type="text" th:field="*{email}" placeholder="Email" required/>
         </div>
-        <div>
-            <label>
-                <input type="password" th:field="*{password}" placeholder="Password" required/>
-            </label>
+        <div class="input-group">
+            <input type="password" th:field="*{password}" placeholder="Password" required/>
         </div>
 
-        <div>
-            <input type="submit" value="Login"/>
-        </div>
+        <button type="submit">Sign In</button>
+        <p class="register-link">Don't have an account? <a th:href="@{register}">Sign up</a></p>
     </form>
 </div>
 </body>

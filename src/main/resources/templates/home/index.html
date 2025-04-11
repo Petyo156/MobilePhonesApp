@@ -2,15 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>MPH Home</title>
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
 </head>
 <body>
+<header th:replace="~{fragments/navbar :: header}"></header>
+<hr>
+<main>
+    <h1>Welcome to PhoneSales</h1>
 
-<h1>Welcome to PhoneSales</h1>
-
-<p>Welcome!</p>
-<p th:if="${null != user}">
-    Your email: <span th:text="${user.email}"></span>
-</p>
-
+    <p th:if="${null != user}">
+        Your email: <span th:text="${user.email}"></span>
+    </p>
+</main>
+<footer></footer>
 </body>
 </html>
