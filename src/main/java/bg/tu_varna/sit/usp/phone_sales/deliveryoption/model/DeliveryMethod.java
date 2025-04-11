@@ -3,13 +3,13 @@ package bg.tu_varna.sit.usp.phone_sales.deliveryoption.model;
 import lombok.Getter;
 
 @Getter
-public enum DeliveryMethodEnum {
+public enum DeliveryMethod {
     STANDARD("standard"),
     PICKUP("pickup");
 
     private final String method;
 
-    DeliveryMethodEnum(String method) {
+    DeliveryMethod(String method) {
         this.method = method;
     }
 }
