@@ -71,18 +71,40 @@ public class PhoneService {
         return phoneRepository.save(initializedPhone);
     }
 
+    public List<GetPhoneResponse> getSearchResult(String info) {
+        List<Phone> phones = phoneRepository.searchVisiblePhonesByModelOrBrand(info);
+        log.info("Get search result - {}", info);
+
+        return initializeGetPhoneListResponse(phones);
+    }
+
+    public List<GetPhoneResponse> getMostRecentPhones() {
+        List<Phone> phones = phoneRepository.findAllByIsVisibleTrueOrderByAddedDateDesc();
+        log.info("Get 5 most recent phones");
+
+        return initializeGetPhoneListResponse(phones);
+    }
+
     public List<GetPhoneResponse> getAllVisiblePhones() {
         List<Phone> phones = phoneRepository.findAllByIsVisibleTrue();
+        log.info("Get all visible phones");
+
         return initializeGetPhoneListResponse(phones);
     }
 
     public List<GetPhoneResponse> getAllHiddenPhones() {
         List<Phone> phones = phoneRepository.findAllByIsVisibleFalse();
+        log.info("Get all not visible phones");
+
         return initializeGetPhoneListResponse(phones);
     }
 
     public GetPhoneResponse getPhoneResponseBySlug(String slug) {
         return initializeGetPhoneResponse(getPhoneBySlug(slug));
+    }
+
+    public GetPhoneResponse getPhoneResponseByPhone(Phone phone) {
+        return initializeGetPhoneResponse(getPhoneBySlug(phone.getSlug()));
     }
 
     public Phone getPhoneBySlug(String slug) {
@@ -91,6 +113,15 @@ public class PhoneService {
             throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }
         return phone.get();
+    }
+
+    public void updateVisibility(String slug) {
+        Phone phone = getPhoneBySlug(slug);
+        Boolean state = phone.getIsVisible();
+        phone.setIsVisible(!state);
+
+        phoneRepository.save(phone);
+        log.info("Phone visibility state updated");
     }
 
     private List<GetPhoneResponse> initializeGetPhoneListResponse(List<Phone> phones) {
@@ -168,9 +199,8 @@ public class PhoneService {
     }
 
     private String generateSlug(Phone phone) {
-        return (phone.getPhoneModel().getName() + "-" + phone.getPhoneModel().getBrand().getName() + "-" +
-                phone.getHardware().getStorage().toString() + "gb-" + phone.getHardware().getRam().toString() + "ram-" +
-                phone.getOperatingSystem().getType().name() + "-" + phone.getPrice().toString() + "-" + phone.getId().toString())
+        return (phone.getPhoneModel().getBrand().getName() + "-" + phone.getPhoneModel().getName() + "-" + phone.getDimension().getColor() + "-" +
+                phone.getHardware().getStorage().toString() + "gb-" + phone.getHardware().getRam().toString() + "ram")
                 .toLowerCase()
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("^-|-$", "");
