@@ -58,6 +58,21 @@ img:hover {
     align-items: center;
     gap: 1.5rem;
 }
+.links i {
+    color: var(--light);
+    font-size: 2rem;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.links i:hover {
+    color: var(--light-accent);
+    transform: scale(1.1);
+}
+
+.links i.fa-heart:hover {
+    color: red;
+}
 
 .links img {
     width: 5vh;
