@@ -3,7 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.operatingsystem.service;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystemType;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.repository.OperatingSystemRepository;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone.SubmitOperatingSystem;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitOperatingSystem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
