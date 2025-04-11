@@ -2,7 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.dimension.service;
 
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.dimension.repository.DimensionRepository;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone.SubmitPhoneDimensions;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitPhoneDimensions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.camera.service;
 
 import bg.tu_varna.sit.usp.phone_sales.camera.model.Camera;
 import bg.tu_varna.sit.usp.phone_sales.camera.repository.CameraRepository;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphone.SubmitCamera;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitCamera;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
