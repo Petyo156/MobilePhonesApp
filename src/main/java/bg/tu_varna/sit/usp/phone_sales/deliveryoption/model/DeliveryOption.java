@@ -18,19 +18,22 @@ public class DeliveryOption {
     private UUID id;
 
     @Column(nullable = false)
-    private String city;
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    @OneToOne(mappedBy = "deliveryOption")
+    private Inventory inventory;
 
     @Column(nullable = false)
     private String address;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private DeliveryMethodEnum deliveryMethod;
+    private String city;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PaymentMethodEnum paymentMethod;
-
-    @OneToOne(mappedBy = "deliveryOption")
-    private Inventory inventory;
+    private String zipCode;
 }
