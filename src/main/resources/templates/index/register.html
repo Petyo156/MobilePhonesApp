@@ -4,42 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
 </head>
 <body class="register-body">
-<div class="register-container">
-    <div class="register-content">
-        <form class="register-form" th:action="@{/register}" th:method="POST" th:object="${registerRequest}">
-            <h2>Register</h2>
+<header th:replace="~{fragments/navbar :: header}"></header>
+<div class="login-container">
+    <h2>Sign Up</h2>
 
-            <div class="form-group">
-                <label>
-                    <label for="email">Email</label>
-                    <input type="text" id="email" th:field="*{email}" placeholder="Enter your email" >
-                </label>
-                <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-            </div>
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" th:field="*{password}" placeholder="Enter your password" >
-                <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-            </div>
+    <div th:if="${message}" class="alert alert-danger"><p th:text="${message}"></p></div>
 
-            <div class="form-group">
-                <label for="password1">Confirm Password</label>
-                <input type="password" id="password1" th:field="*{confirmPassword}" placeholder="Confirm your password" >
-                <p class="alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
-            </div>
+    <form class="register-form" th:action="@{/register}" th:method="POST" th:object="${registerRequest}">
+        <div class="input-group">
+            <input type="text" id="email" th:field="*{email}" placeholder="Email">
+            <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+        </div>
 
-            <div th:if="${message}" class="alert alert-danger">
-                <p th:text="${message}"></p>
-            </div>
+        <div class="input-group">
+            <input type="password" id="password" th:field="*{password}" placeholder="Password">
+            <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+        </div>
 
-            <button type="submit" class="btn btn-primary">Register</button>
+        <div class="input-group">
+            <input type="password" id="password1" th:field="*{confirmPassword}" placeholder="Confirm Password">
+            <p class="alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+        </div>
 
-            <p class="login-link">Already have an account? <a href="/login">Login</a>!</p>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+
+        <p class="login-link">Already have an account? <a href="/login">Sign In</a></p>
+    </form>
 </div>
 </body>
 </html>

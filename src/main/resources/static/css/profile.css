@@ -1,0 +1,59 @@
+body{
+    margin:0 0 0 2.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+body div{
+    display: flex;
+    flex-direction: column;
+    height:100vh;
+}
+
+.account-section{
+    width:40%;
+}
+
+.change_pass-section{
+    display: flex;
+    gap:5px;
+}
+
+input {
+    width: 80%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: 0.3s ease;
+}
+
+input:hover {
+    transform: scaleX(1.1);
+}
+
+input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+button {
+    width: 80%;
+    padding: 0.8rem;
+    background: var(--accent);
+    color: var(--light);
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: var(--dark);
+}
+
+.order-section{
+    width: 60%;
+}
