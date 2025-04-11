@@ -35,7 +35,40 @@
 <div class="order-section">
     <h1>Orders</h1>
     <table>
-
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Address</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr> <!--th:each="inventory : ${inventory}"-->
+            <!--
+            <td th:text="*{inventory.id}"></td>
+            <td th:text="*{inventory.date_time}"></td>
+            <td th:text="*{inventory.phone.name}"></td>
+            <td th:text="*{inventory.joinedAddress}"></td>
+            <td th:text="*{price}"></td>
+            <td th:text="*{inventory.quantity}"></td>
+            -->
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="links" colspan="6">
+                <a href="#">&laquo;</a>
+                <a class="active" href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">&raquo;</a>
+            </td>
+        </tr>
+        </tfoot>
     </table>
 </div>
 </body>
