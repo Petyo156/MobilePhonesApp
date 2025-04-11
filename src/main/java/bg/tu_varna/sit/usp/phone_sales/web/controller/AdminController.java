@@ -13,10 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
@@ -60,7 +57,7 @@ public class AdminController {
 
         Phone phone = phoneService.submitPhone(submitPhoneRequest);
 
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/phone/" + phone.getSlug());
     }
 
     @GetMapping("/products")
@@ -76,5 +73,11 @@ public class AdminController {
         return modelAndView;
     }
 
+    @PostMapping("/products/{slug}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateVisibility(@PathVariable String slug) {
+        phoneService.updateVisibility(slug);
+        return "redirect:/admin/products";
+    }
 
 }
