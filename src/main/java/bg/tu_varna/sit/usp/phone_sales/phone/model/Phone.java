@@ -47,4 +47,10 @@ public class Phone {
 
     @Column(nullable = false)
     private LocalDateTime addedDate;
+
+    @Column(nullable = false)
+    private Boolean isVisible;
+
+    @Column(nullable = false, unique = true)
+    private String slug;
 }
