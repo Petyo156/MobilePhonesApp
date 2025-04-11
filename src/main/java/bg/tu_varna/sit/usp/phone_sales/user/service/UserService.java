@@ -111,4 +111,15 @@ public class UserService implements UserDetailsService {
                 .role(UserRole.USER)
                 .build();
     }
+
+    public void updateUserAddressPreference(String address, String city, User user) {
+        if(user.getAddress().equals(address) && user.getCity().equals(city)) {
+            log.info("User address and city have not changed since last order");
+            return;
+        }
+        user.setAddress(address);
+        user.setCity(city);
+        log.info("Updating user address and city preference");
+        userRepository.save(user);
+    }
 }
