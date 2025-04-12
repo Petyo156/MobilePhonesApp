@@ -16,7 +16,7 @@
 <div class="container phone-container">
     <div class="row">
         <div class="col-md-6">
-            <img th:src="@{${phoneResponse.images[0]}}"
+            <img th:src="${phoneResponse.images[0]}"
                  class="img-fluid rounded phone-image"
                  alt="Phone Image"/>
         </div>
@@ -67,7 +67,7 @@
             </div>
 
             <div class="mt-4">
-                <form th:action="" method="post" class="d-flex align-items-center">
+                <form method="post" class="d-flex align-items-center">
                     <div class="me-3">
                         <label class="form-label">Quantity:</label>
                         <label>
