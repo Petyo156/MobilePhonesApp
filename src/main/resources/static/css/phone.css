@@ -1,0 +1,47 @@
+.phone-container {
+    margin-top: 80px;
+    padding: 20px;
+}
+
+.phone-image {
+    max-height: 500px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.phone-specifications {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.phone-specifications h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.phone-specifications ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.phone-specifications ul li:last-child {
+    border-bottom: none;
+}
+
+.quantity-input {
+    width: 80px !important;
+}
+
+.add-to-cart-btn {
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+.add-to-cart-btn i {
+    margin-right: 8px;
+}
