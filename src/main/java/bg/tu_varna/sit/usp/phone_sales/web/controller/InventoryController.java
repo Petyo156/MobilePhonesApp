@@ -3,13 +3,13 @@ package bg.tu_varna.sit.usp.phone_sales.web.controller;
 import bg.tu_varna.sit.usp.phone_sales.deliveryoption.service.DeliveryOptionService;
 import bg.tu_varna.sit.usp.phone_sales.inventory.service.InventoryService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
+import bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -32,7 +32,7 @@ public class InventoryController {
     }
 
     @GetMapping("/checkout")
-    @PreAuthorize("hasRole('USER')")
+    @RequireAuthenticatedUser
     public ModelAndView getCheckoutPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/checkout");
 
@@ -49,7 +49,7 @@ public class InventoryController {
     }
 
     @PostMapping("/checkout")
-    @PreAuthorize("hasRole('USER')")
+    @RequireAuthenticatedUser
     public ModelAndView checkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
                                  BindingResult bindingResult,
                                  @Valid @ModelAttribute CheckoutRequest checkoutRequest) {
@@ -66,7 +66,7 @@ public class InventoryController {
     }
 
     @GetMapping("/cart")
-    @PreAuthorize("hasRole('USER')")
+    @RequireAuthenticatedUser
     public ModelAndView getCartPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/cart");
         User user = userService.getAuthenticatedUser(authenticationMetadata);
@@ -79,7 +79,7 @@ public class InventoryController {
     }
 
     @GetMapping("/checkout/success")
-    @PreAuthorize("hasRole('USER')")
+    @RequireAuthenticatedUser
     public String getSuccessfulCheckoutPage() {
 
         return "user/successful-checkout";

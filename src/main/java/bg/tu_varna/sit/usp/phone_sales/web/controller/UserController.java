@@ -2,6 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.inventory.service.InventoryService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
+import bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class UserController {
     }
 
     @GetMapping()
+    @RequireAuthenticatedUser
     public ModelAndView getProfilePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("home/profile");
 
