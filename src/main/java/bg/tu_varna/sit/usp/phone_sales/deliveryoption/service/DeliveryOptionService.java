@@ -22,10 +22,10 @@ public class DeliveryOptionService {
     private final UserService userService;
 
     @Autowired
-    public DeliveryOptionService(DeliveryOptionRepository deliveryOptionRepository, InventoryService inventoryService, UserService userService, UserService userService1) {
+    public DeliveryOptionService(DeliveryOptionRepository deliveryOptionRepository, InventoryService inventoryService, UserService userService) {
         this.deliveryOptionRepository = deliveryOptionRepository;
         this.inventoryService = inventoryService;
-        this.userService = userService1;
+        this.userService = userService;
     }
 
     @Transactional

@@ -1,11 +1,8 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.service;
 
-import bg.tu_varna.sit.usp.phone_sales.brand.service.BrandService;
-import bg.tu_varna.sit.usp.phone_sales.camera.service.CameraService;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.dimension.service.DimensionService;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
-import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.Hardware;
 import bg.tu_varna.sit.usp.phone_sales.hardware.service.HardwareService;
 import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
@@ -39,7 +36,7 @@ public class PhoneService {
     private final ModelService modelService;
 
     @Autowired
-    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, BrandService brandService, CameraService cameraService) {
+    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService) {
         this.phoneRepository = phoneRepository;
         this.dimensionService = dimensionService;
         this.hardwareService = hardwareService;

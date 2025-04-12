@@ -6,7 +6,6 @@ import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
 import bg.tu_varna.sit.usp.phone_sales.inventory.repository.InventoryRepository;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
-import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class InventoryService {
     private final PhoneService phoneService;
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository, UserService userService, PhoneService phoneService) {
+    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService) {
         this.inventoryRepository = inventoryRepository;
         this.phoneService = phoneService;
     }
@@ -43,10 +43,10 @@ public class InventoryService {
         BigDecimal price = BigDecimal.ZERO;
         List<GetPhoneResponse> phones = cart.getPhones();
         for (GetPhoneResponse phone : phones) {
-            price.add(phone.getPrice());
+            price = price.add(phone.getPrice());
         }
         log.info("Price for all items is {}", price);
-        return price.toString();
+        return price.setScale(2, RoundingMode.HALF_UP).toString();
     }
 
     public List<Inventory> getAllItemsInCartForUser(User user) {
