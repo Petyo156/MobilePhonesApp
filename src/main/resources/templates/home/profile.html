@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Account</title>
+    <link rel="stylesheet" type="text/css" href="/css/profile.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+</head>
+<body>
+<header th:replace="~{fragments/navbar :: header}"></header>
+<div class="account-section">
+    <div class="profile-section">
+        <h2>Profile</h2>
+        <h3 class="account-name"><!--th:text="*{user.name}"-->🗿 User Name</h3>
+        <p><!--th:text="*{user.registration_date}"-->User since ...</p>
+    </div>
+    <div class="private_info-section">
+        <h2>Private Information</h2>
+        <h3>✉️ Emaila@example.com</h3>
+        <h3>📞 +1 732 128 213</h3>
+        <h3>📇 Country, city, address</h3>
+    </div>
+    <div class="change_pass-section">
+        <h2>Change Password</h2>
+        <form th:action="@{changePassword}" method="patch" th:object="${changePasswordRequest}"></form>
+        <input type="text" placeholder="Current Password"><!--th:field="*{current_password}"-->
+        <input type="text" placeholder="New Password"><!--th:field="*{new_password}"-->
+        <input type="text" placeholder="Confirm New Password"><!--th:field="*{confirm_password}"-->
+        <button type="submit">Change</button>
+    </div>
+</div>
+<div class="order-section">
+    <h1>Orders</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Address</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr> <!--th:each="inventory : ${inventory}"-->
+            <!--
+            <td th:text="*{inventory.id}"></td>
+            <td th:text="*{inventory.date_time}"></td>
+            <td th:text="*{inventory.phone.name}"></td>
+            <td th:text="*{inventory.joinedAddress}"></td>
+            <td th:text="*{price}"></td>
+            <td th:text="*{inventory.quantity}"></td>
+            -->
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="links" colspan="6">
+                <a href="#">&laquo;</a>
+                <a class="active" href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">&raquo;</a>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+</body>
+</html>
