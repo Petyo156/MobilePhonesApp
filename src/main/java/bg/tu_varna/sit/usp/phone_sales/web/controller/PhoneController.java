@@ -29,14 +29,11 @@ public class PhoneController {
     }
 
     @GetMapping("/{slug}")
-    public ModelAndView getPhonePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                     @PathVariable String slug) {
+    public ModelAndView getPhonePage(@PathVariable String slug) {
         ModelAndView modelAndView = new ModelAndView("home/phone");
 
-//        User user = userService.getAuthenticatedUser(authenticationMetadata);
         GetPhoneResponse phoneResponse = phoneService.getPhoneResponseBySlug(slug);
 
-//        modelAndView.addObject("user", user);
         modelAndView.addObject("phoneResponse", phoneResponse);
         return modelAndView;
     }
