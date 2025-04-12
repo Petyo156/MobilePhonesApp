@@ -14,4 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class CartResponse {
     private List<GetPhoneResponse> phones;
+
+    private String totalPrice;
 }

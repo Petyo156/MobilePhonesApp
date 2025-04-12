@@ -21,11 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST;
 
@@ -38,15 +38,17 @@ public class PhoneService {
     private final OperatingSystemService operatingSystemService;
     private final ModelService modelService;
     private final ImagesRepository imagesRepository;
+    private final DecimalFormat decimalFormat;
 
     @Autowired
-    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, ImagesRepository imagesRepository) {
+    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, ImagesRepository imagesRepository, DecimalFormat decimalFormat) {
         this.phoneRepository = phoneRepository;
         this.dimensionService = dimensionService;
         this.hardwareService = hardwareService;
         this.operatingSystemService = operatingSystemService;
         this.modelService = modelService;
         this.imagesRepository = imagesRepository;
+        this.decimalFormat = decimalFormat;
     }
 
     @Transactional
@@ -170,10 +172,12 @@ public class PhoneService {
         OperatingSystemResponse operatingSystem = initializeOperatingSystemResponse(phone);
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
         List<String> images = initializePhoneImagesResponse(phone);
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images);
+        String price = decimalFormat.format(phone.getPrice());
+
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -182,6 +186,7 @@ public class PhoneService {
                 .operatingSystemResponse(operatingSystem)
                 .dimensions(dimensions)
                 .images(images)
+                .price(price)
                 .build();
     }
 

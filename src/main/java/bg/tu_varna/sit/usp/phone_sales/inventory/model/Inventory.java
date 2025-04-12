@@ -42,5 +42,6 @@ public class Inventory {
     private Boolean inInventory;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 }

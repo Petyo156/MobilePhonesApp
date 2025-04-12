@@ -23,7 +23,7 @@ public class GetPhoneResponse {
 
     private OperatingSystemResponse operatingSystemResponse;
 
-    private BigDecimal price;
+    private String price;
 
     private Integer quantity;
 

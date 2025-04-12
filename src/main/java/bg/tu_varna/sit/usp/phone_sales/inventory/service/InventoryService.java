@@ -9,7 +9,6 @@ import bg.tu_varna.sit.usp.phone_sales.inventory.repository.InventoryRepository;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
-import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.DeliveryOptionResponse;
@@ -19,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +30,13 @@ import java.util.UUID;
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final PhoneService phoneService;
+    private final DecimalFormat decimalFormat;
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService, UserService userService) {
+    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService, DecimalFormat decimalFormat) {
         this.inventoryRepository = inventoryRepository;
         this.phoneService = phoneService;
+        this.decimalFormat = decimalFormat;
     }
 
     public CartResponse getCartForUser(User user) {
@@ -50,17 +51,6 @@ public class InventoryService {
     public void addPhoneToCartForUser(User user, String slug) {
         Inventory inventory = initializeInCartInventory(slug, user);
         inventoryRepository.save(inventory);
-        log.info("New inventory added");
-    }
-
-    public String getPriceForAllItemsInCart(CartResponse cart) {
-        BigDecimal price = BigDecimal.ZERO;
-        List<GetPhoneResponse> phones = cart.getPhones();
-        for (GetPhoneResponse phone : phones) {
-            price = price.add(phone.getPrice());
-        }
-        log.info("Price for all items is {}", price);
-        return price.setScale(2, RoundingMode.HALF_UP).toString();
     }
 
     public List<Inventory> getAllItemsInCartForUser(User user) {
@@ -132,8 +122,19 @@ public class InventoryService {
     }
 
     private CartResponse initializeCartResponse(List<Inventory> inCartItemsList) {
+        String totalPrice = getTotalPriceForItemsInCart(inCartItemsList);
         List<GetPhoneResponse> phoneResponses = getPhoneResponseByCartItemsList(inCartItemsList);
-        return initializeCartResponseFromPhoneResponses(phoneResponses);
+
+        return initializeCartResponseFromPhoneResponses(phoneResponses, totalPrice);
+    }
+
+    private String getTotalPriceForItemsInCart(List<Inventory> inCartItemsList) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Inventory inventory : inCartItemsList) {
+            BigDecimal price = inventory.getPhone().getPrice();
+            totalPrice = totalPrice.add(price);
+        }
+        return decimalFormat.format(totalPrice);
     }
 
     private List<GetPhoneResponse> getPhoneResponseByCartItemsList(List<Inventory> inCartItemsList) {
@@ -147,22 +148,24 @@ public class InventoryService {
         return responses;
     }
 
-    private CartResponse initializeCartResponseFromPhoneResponses(List<GetPhoneResponse> phoneResponses) {
+    private CartResponse initializeCartResponseFromPhoneResponses(List<GetPhoneResponse> phoneResponses, String totalPrice) {
         return CartResponse.builder()
                 .phones(phoneResponses)
+                .totalPrice(totalPrice)
                 .build();
     }
 
     private Inventory initializeInCartInventory(String slug, User user) {
         Phone phone = phoneService.getPhoneBySlug(slug);
         Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndPhone(user, phone);
-        log.info("Product exists in cart");
         if(inventoryOptional.isPresent()){
+            log.info("Product exists in cart");
             Inventory inventory = inventoryOptional.get();
 
             incrementProductQuantity(user, inventory.getId());
             return inventoryRepository.save(inventory);
         }
+        log.info("New inventory added");
         return Inventory.builder()
                 .user(user)
                 .phone(phone)
