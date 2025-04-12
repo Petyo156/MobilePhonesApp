@@ -6,6 +6,7 @@ import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
 import bg.tu_varna.sit.usp.phone_sales.inventory.model.OrderStatus;
 import bg.tu_varna.sit.usp.phone_sales.inventory.repository.InventoryRepository;
+import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,6 +89,10 @@ public class InventoryService {
 
     public void incrementProductQuantity(User user, UUID id) {
         Inventory inventory = getInventoryByIdAndUser(user, id);
+        if(inventory.getQuantity() >= 10){
+            log.info("Item quantity in cart is maximum 10");
+            return;
+        }
 
         log.info("Incrementing product quantity");
         inventory.setQuantity(inventory.getQuantity() + 1);
@@ -148,12 +154,22 @@ public class InventoryService {
     }
 
     private Inventory initializeInCartInventory(String slug, User user) {
+        Phone phone = phoneService.getPhoneBySlug(slug);
+        Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndPhone(user, phone);
+        log.info("Product exists in cart");
+        if(inventoryOptional.isPresent()){
+            Inventory inventory = inventoryOptional.get();
+
+            incrementProductQuantity(user, inventory.getId());
+            return inventoryRepository.save(inventory);
+        }
         return Inventory.builder()
                 .user(user)
-                .phone(phoneService.getPhoneBySlug(slug))
+                .phone(phone)
                 .inInventory(false)
                 .quantity(1)
                 .status(OrderStatus.PENDING)
+                .dateTime(LocalDateTime.now())
                 .build();
     }
 

@@ -29,7 +29,7 @@ public class Inventory {
     private Phone phone;
 
     @OneToOne
-    @JoinColumn(name = "delivery_option_id", nullable = false)
+    @JoinColumn(name = "delivery_option_id")
     private DeliveryOption deliveryOption;
 
     @Column(nullable = false)
