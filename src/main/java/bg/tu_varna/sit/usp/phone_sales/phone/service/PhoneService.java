@@ -170,12 +170,12 @@ public class PhoneService {
         OperatingSystemResponse operatingSystem = initializeOperatingSystemResponse(phone);
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
         List<String> images = initializePhoneImagesResponse(phone);
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getId(), images);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, UUID phoneId, List<String> images) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images) {
         return GetPhoneResponse.builder()
-                .id(phoneId.toString())
+                .slug(slug)
                 .brandAndModelResponse(brandAndModel)
                 .cameraResponse(camera)
                 .hardwareResponse(hardware)

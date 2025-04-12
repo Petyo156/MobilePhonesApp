@@ -29,7 +29,7 @@ public class GetPhoneResponse {
 
     private Integer releaseYear;
 
-    private String id;
+    private String slug;
 
     private List<String> images;
 }
