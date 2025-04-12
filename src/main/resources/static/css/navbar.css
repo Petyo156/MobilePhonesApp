@@ -79,6 +79,43 @@ img:hover {
     height: 5vh;
     cursor: pointer;
 }
+.search-bar {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 50px;
+}
+
+.search-bar input {
+    width: 20vw;
+    height: 5vh;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--light);
+    color: var(--dark);
+    font-size: 1rem;
+}
+
+.search-button {
+    background: none;
+    border: none;
+}
+
+.search-button i {
+    color: white;
+    font-size: 1.5rem;
+    transition: 0.3s ease-in-out;
+}
+
+.search-button i:hover {
+    color: var(--dark-accent);
+}
+
+.navbar .search-button i:hover {
+    color: var(--dark-accent);
+}
 
 @media (max-width: 768px) {
     .navbar {
