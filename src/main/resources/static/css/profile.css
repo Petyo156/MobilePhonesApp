@@ -1,14 +1,5 @@
-:root {
-    --dark: #3b3b3b;
-    --light: #fff;
-    --dark-accent: #536edc;
-    --light-accent: #c1ccff;
-    --accent: #132d8f;
-    --error: #ff4d4d;
-}
-
 body {
-    margin: 0 2.5rem;
+    margin: 5rem 2.5rem 0 2.5rem;
     height: 100%;
     display: flex;
     flex-direction: row;

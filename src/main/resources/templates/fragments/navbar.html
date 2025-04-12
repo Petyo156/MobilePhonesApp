@@ -1,33 +1,21 @@
-<div th:fragment="header">
-    <header>
-        <nav class="navbar">
-            <a href="/">
-                <img class="logo" src="/images/logo.png" alt="logo.png">
+<header th:fragment="header">
+    <nav class="navbar">
+        <a href="/">
+            <img class="logo" src="/images/logo.png" alt="logo.png">
+        </a>
+        <div class="links">
+            <a>
+                <i class="fa-solid fa-xl fa-heart"></i>
             </a>
-
-            <div class="search-bar">
-                <form th:action="@{/search}" method="get">
-                    <input type="text" name="searchBar" placeholder="potarsi telefon..." required>
-                    <button type="submit" class="search-button navbar-search-button">
-                        <i class="fas fa-xl fa-search"></i>
-                    </button>
-                </form>
-            </div>
-
-            <div class="links">
-                <a th:if="${null == user}" th:href="@{/login}">
-                    <i class="fa-solid fa-xl fa-user"></i>
-                </a>
-                <a>
-                    <i class="fa-solid fa-xl fa-heart"></i>
-                </a>
-                <a>
-                    <i class="fa-solid fa-xl fa-cart-shopping"></i>
-                </a>
-                <a th:if="${null != user}" th:href="@{/profile}">
-                    <i class="fa-solid fa-xl fa-user"></i>
-                </a>
-            </div>
-        </nav>
-    </header>
-</div>
+            <a>
+                <i class="fa-solid fa-xl fa-cart-shopping"></i>
+            </a>
+            <a th:if="${null != user}" th:href="@{/profile}">
+                <i class="fa-solid fa-xl fa-user"></i>
+            </a>
+            <a th:if="${null == user}" th:href="@{/login}">
+                <i class="fa-solid fa-xl fa-user"></i>
+            </a>
+        </div>
+    </nav>
+</header>
