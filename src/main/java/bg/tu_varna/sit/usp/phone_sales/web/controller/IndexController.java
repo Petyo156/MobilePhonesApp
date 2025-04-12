@@ -42,9 +42,9 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping("/search/{info}")
-    public ModelAndView getSearchPage(@PathVariable String info) {
-        ModelAndView modelAndView = new ModelAndView("home/index");
+    @GetMapping("/search")
+    public ModelAndView getSearchPage(@RequestParam("result") String info) {
+        ModelAndView modelAndView = new ModelAndView("home/search");
 
         List<GetPhoneResponse> searchResult = phoneService.getSearchResult(info);
         modelAndView.addObject("searchResult", searchResult);
