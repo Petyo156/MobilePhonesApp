@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST;
 
@@ -147,11 +148,12 @@ public class PhoneService {
         HardwareResponse hardware = initializeHardwareResponse(phone);
         OperatingSystemResponse operatingSystem = initializeOperatingSystemResponse(phone);
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getId());
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, UUID phoneId) {
         return GetPhoneResponse.builder()
+                .id(phoneId.toString())
                 .brandAndModelResponse(brandAndModel)
                 .cameraResponse(camera)
                 .hardwareResponse(hardware)

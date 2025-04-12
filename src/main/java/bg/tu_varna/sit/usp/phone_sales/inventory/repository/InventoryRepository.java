@@ -13,4 +13,8 @@ import java.util.UUID;
 public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
 
     List<Inventory> getAllByUserAndInInventoryFalse(User user);
+
+    List<Inventory> getAllByUserAndInInventoryTrueOrderByDateTimeDesc(User user);
+
+    Optional<Inventory> getInventoryByUserAndInInventoryFalseAndId(User user, UUID id);
 }

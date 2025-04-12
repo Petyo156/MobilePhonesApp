@@ -15,8 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.UUID;
 
 @Controller
 public class InventoryController {
@@ -76,6 +79,25 @@ public class InventoryController {
         modelAndView.addObject("cart", cart);
 
         return modelAndView;
+    }
+
+    @PostMapping("/cart/up/{id}")
+    @RequireAuthenticatedUser
+    public String upProductQuantity(@PathVariable UUID id,
+                                    @AuthenticationPrincipal AuthenticationMetadata authMeta) {
+        User user = userService.getAuthenticatedUser(authMeta);
+        inventoryService.incrementProductQuantity(user, id);
+        return "redirect:/user/cart";
+    }
+
+    @PostMapping("/cart/down/{id}")
+    @RequireAuthenticatedUser
+    public String downProductQuantity(@PathVariable UUID id,
+                                      @AuthenticationPrincipal AuthenticationMetadata authMeta) {
+        User user = userService.getAuthenticatedUser(authMeta);
+
+        inventoryService.decrementProductQuantity(user, id);
+        return "redirect:/user/cart";
     }
 
     @GetMapping("/checkout/success")

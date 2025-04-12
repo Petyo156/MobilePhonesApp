@@ -38,6 +38,9 @@ public class Inventory {
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
-    @Column
+    @Column(nullable = false)
     private Boolean inInventory;
+
+    @Column(nullable = false)
+    private OrderStatus status;
 }

@@ -7,6 +7,7 @@ import bg.tu_varna.sit.usp.phone_sales.inventory.service.InventoryService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.DeliveryOptionResponse;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +53,19 @@ public class DeliveryOptionService {
                 .zipCode(checkoutRequest.getZipCode())
                 .build();
         deliveryOptionRepository.save(deliveryOption);
+    }
+
+    public DeliveryOptionResponse getDeliveryOptionResponse(DeliveryOption deliveryOption) {
+        return initializeDeliveryOptionResponse(deliveryOption);
+    }
+
+    private DeliveryOptionResponse initializeDeliveryOptionResponse(DeliveryOption deliveryOption) {
+        return DeliveryOptionResponse.builder()
+                .deliveryMethod(deliveryOption.getDeliveryMethod())
+                .paymentMethod(deliveryOption.getPaymentMethod())
+                .address(deliveryOption.getAddress())
+                .city(deliveryOption.getCity())
+                .zipCode(deliveryOption.getZipCode())
+                .build();
     }
 }

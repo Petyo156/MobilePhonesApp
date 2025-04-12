@@ -7,4 +7,5 @@ public class ExceptionMessages {
     public static final String PHONE_WITH_THIS_SLUG_DOESNT_EXIST = "Phone with this slug does not exist";
     public static final String ADD_STUFF_TO_YOUR_CART = "You have nothing in your cart";
     public static final String USER_MUST_BE_LOGGED_IN = "User must be logged in.";
+    public static final String INVENTORY_DOES_NOT_EXIST = "Inventory by user and product does not exist";
 }
