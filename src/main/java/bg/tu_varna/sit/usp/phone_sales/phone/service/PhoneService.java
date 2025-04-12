@@ -100,10 +100,12 @@ public class PhoneService {
     }
 
     public GetPhoneResponse getPhoneResponseBySlug(String slug) {
+        log.info("Initializing phone response by slug");
         return initializeGetPhoneResponse(getPhoneBySlug(slug));
     }
 
     public GetPhoneResponse getPhoneResponseByPhone(Phone phone) {
+        log.info("Initializing phone response by phone entity");
         return initializeGetPhoneResponse(getPhoneBySlug(phone.getSlug()));
     }
 
@@ -122,6 +124,15 @@ public class PhoneService {
 
         phoneRepository.save(phone);
         log.info("Phone visibility state updated");
+    }
+
+    private String generateSlug(Phone phone) {
+        log.info("Generating slug for phone");
+        return (phone.getPhoneModel().getBrand().getName() + "-" + phone.getPhoneModel().getName() + "-" + phone.getDimension().getColor() + "-" +
+                phone.getHardware().getStorage().toString() + "gb-" + phone.getHardware().getRam().toString() + "ram")
+                .toLowerCase()
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("^-|-$", "");
     }
 
     private List<GetPhoneResponse> initializeGetPhoneListResponse(List<Phone> phones) {
@@ -196,14 +207,6 @@ public class PhoneService {
                 .brand(phone.getPhoneModel().getBrand().getName())
                 .model(phone.getPhoneModel().getName())
                 .build();
-    }
-
-    private String generateSlug(Phone phone) {
-        return (phone.getPhoneModel().getBrand().getName() + "-" + phone.getPhoneModel().getName() + "-" + phone.getDimension().getColor() + "-" +
-                phone.getHardware().getStorage().toString() + "gb-" + phone.getHardware().getRam().toString() + "ram")
-                .toLowerCase()
-                .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-|-$", "");
     }
 
     private Phone initializePhone(Phone phone, SubmitPhoneRequest submitPhoneRequest, Hardware hardware, OperatingSystem operatingSystem, PhoneModel phoneModel, Dimension dimension) {

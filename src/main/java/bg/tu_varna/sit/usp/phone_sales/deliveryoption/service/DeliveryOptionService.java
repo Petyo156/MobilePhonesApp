@@ -8,12 +8,14 @@ import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutRequest;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class DeliveryOptionService {
     private final DeliveryOptionRepository deliveryOptionRepository;
     private final InventoryService inventoryService;
@@ -32,10 +34,12 @@ public class DeliveryOptionService {
 
         userService.updateUserAddressPreference(checkoutRequest.getAddress(), checkoutRequest.getCity(), user);
 
+        log.info("Creating delivery objects for all items in cart and marking them as sold.");
         for (Inventory inventory : cartItems) {
             createDeliveryForItem(checkoutRequest, inventory);
             inventoryService.setItemAsSold(inventory);
         }
+        log.info("Order completed successfully");
     }
 
     private void createDeliveryForItem(CheckoutRequest checkoutRequest, Inventory inventory) {
