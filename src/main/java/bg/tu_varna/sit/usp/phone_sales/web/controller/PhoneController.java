@@ -33,10 +33,10 @@ public class PhoneController {
                                      @PathVariable String slug) {
         ModelAndView modelAndView = new ModelAndView("home/phone");
 
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
+//        User user = userService.getAuthenticatedUser(authenticationMetadata);
         GetPhoneResponse phoneResponse = phoneService.getPhoneResponseBySlug(slug);
 
-        modelAndView.addObject("user", user);
+//        modelAndView.addObject("user", user);
         modelAndView.addObject("phoneResponse", phoneResponse);
         return modelAndView;
     }
