@@ -53,9 +53,10 @@ img:hover {
 
 .links {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-items: center;
     gap: 1.5rem;
+    margin-right: 3.5rem;
 }
 
 .links i {
@@ -82,6 +83,23 @@ img:hover {
 
 .navbar .search-button i:hover {
     color: var(--dark-accent);
+}
+.dropdown:hover .dropdown-menu {
+    display: block;
+    align-content: center;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: var(--light);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 1.5rem;
+    border-radius: 0.25rem;
+    z-index: 1000;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
 }
 
 @media (max-width: 768px) {
