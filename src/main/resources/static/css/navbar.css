@@ -38,9 +38,9 @@ header {
 }
 
 .logo {
-    height: 9vh;
+    height: 8vh;
     width: auto;
-    max-width: 150px;
+    margin-left: 2vh;
 }
 
 img {
