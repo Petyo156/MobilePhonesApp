@@ -2,8 +2,12 @@ package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -41,4 +45,7 @@ public class SubmitPhoneRequest {
     @NotNull
     @Min(1800)
     private Integer releaseYear;
+
+    @NotEmpty(message = "Set at least one image.")
+    private List<String> imageUrls = new ArrayList<>();
 }

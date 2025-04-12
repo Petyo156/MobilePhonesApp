@@ -165,11 +165,62 @@
         <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}" th:errors="*{camera.resolution}"></p>
     </div>
 
+    <div class="form-group">
+        <label>Image URLs:</label>
+        <div id="imageFields">
+            <div th:if="*{imageUrls != null and imageUrls.size() > 0}"
+                 th:each="imageUrl, iterStat : *{imageUrls}">
+                <div class="image-url-group">
+                    <input type="text" th:field="*{imageUrls[__${iterStat.index}__]}" class="form-input" placeholder="Enter image URL"/>
+                    <button type="button" class="form-remove" onclick="removeImageField(this)">Remove</button>
+                </div>
+            </div>
+        </div>
+        <button type="button" onclick="addImageField()" class="form-add">Add Another Image</button>
+        <p class="form-error" th:if="${#fields.hasErrors('imageUrls')}" th:errors="*{imageUrls}"></p>
+    </div>
+
     <div class="form-actions">
         <input type="submit" value="Submit" class="form-submit"/>
         <input type="reset" value="Reset" class="form-reset"/>
     </div>
+
 </form>
 
 </body>
 </html>
+<script>
+    let imageIndex = document.querySelectorAll('[name^="imageUrls["]').length || 0;
+
+    function addImageField() {
+        const container = document.createElement('div');
+        container.className = "image-url-group";
+
+        container.innerHTML = `
+            <input type="text" name="imageUrls[${imageIndex}]" class="form-input" placeholder="Enter image URL"/>
+            <button type="button" class="form-remove" onclick="removeImageField(this)">Remove</button>
+        `;
+
+        document.getElementById('imageFields').appendChild(container);
+        imageIndex++;
+    }
+
+    function removeImageField(button) {
+        const container = button.parentElement;
+        container.remove();
+
+        reindexImageFields();
+    }
+
+    function reindexImageFields() {
+        const fields = document.querySelectorAll('#imageFields .image-url-group');
+        imageIndex = 0;
+        fields.forEach(field => {
+            const input = field.querySelector('input');
+            input.name = `imageUrls[${imageIndex}]`;
+            imageIndex++;
+        });
+    }
+</script>
+
+

@@ -10,6 +10,8 @@ import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Builder(toBuilder = true)
@@ -44,6 +46,9 @@ public class Phone {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Dimension dimension;
+
+    @OneToMany(mappedBy = "phone")
+    private List<Image> images = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime addedDate;

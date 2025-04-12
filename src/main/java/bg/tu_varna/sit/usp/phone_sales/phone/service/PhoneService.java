@@ -9,7 +9,9 @@ import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
 import bg.tu_varna.sit.usp.phone_sales.model.service.ModelService;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.service.OperatingSystemService;
+import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
+import bg.tu_varna.sit.usp.phone_sales.phone.repository.ImagesRepository;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.PhoneRepository;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.*;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
@@ -35,20 +37,20 @@ public class PhoneService {
     private final HardwareService hardwareService;
     private final OperatingSystemService operatingSystemService;
     private final ModelService modelService;
+    private final ImagesRepository imagesRepository;
 
     @Autowired
-    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService) {
+    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, ImagesRepository imagesRepository) {
         this.phoneRepository = phoneRepository;
         this.dimensionService = dimensionService;
         this.hardwareService = hardwareService;
         this.operatingSystemService = operatingSystemService;
         this.modelService = modelService;
+        this.imagesRepository = imagesRepository;
     }
 
     @Transactional
     public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest) {
-        Phone phone = Phone.builder().build();
-
         SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
         SubmitBrandAndModel brandAndModel = submitPhoneRequest.getBrandAndModel();
         SubmitHardware hardwareInfo = submitPhoneRequest.getHardware();
@@ -63,10 +65,29 @@ public class PhoneService {
 
         OperatingSystem operatingSystem = operatingSystemService.submitOperatingSystem(operatingSystemInfo);
 
-        Phone initializedPhone = initializePhone(phone, submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
+        Phone initializedPhone = initializePhone(submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
+        Phone savedPhone = phoneRepository.save(initializedPhone);
+
+        List<Image> images = initializePhoneImages(submitPhoneRequest, savedPhone);
+        savedPhone.setImages(images);
 
         log.info("Phone initialized successfully");
         return phoneRepository.save(initializedPhone);
+    }
+
+    private List<Image> initializePhoneImages(SubmitPhoneRequest submitPhoneRequest, Phone phone) {
+        List<Image> images = new ArrayList<>();
+        for (String imageUrl : submitPhoneRequest.getImageUrls()) {
+            Image save = imagesRepository.save(
+                    Image.builder()
+                            .imageUrl(imageUrl)
+                            .phone(phone)
+                            .build()
+            );
+            images.add(save);
+        }
+        log.info("Phone images initialized successfully");
+        return images;
     }
 
     public List<GetPhoneResponse> getSearchResult(String info) {
@@ -109,7 +130,7 @@ public class PhoneService {
 
     public Phone getPhoneBySlug(String slug) {
         Optional<Phone> phone = phoneRepository.getPhoneBySlug(slug);
-        if(phone.isEmpty()){
+        if (phone.isEmpty()) {
             throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }
         return phone.get();
@@ -135,7 +156,7 @@ public class PhoneService {
 
     private List<GetPhoneResponse> initializeGetPhoneListResponse(List<Phone> phones) {
         List<GetPhoneResponse> responses = new ArrayList<>();
-        for(Phone phone : phones) {
+        for (Phone phone : phones) {
             GetPhoneResponse response = initializeGetPhoneResponse(phone);
             responses.add(response);
         }
@@ -208,9 +229,9 @@ public class PhoneService {
                 .build();
     }
 
-    private Phone initializePhone(Phone phone, SubmitPhoneRequest submitPhoneRequest, Hardware hardware, OperatingSystem operatingSystem, PhoneModel phoneModel, Dimension dimension) {
+    private Phone initializePhone(SubmitPhoneRequest submitPhoneRequest, Hardware hardware, OperatingSystem operatingSystem, PhoneModel phoneModel, Dimension dimension) {
         log.info("Initializing phone");
-        return phone.toBuilder()
+        Phone builtPhone = Phone.builder()
                 .dimension(dimension)
                 .hardware(hardware)
                 .operatingSystem(operatingSystem)
@@ -220,7 +241,11 @@ public class PhoneService {
                 .releaseYear(submitPhoneRequest.getReleaseYear())
                 .addedDate(LocalDateTime.now())
                 .isVisible(true)
-                .slug(generateSlug(phone))
+                .build();
+        String slug = generateSlug(builtPhone);
+        return builtPhone.toBuilder()
+                .slug(slug)
                 .build();
     }
+
 }
