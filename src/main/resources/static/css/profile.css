@@ -1,0 +1,113 @@
+:root {
+    --dark: #3b3b3b;
+    --light: #fff;
+    --dark-accent: #536edc;
+    --light-accent: #c1ccff;
+    --accent: #132d8f;
+    --error: #ff4d4d;
+}
+
+body {
+    margin: 0 2.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+body div {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+}
+
+.account-section {
+    width: 40%;
+}
+
+.change_pass-section {
+    display: flex;
+    gap: 5px;
+}
+
+input {
+    width: 80%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: 0.3s ease;
+}
+
+input:hover {
+    transform: scaleX(1.1);
+}
+
+input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+button {
+    width: 80%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: var(--light);
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: var(--dark);
+}
+
+.order-section {
+    width: 60%;
+}
+
+table{
+    text-align: center;
+    border-collapse: collapse;
+}
+
+th, td{
+    border:0.2rem solid var(--dark);
+    height: 5rem;
+}
+
+thead, tfoot{
+    background: var(--accent);
+    color:var(--light);
+    height: 5rem;
+}
+
+tbody{
+    background: var(--dark-accent);
+    max-height: 75vh;
+}
+
+tbody tr:nth-of-type(even){
+    background: var(--light-accent);
+}
+.order-section table th{
+    font-size: x-large;
+    min-width: 5rem;
+}
+
+.order-section table td{
+    font-size: large;
+}
+
+tfoot a{
+    background: var(--light);
+    border-radius: 10px;
+    padding:10px;
+    text-decoration: none;
+}
+
+.active{
+    background: var(--light-accent);
+}
+
