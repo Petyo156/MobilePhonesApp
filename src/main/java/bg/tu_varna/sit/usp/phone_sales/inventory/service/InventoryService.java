@@ -1,13 +1,18 @@
 package bg.tu_varna.sit.usp.phone_sales.inventory.service;
 
+import bg.tu_varna.sit.usp.phone_sales.deliveryoption.service.DeliveryOptionService;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
+import bg.tu_varna.sit.usp.phone_sales.inventory.model.OrderStatus;
 import bg.tu_varna.sit.usp.phone_sales.inventory.repository.InventoryRepository;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
+import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.DeliveryOptionResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.OrderResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,21 +21,32 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final PhoneService phoneService;
+    private final UserService userService;
+    private final DeliveryOptionService deliveryOptionService;
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService) {
+    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService, UserService userService, DeliveryOptionService deliveryOptionService) {
         this.inventoryRepository = inventoryRepository;
         this.phoneService = phoneService;
+        this.userService = userService;
+        this.deliveryOptionService = deliveryOptionService;
     }
 
     public CartResponse getCartForUser(User user) {
-        return getCartResponse(user);
+        List<Inventory> inCartItemsList = inventoryRepository.getAllByUserAndInInventoryFalse(user);
+        if (inCartItemsList.isEmpty()) {
+            throw new DomainException(ExceptionMessages.ADD_STUFF_TO_YOUR_CART);
+        }
+        log.info("Initializing cart response");
+        return initializeCartResponse(inCartItemsList);
     }
 
     public void addPhoneToCartForUser(User user, String slug) {
@@ -54,13 +70,53 @@ public class InventoryService {
         return inventoryRepository.getAllByUserAndInInventoryFalse(user);
     }
 
-    private CartResponse getCartResponse(User user) {
-        List<Inventory> inCartItemsList = inventoryRepository.getAllByUserAndInInventoryFalse(user);
-        if (inCartItemsList.isEmpty()) {
-            throw new DomainException(ExceptionMessages.ADD_STUFF_TO_YOUR_CART);
+    public List<OrderResponse> getAllOrdersForUser(User user) {
+        List<Inventory> orders = inventoryRepository.getAllByUserAndInInventoryTrueOrderByDateTimeDesc(user);
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Inventory inventory : orders) {
+            DeliveryOptionResponse deliveryOptionResponse = deliveryOptionService.getDeliveryOptionResponse(inventory.getDeliveryOption());
+            GetPhoneResponse phoneResponse = phoneService.getPhoneResponseByPhone(inventory.getPhone());
+            orderResponses.add(initializeOrderResponse(inventory, phoneResponse, deliveryOptionResponse));
         }
-        log.info("Initializing cart response");
-        return initializeCartResponse(inCartItemsList);
+
+        log.info("Returning all order responses for logged user");
+        return orderResponses;
+    }
+
+    public void setItemAsSold(Inventory inventory) {
+        inventory.setInInventory(true);
+        inventoryRepository.save(inventory);
+    }
+
+    public void incrementProductQuantity(User user, UUID id) {
+        Inventory inventory = getInventoryByIdAndUser(user, id);
+
+        log.info("Incrementing product quantity");
+        inventory.setQuantity(inventory.getQuantity() + 1);
+        inventoryRepository.save(inventory);
+    }
+
+    public void decrementProductQuantity(User user, UUID id) {
+        Inventory inventory = getInventoryByIdAndUser(user, id);
+
+        log.info("Decrementing product quantity");
+        if(inventory.getQuantity() <= 0) {
+            return;
+        }
+        inventory.setQuantity(inventory.getQuantity() - 1);
+        inventoryRepository.save(inventory);
+    }
+
+    private OrderResponse initializeOrderResponse(Inventory inventory, GetPhoneResponse phoneResponse, DeliveryOptionResponse deliveryOptionResponse) {
+        return OrderResponse.builder()
+                .orderId(inventory.getId().toString())
+                .orderDate(inventory.getDateTime())
+                .status(inventory.getStatus())
+                .quantity(inventory.getQuantity())
+                .phone(phoneResponse)
+                .deliveryOption(deliveryOptionResponse)
+                .build();
     }
 
     private CartResponse initializeCartResponse(List<Inventory> inCartItemsList) {
@@ -91,11 +147,15 @@ public class InventoryService {
                 .phone(phoneService.getPhoneBySlug(slug))
                 .inInventory(false)
                 .quantity(1)
+                .status(OrderStatus.PENDING)
                 .build();
     }
 
-    public void setItemAsSold(Inventory inventory) {
-        inventory.setInInventory(true);
-        inventoryRepository.save(inventory);
+    private Inventory getInventoryByIdAndUser(User user, UUID id) {
+        Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndInInventoryFalseAndId(user, id);
+        if(inventoryOptional.isEmpty()) {
+            throw new DomainException(ExceptionMessages.INVENTORY_DOES_NOT_EXIST);
+        }
+        return inventoryOptional.get();
     }
 }
