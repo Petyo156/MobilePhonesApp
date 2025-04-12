@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${phoneResponse.brandAndModelResponse.model}">Product Page</title>
+    <link rel="stylesheet" href="/css/phone.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/filters.css">
+    <link rel="stylesheet" href="/css/navbar.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+<body>
+<header th:replace="~{fragments/navbar :: header}"></header>
+
+<div class="container phone-container">
+    <div class="row">
+        <div class="col-md-6">
+            <img th:src="@{${phoneResponse.images[0]}}"
+                 class="img-fluid rounded phone-image"
+                 alt="Phone Image"/>
+        </div>
+        <div class="col-md-6">
+            <h1 th:text="${phoneResponse.brandAndModelResponse.model}">Phone Name</h1>
+            <p class="text-muted" th:text="${phoneResponse.brandAndModelResponse.brand}">Brand</p>
+
+            <div class="phone-specifications">
+                <h3>Specifications</h3>
+                <ul class="list-unstyled">
+                    <li>
+                        <strong>Price:</strong> $<span th:text="${phoneResponse.price}">0.00</span>
+                    </li>
+                    <li>
+                        <strong>Storage:</strong> <span th:text="${phoneResponse.hardwareResponse.storage}">0</span> GB
+                    </li>
+                    <li>
+                        <strong>RAM:</strong> <span th:text="${phoneResponse.hardwareResponse.ram}">0</span> GB
+                    </li>
+                    <li>
+                        <strong>Screen Size:</strong> <span
+                            th:text="${phoneResponse.hardwareResponse.screenSize}">0</span> inches
+                    </li>
+                    <li>
+                        <strong>Battery:</strong> <span
+                            th:text="${phoneResponse.hardwareResponse.batteryCapacity}">0</span> mAh
+                    </li>
+                    <li>
+                        <strong>Camera:</strong> <span th:text="${phoneResponse.cameraResponse.count}">0</span> cameras
+                        (<span th:text="${phoneResponse.cameraResponse.resolution}">0</span> MP)
+                    </li>
+                    <li>
+                        <strong>OS:</strong> <span
+                            th:text="${phoneResponse.operatingSystemResponse.operatingSystemType}">OS</span>
+                        <span th:text="${phoneResponse.operatingSystemResponse.version}">version</span>
+                    </li>
+                    <li>
+                        <strong>Release Year:</strong> <span th:text="${phoneResponse.releaseYear}">2025</span>
+                    </li>
+                    <li>
+                        <strong>Color:</strong> <span th:text="${phoneResponse.dimensions.color}">Color</span>
+                    </li>
+                    <li>
+                        <strong>Water-Resistant:</strong>
+                        <span th:text="${phoneResponse.dimensions.waterResistance ? 'Yes' : 'No'}">No</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <form th:action="" method="post" class="d-flex align-items-center">
+                    <div class="me-3">
+                        <label class="form-label">Quantity:</label>
+                        <label>
+                            <input type="number"
+                                   name="quantity"
+                                   min="1"
+                                   max="10"
+                                   value="1"
+                                   class="form-control quantity-input"/>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary add-to-cart-btn">
+                        <i class="fas fa-shopping-cart"></i>Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+        crossorigin="anonymous"></script>
+</body>
+</html>
