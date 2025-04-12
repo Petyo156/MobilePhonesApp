@@ -169,10 +169,11 @@ public class PhoneService {
         HardwareResponse hardware = initializeHardwareResponse(phone);
         OperatingSystemResponse operatingSystem = initializeOperatingSystemResponse(phone);
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getId());
+        List<String> images = initializePhoneImagesResponse(phone);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getId(), images);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, UUID phoneId) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, UUID phoneId, List<String> images) {
         return GetPhoneResponse.builder()
                 .id(phoneId.toString())
                 .brandAndModelResponse(brandAndModel)
@@ -180,7 +181,16 @@ public class PhoneService {
                 .hardwareResponse(hardware)
                 .operatingSystemResponse(operatingSystem)
                 .dimensions(dimensions)
+                .images(images)
                 .build();
+    }
+
+    private List<String> initializePhoneImagesResponse(Phone phone) {
+        List<String> images = new ArrayList<>();
+        for (Image image : phone.getImages()){
+            images.add(image.getImageUrl());
+        }
+        return images;
     }
 
     private PhoneDimensionsResponse initializeDimensionsResponse(Phone phone) {

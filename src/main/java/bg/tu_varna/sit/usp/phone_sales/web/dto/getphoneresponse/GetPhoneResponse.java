@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -29,4 +30,6 @@ public class GetPhoneResponse {
     private Integer releaseYear;
 
     private String id;
+
+    private List<String> images;
 }
