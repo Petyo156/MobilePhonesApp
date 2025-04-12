@@ -1,6 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.inventory.service;
 
-import bg.tu_varna.sit.usp.phone_sales.deliveryoption.service.DeliveryOptionService;
+import bg.tu_varna.sit.usp.phone_sales.deliveryoption.model.DeliveryOption;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
@@ -29,15 +29,11 @@ import java.util.UUID;
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final PhoneService phoneService;
-    private final UserService userService;
-    private final DeliveryOptionService deliveryOptionService;
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService, UserService userService, DeliveryOptionService deliveryOptionService) {
+    public InventoryService(InventoryRepository inventoryRepository, PhoneService phoneService, UserService userService) {
         this.inventoryRepository = inventoryRepository;
         this.phoneService = phoneService;
-        this.userService = userService;
-        this.deliveryOptionService = deliveryOptionService;
     }
 
     public CartResponse getCartForUser(User user) {
@@ -75,7 +71,7 @@ public class InventoryService {
         List<OrderResponse> orderResponses = new ArrayList<>();
 
         for (Inventory inventory : orders) {
-            DeliveryOptionResponse deliveryOptionResponse = deliveryOptionService.getDeliveryOptionResponse(inventory.getDeliveryOption());
+            DeliveryOptionResponse deliveryOptionResponse = getDeliveryOptionResponse(inventory.getDeliveryOption());
             GetPhoneResponse phoneResponse = phoneService.getPhoneResponseByPhone(inventory.getPhone());
             orderResponses.add(initializeOrderResponse(inventory, phoneResponse, deliveryOptionResponse));
         }
@@ -106,6 +102,16 @@ public class InventoryService {
         }
         inventory.setQuantity(inventory.getQuantity() - 1);
         inventoryRepository.save(inventory);
+    }
+
+    private DeliveryOptionResponse getDeliveryOptionResponse(DeliveryOption deliveryOption) {
+        return DeliveryOptionResponse.builder()
+                .deliveryMethod(deliveryOption.getDeliveryMethod())
+                .paymentMethod(deliveryOption.getPaymentMethod())
+                .address(deliveryOption.getAddress())
+                .city(deliveryOption.getCity())
+                .zipCode(deliveryOption.getZipCode())
+                .build();
     }
 
     private OrderResponse initializeOrderResponse(Inventory inventory, GetPhoneResponse phoneResponse, DeliveryOptionResponse deliveryOptionResponse) {

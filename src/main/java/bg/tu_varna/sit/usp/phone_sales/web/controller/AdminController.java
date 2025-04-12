@@ -43,7 +43,6 @@ public class AdminController {
         return modelAndView;
     }
 
-
     @PostMapping("/phone")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView submitPhone(@Valid @ModelAttribute SubmitPhoneRequest submitPhoneRequest,
