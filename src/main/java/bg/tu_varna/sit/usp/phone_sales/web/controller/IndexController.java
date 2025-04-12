@@ -43,13 +43,10 @@ public class IndexController {
     }
 
     @GetMapping("/search/{info}")
-    public ModelAndView getSearchPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                      @PathVariable String info) {
+    public ModelAndView getSearchPage(@PathVariable String info) {
         ModelAndView modelAndView = new ModelAndView("home/index");
 
         List<GetPhoneResponse> searchResult = phoneService.getSearchResult(info);
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
-        modelAndView.addObject("user", user);
         modelAndView.addObject("searchResult", searchResult);
 
         return modelAndView;
