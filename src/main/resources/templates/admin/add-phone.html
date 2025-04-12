@@ -148,7 +148,7 @@
     </div>
 
     <div class="form-group">
-        <label for="cameraType">Camera Type:</label>
+        <label for="cameraType">Camera count:</label>
         <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input" placeholder="Enter camera type"/>
         <p class="form-error" th:if="${#fields.hasErrors('camera.count')}" th:errors="*{camera.count}"></p>
     </div>
