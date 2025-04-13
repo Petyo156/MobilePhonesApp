@@ -34,11 +34,11 @@ import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_
 @Slf4j
 public class PhoneService {
     private final PhoneRepository phoneRepository;
+    private final ImagesRepository imagesRepository;
     private final DimensionService dimensionService;
     private final HardwareService hardwareService;
     private final OperatingSystemService operatingSystemService;
     private final ModelService modelService;
-    private final ImagesRepository imagesRepository;
     private final DecimalFormat decimalFormat;
 
     @Autowired
@@ -101,8 +101,7 @@ public class PhoneService {
     }
 
     public List<GetPhoneResponse> getMostRecentPhones() {
-        List<Phone> phones = phoneRepository.findAllByIsVisibleTrueOrderByAddedDateDesc();
-        log.info("Get 5 most recent phones");
+        List<Phone> phones = phoneRepository.findTop5ByIsVisibleTrueOrderByAddedDateDesc();
 
         return initializeGetPhoneListResponse(phones);
     }

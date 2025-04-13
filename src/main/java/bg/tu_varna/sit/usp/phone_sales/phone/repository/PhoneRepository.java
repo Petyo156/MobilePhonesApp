@@ -1,8 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.repository;
 
-import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +18,7 @@ public interface PhoneRepository extends JpaRepository<Phone, UUID> {
             "OR LOWER(p.phoneModel.brand.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     List<Phone> searchVisiblePhonesByModelOrBrand(@Param("keyword") String keyword);
 
-    List<Phone> findAllByIsVisibleTrueOrderByAddedDateDesc();
+    List<Phone> findTop5ByIsVisibleTrueOrderByAddedDateDesc();
 
     List<Phone> findAllByIsVisibleTrue();
 
