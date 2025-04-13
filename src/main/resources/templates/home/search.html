@@ -16,33 +16,35 @@
 <main>
     <div th:insert="~{fragments/filters :: filters}"></div>
     <div class="container mt-5">
-        <h2 class="mb-4">Search Results</h2>
+        <h2 class="mb-4">Search Results for: <span th:text="${param.result}" class="text-primary"></span></h2>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" th:each="phone : ${searchResult}">
-                <div class="card h-100">
-                    <img th:src="@{ ${phone.images[0]}}" class="card-img-top" alt="Phone Image">
-                    <div class="card-body">
-                        <h5 class="card-title"
-                            th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">
-                            Phone Name</h5>
-                        <p class="card-text">
-                            <strong>Price:</strong> $<span th:text="${phone.price}">0.00</span><br>
-                            <strong>Storage:</strong> <span th:text="${phone.hardwareResponse.storage}">0</span> GB<br>
-                            <strong>RAM:</strong> <span th:text="${phone.hardwareResponse.ram}">0</span> GB<br>
-                            <strong>OS:</strong> <span
-                                th:text="${phone.operatingSystemResponse.operatingSystemType + ' ' + phone.operatingSystemResponse.version}">OS</span>
-                        </p>
+                <a th:href="@{'/phone/' + ${phone.slug}}" class="text-decoration-none">
+                    <div class="card h-100">
+                        <img th:src="@{ ${phone.images[0]}}" class="card-img-top" alt="Phone Image">
+                        <div class="card-body">
+                            <h5 class="card-title"
+                                th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">
+                                Phone Name</h5>
+                            <p class="card-text">
+                                <strong>Storage:</strong> <span th:text="${phone.hardwareResponse.storage}">0</span> GB<br>
+                                <strong>RAM:</strong> <span th:text="${phone.hardwareResponse.ram}">0</span> GB<br>
+                                <strong>OS:</strong> <span
+                                    th:text="${phone.operatingSystemResponse.operatingSystemType + ' ' + phone.operatingSystemResponse.version}">OS</span>
+                            </p>
+                            <hr class="my-2">
+                            <p class="card-text text-danger fw-bold mb-0">
+                                $<span th:text="${phone.price}">0.00</span>
+                            </p>
+                        </div>
                     </div>
-                    <div class="card-footer">
-                        <a th:href="@{'/phone/' + ${phone.slug}}" class="btn btn-primary">View Details</a>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
 
         <div th:if="${#lists.isEmpty(searchResult)}" class="alert alert-info mt-4">
-            No phones found matching your search criteria.
+            No phones found matching your search criteria. 🔍
         </div>
     </div>
 </main>
