@@ -50,11 +50,13 @@
 <h2 class="newest-heading">Най-нови предложения</h2>
 <div class="product-container">
     <div class="product-card" th:each="phone : ${mostRecentPhones}">
-        <img th:src="${phone.images[0]}" alt="Phone Image">
-        <h3 th:text="${phone.brandAndModelResponse.brand}">Brand</h3>
-        <p th:text="${phone.brandAndModelResponse.model}">Model</p>
-        <span class="price" th:text="${phone.price + ' лв.'}">Price</span>
-        <button class="buy-btn">Купи</button>
+        <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
+            <img th:src="${phone.images[0]}" alt="Phone Image">
+            <h3 th:text="${phone.brandAndModelResponse.brand}">Brand</h3>
+            <p th:text="${phone.brandAndModelResponse.model}">Model</p>
+            <span class="price" th:text="${phone.price + ' лв.'}">Price</span>
+        </a>
+        <a th:href="@{'/phone/' + ${phone.slug}}" class="buy-btn">Купи</a>
     </div>
 </div>
 </main>

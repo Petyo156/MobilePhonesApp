@@ -31,11 +31,18 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .product-card img {
@@ -73,8 +80,14 @@ main {
     border-radius: 25px;
     cursor: pointer;
     transition: background 0.3s ease;
+    width: 100%;
+    display: block;
+    text-decoration: none;
+    text-align: center;
 }
 
 .buy-btn:hover {
     background: var(--dark-accent);
+    color: white;
+    text-decoration: none;
 }
