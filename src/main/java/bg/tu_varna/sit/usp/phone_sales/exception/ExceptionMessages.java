@@ -9,4 +9,5 @@ public class ExceptionMessages {
     public static final String USER_MUST_BE_LOGGED_IN = "User must be logged in.";
     public static final String INVENTORY_DOES_NOT_EXIST = "Inventory by user and product does not exist";
     public static final String PHONE_WITH_THIS_SLUG_ALREADY_EXISTS = "Phone with this slug already exists";
+    public static final String INVALID_CHANGE_PASSWORD_REQUEST = "Invalid change password request";
 }

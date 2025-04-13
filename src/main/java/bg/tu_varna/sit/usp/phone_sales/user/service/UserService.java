@@ -6,6 +6,7 @@ import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.model.UserRole;
 import bg.tu_varna.sit.usp.phone_sales.user.repository.UserRepository;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.ChangePasswordRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -121,5 +122,18 @@ public class UserService implements UserDetailsService {
         user.setCity(city);
         log.info("Updating user address and city preference");
         userRepository.save(user);
+    }
+
+    public void changePassword(ChangePasswordRequest changePasswordRequest, User user) {
+        String oldPassword = changePasswordRequest.getOldPassword();
+        if(passwordEncoder.matches(oldPassword, user.getPassword())) {
+            if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
+                user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+                userRepository.save(user);
+                log.info("Successfully changed password");
+                return;
+            }
+        }
+        throw new DomainException(ExceptionMessages.INVALID_CHANGE_PASSWORD_REQUEST);
     }
 }

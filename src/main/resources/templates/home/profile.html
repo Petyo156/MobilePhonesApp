@@ -25,12 +25,18 @@
     </div>
     <div class="change_pass-section">
         <h2>Change Password</h2>
-        <form th:action="@{changePassword}" method="patch" th:object="${changePasswordRequest}"></form>
-        <input type="text" placeholder="Current Password"><!--th:field="*{current_password}"-->
-        <input type="text" placeholder="New Password"><!--th:field="*{new_password}"-->
-        <input type="text" placeholder="Confirm New Password"><!--th:field="*{confirm_password}"-->
-        <button type="submit">Change</button>
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <form th:action="@{'/profile/password'}" method="post" th:object="${changePasswordRequest}">
+            <input type="password" placeholder="Current Password" th:field="*{oldPassword}">
+            <div th:if="${#fields.hasErrors('oldPassword')}" class="error" th:errors="*{oldPassword}"></div>
+            <input type="password" placeholder="New Password" th:field="*{newPassword}">
+            <div th:if="${#fields.hasErrors('newPassword')}" class="error" th:errors="*{newPassword}"></div>
+            <input type="password" placeholder="Confirm New Password" th:field="*{confirmNewPassword}">
+            <div th:if="${#fields.hasErrors('confirmNewPassword')}" class="error" th:errors="*{confirmNewPassword}"></div>
+            <button type="submit">Change</button>
+        </form>
     </div>
+
 </div>
 <div class="order-section">
     <h1>Orders</h1>
