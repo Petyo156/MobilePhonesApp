@@ -6,7 +6,7 @@
     --accent: #1c48b7;
     --error: #ff4d4d;
     --navbar-height: 10vh;
-    --navbar-max-width: 1800px;
+    --navbar-max-width: 1500px;
     --navbar-padding: clamp(1rem, 2vw, 2rem);
 }
 
@@ -21,7 +21,7 @@ body {
 }
 
 header {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent) 0%, #123a9f 100%);
     height: var(--navbar-height);
     width: 100%;
     position: fixed;
@@ -30,6 +30,9 @@ header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-bottom: 5px solid var(--dark);
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0;
 }
 
 .navbar {
@@ -39,9 +42,9 @@ header {
     height: 100%;
     max-width: var(--navbar-max-width);
     width: 90%;
-    margin: 0 auto;
     padding: 0 var(--navbar-padding);
     position: relative;
+    gap: 1rem;
 }
 
 .logo {
@@ -85,14 +88,12 @@ img {
 }
 
 .search-bar {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    flex: 1;
+    max-width: clamp(200px, 30%, 500px);
+    margin: 0 1rem;
+    margin-left: 1rem;
     display: flex;
     align-items: center;
-    width: clamp(250px, 40%, 500px);
-    z-index: 10;
 }
 
 .search-bar form {
@@ -210,13 +211,13 @@ img {
 
 @media (max-width: 768px) {
     .navbar {
-        padding: 0 1rem;
         width: 100%;
+        padding: 0 1rem;
     }
 
     .logo {
-        width: min(20vw, 120px);
-        height: auto;
+        height: min(4vh, 40px);
+        width: auto;
     }
 
     .logo:hover {
@@ -237,6 +238,19 @@ img {
     }
     
     .search-bar {
-        width: clamp(200px, 40%, 300px);
+        max-width: clamp(150px, 30%, 250px);
+        margin: 0 0.5rem;
     }
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu-item:hover .menu-title {
+    color: var(--light);
+}
+
+.menu-item:hover .menu-title i {
+    color: var(--light);
 }

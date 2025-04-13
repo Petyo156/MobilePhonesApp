@@ -120,7 +120,7 @@ main {
 }
 
 .carousel-caption h2 {
-    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
     font-weight: normal;
     margin-bottom: 0.5rem;
     opacity: 0;
@@ -132,7 +132,7 @@ main {
 }
 
 .carousel-caption p {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-size: clamp(0.9rem, 2vw, 1.3rem);
     margin-bottom: 1.5rem;
     opacity: 0;
     transform: translateY(20px);
@@ -192,6 +192,14 @@ main {
     
     .caption-content {
         padding: 0.8rem;
+    }
+    
+    .carousel-caption h2 {
+        font-size: clamp(1.2rem, 3.5vw, 2rem);
+    }
+    
+    .carousel-caption p {
+        font-size: clamp(0.8rem, 1.8vw, 1.1rem);
     }
 }
 

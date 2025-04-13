@@ -3,16 +3,19 @@
     background: var(--dark-accent);
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0 2rem;
-    margin-top: 10vh;;
+    justify-content: center;
+    padding: 0;
+    margin-top: 10vh;
+    width: 100%;
 }
 
 .mega-menu {
     display: flex;
     align-items: center;
     height: 100%;
-    margin-left: 2rem;
+    max-width: var(--navbar-max-width);
+    width: 90%;
+    padding: 0 var(--navbar-padding);
 }
 
 .menu-item {
@@ -113,4 +116,23 @@
 
 .categories div select{
     width:100%;
+}
+
+@media (max-width: 1200px) {
+    .mega-menu {
+        width: 95%;
+    }
+}
+
+@media (max-width: 992px) {
+    .mega-menu {
+        width: 98%;
+    }
+}
+
+@media (max-width: 768px) {
+    .mega-menu {
+        width: 100%;
+        padding: 0 1rem;
+    }
 }
