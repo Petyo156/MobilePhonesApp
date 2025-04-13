@@ -3,6 +3,15 @@
         <a href="/">
             <img class="logo" src="/images/logo.png" alt="logo.png">
         </a>
+            <div class="search-bar">
+                <form th:action="@{/search}" method="get">
+                    <input type="text" name="result" placeholder="Search" required>
+                    <button type="submit" class="search-button navbar-search-button">
+                        <i class="fas fa-xl fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
         <div class="links">
             <div class="dropdown" th:if="|${null!=user}">
                 <div class="icon-with-text">
@@ -28,6 +37,7 @@
                 <i class="fa-solid fa-xl fa-user"></i>
                 <span>Login</span>
             </a>
+            <!--            TODO add cart popout/dropdown-->
             <a th:href="@{/cart}" class="icon-with-text">
                 <i class="fa-solid fa-xl fa-cart-shopping"></i>
                 <span>Cart</span>
