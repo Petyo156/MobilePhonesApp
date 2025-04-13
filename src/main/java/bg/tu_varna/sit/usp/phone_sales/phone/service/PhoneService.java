@@ -3,6 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.phone.service;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.dimension.service.DimensionService;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
+import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.Hardware;
 import bg.tu_varna.sit.usp.phone_sales.hardware.service.HardwareService;
 import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
@@ -257,7 +258,12 @@ public class PhoneService {
                 .addedDate(LocalDateTime.now())
                 .isVisible(true)
                 .build();
+
         String slug = generateSlug(builtPhone);
+        if(phoneRepository.getPhoneBySlug(slug).isPresent()) {
+            throw new DomainException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
+        }
+
         return builtPhone.toBuilder()
                 .slug(slug)
                 .build();
