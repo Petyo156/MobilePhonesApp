@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add Phone</title>
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
 </head>
 <body>
 <h1>Add Phone</h1>
 <form action="#" th:action="@{/admin/phone}" th:object="${submitPhoneRequest}" method="post" class="phone-add-form">
+    <!-- Brand and Model Section -->
     <div class="form-group">
         <label for="brand">Brand:</label>
         <input type="text" id="brand" th:field="*{brandAndModel.brand}" class="form-input" placeholder="Enter brand"/>
@@ -21,6 +23,7 @@
         <p class="form-error" th:if="${#fields.hasErrors('brandAndModel.model')}" th:errors="*{brandAndModel.model}"></p>
     </div>
 
+    <!-- Basic Info Section -->
     <div class="form-group">
         <label for="price">Price:</label>
         <input type="number" id="price" th:field="*{price}" class="form-input" placeholder="Enter price"/>
@@ -39,6 +42,7 @@
         <p class="form-error" th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></p>
     </div>
 
+    <!-- Dimensions Section -->
     <div class="form-group">
         <label for="color">Color:</label>
         <input type="text" id="color" th:field="*{dimensions.color}" class="form-input" placeholder="Enter color"/>
@@ -75,6 +79,7 @@
         <p class="form-error" th:if="${#fields.hasErrors('dimensions.waterResistance')}" th:errors="*{dimensions.waterResistance}"></p>
     </div>
 
+    <!-- Operating System Section -->
     <div class="form-group">
         <label for="osType">OS Type:</label>
         <select id="osType" th:field="*{operatingSystem.operatingSystemType}" class="form-input">
@@ -93,6 +98,7 @@
         <p class="form-error" th:if="${#fields.hasErrors('operatingSystem.version')}" th:errors="*{operatingSystem.version}"></p>
     </div>
 
+    <!-- Hardware Section -->
     <div class="form-group">
         <label for="ram">RAM Size:</label>
         <input type="number" id="ram" th:field="*{hardware.ram}" class="form-input" placeholder="Enter RAM size"/>
@@ -147,6 +153,7 @@
         <p class="form-error" th:if="${#fields.hasErrors('hardware.coreCount')}" th:errors="*{hardware.coreCount}"></p>
     </div>
 
+    <!-- Camera Section -->
     <div class="form-group">
         <label for="cameraType">Camera count:</label>
         <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input" placeholder="Enter camera type"/>
@@ -165,6 +172,7 @@
         <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}" th:errors="*{camera.resolution}"></p>
     </div>
 
+    <!-- Images Section -->
     <div class="form-group">
         <label>Image URLs:</label>
         <div id="imageFields">
@@ -187,8 +195,6 @@
 
 </form>
 
-</body>
-</html>
 <script>
     let imageIndex = document.querySelectorAll('[name^="imageUrls["]').length || 0;
 
@@ -222,5 +228,7 @@
         });
     }
 </script>
+</body>
+</html>
 
 
