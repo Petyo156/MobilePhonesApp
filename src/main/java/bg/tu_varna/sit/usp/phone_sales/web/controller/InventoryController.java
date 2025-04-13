@@ -1,6 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.deliveryoption.service.DeliveryOptionService;
+import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
 import bg.tu_varna.sit.usp.phone_sales.inventory.service.InventoryService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -40,8 +42,8 @@ public class InventoryController {
         ModelAndView modelAndView = new ModelAndView("user/checkout");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-        CartResponse cart = inventoryService.getCartForUser(user);
-        String price = inventoryService.getPriceForAllItemsInCart(cart);
+        List<Inventory> cart = inventoryService.getAllItemsInCartForUser(user);
+        String price = inventoryService.getTotalPriceForItemsInCart(cart);
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("cart", cart);

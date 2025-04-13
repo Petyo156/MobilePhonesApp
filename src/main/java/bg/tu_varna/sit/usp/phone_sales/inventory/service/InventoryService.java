@@ -128,7 +128,7 @@ public class InventoryService {
         return initializeCartResponseFromPhoneResponses(phoneResponses, totalPrice);
     }
 
-    private String getTotalPriceForItemsInCart(List<Inventory> inCartItemsList) {
+    public String getTotalPriceForItemsInCart(List<Inventory> inCartItemsList) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (Inventory inventory : inCartItemsList) {
             BigDecimal price = inventory.getPhone().getPrice();
