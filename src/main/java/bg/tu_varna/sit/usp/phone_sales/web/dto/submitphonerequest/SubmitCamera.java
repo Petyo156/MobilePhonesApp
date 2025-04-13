@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,11 +17,11 @@ public class SubmitCamera {
     @Min(1)
     private Integer count;
 
-    @NotNull
+    @Nullable
     @Min(1)
     private Integer resolution;
 
-    @NotNull
+    @Nullable
     @Min(1)
     private Integer videoResolution;
 }

@@ -1,6 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.SIMType;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class SubmitHardware {
     @Min(0)
     private Integer ram;
 
-    @NotNull
+    @Nullable
     @Min(0)
     private Integer refreshRate;
 
@@ -40,7 +41,7 @@ public class SubmitHardware {
     @Min(0)
     private Integer storage;
 
-    @NotNull
+    @Nullable
     @Min(0)
     private Integer coreCount;
 }

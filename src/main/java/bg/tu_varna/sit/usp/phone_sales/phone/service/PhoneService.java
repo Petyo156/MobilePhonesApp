@@ -173,11 +173,12 @@ public class PhoneService {
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
         List<String> images = initializePhoneImagesResponse(phone);
         String price = decimalFormat.format(phone.getPrice());
+        Integer quantity = phone.getQuantity();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, quantity);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, Integer quantity) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -187,6 +188,7 @@ public class PhoneService {
                 .dimensions(dimensions)
                 .images(images)
                 .price(price)
+                .quantity(quantity)
                 .build();
     }
 
@@ -221,7 +223,6 @@ public class PhoneService {
                 .batteryCapacity(phone.getHardware().getBatteryCapacity())
                 .ram(phone.getHardware().getRam())
                 .refreshRate(phone.getHardware().getRefreshRate())
-                .resolution(phone.getHardware().getResolution())
                 .screenSize(phone.getHardware().getScreenSize())
                 .simType(phone.getHardware().getSimType())
                 .storage(phone.getHardware().getStorage())

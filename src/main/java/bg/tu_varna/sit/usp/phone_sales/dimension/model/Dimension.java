@@ -20,16 +20,16 @@ public class Dimension {
     @OneToOne(mappedBy = "dimension")
     private Phone phone;
 
-    @Column(nullable = false)
+    @Column
     private Double height;
 
-    @Column(nullable = false)
+    @Column
     private Double width;
 
-    @Column(nullable = false)
+    @Column
     private Double thickness;
 
-    @Column(nullable = false)
+    @Column
     private Double weight;
 
     @Column(nullable = false)

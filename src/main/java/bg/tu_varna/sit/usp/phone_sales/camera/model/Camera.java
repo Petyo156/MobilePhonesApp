@@ -23,9 +23,9 @@ public class Camera {
     @Column(nullable = false)
     private Integer count;
 
-    @Column(nullable = false)
+    @Column
     private Integer resolution;
 
-    @Column(nullable = false)
+    @Column
     private Integer videoResolution;
 }

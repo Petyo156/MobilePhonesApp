@@ -34,7 +34,6 @@ public class HardwareService {
                 .coreCount(hardwareInfo.getCoreCount())
                 .ram(hardwareInfo.getRam())
                 .refreshRate(hardwareInfo.getRefreshRate())
-                .resolution(hardwareInfo.getResolution())
                 .screenSize(hardwareInfo.getScreenSize())
                 .simType(hardwareInfo.getSimType())
                 .storage(hardwareInfo.getStorage())
