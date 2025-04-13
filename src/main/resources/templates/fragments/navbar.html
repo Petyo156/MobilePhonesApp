@@ -7,15 +7,16 @@
                 <form th:action="@{/search}" method="get">
                     <input type="text" name="result" placeholder="Search" required>
                     <button type="submit" class="search-button navbar-search-button">
-                        <i class="fas fa-xl fa-search"></i>
+                        <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
 
         <div class="links">
-            <div class="dropdown" th:if="|${null!=user}">
+<!--            user.role.name() == 'ADMIN'  && ${user.role.name() == 'USER'}-->
+            <div class="dropdown" th:if="${null != user && user.role.name == 'ADMIN'}">
                 <div class="icon-with-text">
-                    <i class="fa-solid fa-xl fa-user-shield"></i>
+                    <i class="fa-solid fa-user-shield"></i>
                     <span>Admin</span>
                 </div>
                 <ul class="dropdown-menu">
@@ -25,7 +26,7 @@
 
             <div class="dropdown" th:if="${null != user}">
                 <div class="icon-with-text">
-                    <i class="fa-solid fa-xl fa-user"></i>
+                    <i class="fa-solid fa-user"></i>
                     <span>My Account</span>
                 </div>
                 <ul class="dropdown-menu">
@@ -34,12 +35,12 @@
                 </ul>
             </div>
             <a th:if="${null == user}" th:href="@{/login}" class="icon-with-text">
-                <i class="fa-solid fa-xl fa-user"></i>
+                <i class="fa-solid fa-user"></i>
                 <span>Login</span>
             </a>
             <!--            TODO add cart popout/dropdown-->
             <a th:href="@{/cart}" class="icon-with-text">
-                <i class="fa-solid fa-xl fa-cart-shopping"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
                 <span>Cart</span>
             </a>
         </div>
