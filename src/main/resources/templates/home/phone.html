@@ -59,6 +59,7 @@
                     <span class="price-amount" th:text="${phoneResponse.price}">0.00</span>
                 </div>
                 <form th:action="@{'/phone/' + ${phoneResponse.slug}}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button type="submit" class="add-to-cart-btn">
                         <i class="fas fa-shopping-cart"></i>Add to Cart
                     </button>

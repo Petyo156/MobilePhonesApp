@@ -17,6 +17,7 @@
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
     <form th:action="@{/login}" method="post" th:object="${loginRequest}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="input-group">
             <input type="text" th:field="*{email}" placeholder="Email" required/>
         </div>
