@@ -113,8 +113,12 @@ public class InventoryController {
 
     @GetMapping("/checkout/success")
     @RequireAuthenticatedUser
-    public String getSuccessfulCheckoutPage() {
+    public ModelAndView getSuccessfulCheckoutPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("user/successful-checkout");
 
-        return "user/successful-checkout";
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        modelAndView.addObject("user", user);
+
+        return modelAndView;
     }
 }

@@ -43,21 +43,26 @@ public class IndexController {
     }
 
     @GetMapping("/search")
-    public ModelAndView getSearchPage(@RequestParam("result") String info) {
+    public ModelAndView getSearchPage(@RequestParam("result") String info,
+                                      @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("home/search");
 
         List<GetPhoneResponse> searchResult = phoneService.getSearchResult(info);
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
         modelAndView.addObject("searchResult", searchResult);
+        modelAndView.addObject("user", user);
 
         return modelAndView;
     }
 
     @GetMapping("/register")
-    public ModelAndView register() {
+    public ModelAndView register(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView();
 
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
         modelAndView.setViewName("index/register");
         modelAndView.addObject("registerRequest", new RegisterRequest());
+        modelAndView.addObject("user", user);
 
         return modelAndView;
     }
@@ -73,12 +78,14 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam, @Valid LoginRequest loginRequest, BindingResult bindingResult) {
+    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam, @Valid LoginRequest loginRequest, BindingResult bindingResult, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index/login");
 
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
         modelAndView.addObject("error", errorParam);
         modelAndView.addObject("loginRequest", loginRequest);
+        modelAndView.addObject("user", user);
 
         if (errorParam != null || bindingResult.hasErrors()) {
             modelAndView.addObject("errorMessage", "Incorrect username or password!");
