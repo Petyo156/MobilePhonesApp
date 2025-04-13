@@ -12,7 +12,9 @@
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
 <body>
-<header th:insert="~{fragments/navbar :: header}"></header>
+<div th:insert="~{fragments/navbar :: header}">
+    <header></header>
+</div>
 <main>
     <div th:replace="~{fragments/filters :: filters}"></div>
     <div class="container cart-container">
@@ -91,5 +93,6 @@
             crossorigin="anonymous"></script>
 
 </main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
