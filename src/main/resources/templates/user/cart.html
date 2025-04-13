@@ -33,19 +33,21 @@
                             $<span th:text="${phone.price}" class="price-value">0.00</span>
                         </div>
                         <div class="quantity-controls">
-                            <form th:action="@{'/cart/down/' + ${phone.id}}" method="post" style="display: inline;">
+                            <form th:action="@{'/cart/down/' + ${phone.slug}}" method="post" style="display: inline;">
                                 <button type="submit" class="btn btn-outline-secondary quantity-btn">-</button>
                             </form>
                             <span class="quantity-display" th:text="${phone.quantity}">1</span>
-                            <form th:action="@{'/cart/up/' + ${phone.id}}" method="post" style="display: inline;">
+                            <form th:action="@{'/cart/up/' + ${phone.slug}}" method="post" style="display: inline;">
                                 <button type="submit" class="btn btn-outline-secondary quantity-btn">+</button>
                             </form>
                         </div>
                     </div>
                     <div class="item-actions">
-                        <button class="btn btn-link text-danger remove-item">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <form th:action="@{'/cart/' + ${phone.slug} + '/delete'}" method="post" style="display: inline;">
+                            <button class="btn btn-link text-danger remove-item">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

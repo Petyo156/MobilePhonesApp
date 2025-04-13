@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class InventoryController {
@@ -83,23 +82,33 @@ public class InventoryController {
         return modelAndView;
     }
 
-    @PostMapping("/cart/up/{id}")
+    @PostMapping("/cart/up/{slug}")
     @RequireAuthenticatedUser
-    public String upProductQuantity(@PathVariable UUID id,
+    public String upProductQuantity(@PathVariable String slug,
                                     @AuthenticationPrincipal AuthenticationMetadata authMeta) {
         User user = userService.getAuthenticatedUser(authMeta);
-        inventoryService.incrementProductQuantity(user, id);
-        return "redirect:/user/cart";
+        inventoryService.incrementProductQuantity(user, slug);
+        return "redirect:/cart";
     }
 
-    @PostMapping("/cart/down/{id}")
+    @PostMapping("/cart/down/{slug}")
     @RequireAuthenticatedUser
-    public String downProductQuantity(@PathVariable UUID id,
+    public String downProductQuantity(@PathVariable String slug,
                                       @AuthenticationPrincipal AuthenticationMetadata authMeta) {
         User user = userService.getAuthenticatedUser(authMeta);
 
-        inventoryService.decrementProductQuantity(user, id);
-        return "redirect:/user/cart";
+        inventoryService.decrementProductQuantity(user, slug);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/cart/{slug}/delete")
+    @RequireAuthenticatedUser
+    public String removeProductFromCart(@PathVariable String slug,
+                                      @AuthenticationPrincipal AuthenticationMetadata authMeta) {
+        User user = userService.getAuthenticatedUser(authMeta);
+
+        inventoryService.removeProductFromCart(user, slug);
+        return "redirect:/cart";
     }
 
     @GetMapping("/checkout/success")
