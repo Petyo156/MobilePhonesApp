@@ -98,6 +98,29 @@ img {
     text-align: center;
 }
 
+.icon-with-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.icon-with-text span {
+    font-size: 1rem;
+    color: var(--light);
+    font-weight: 500;
+}
+
+.icon-with-text:hover {
+    color: var(--light-accent);
+}
+
+.icon-with-text:hover span {
+    color: var(--light-accent);
+}
+
 @media (max-width: 768px) {
     .navbar {
         padding: 0 1rem;
@@ -119,5 +142,9 @@ img {
     .links img {
         width: 4vh;
         height: 4vh;
+    }
+
+    .icon-with-text span {
+        display: none;
     }
 }

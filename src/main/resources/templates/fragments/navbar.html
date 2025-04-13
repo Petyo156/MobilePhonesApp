@@ -4,19 +4,33 @@
             <img class="logo" src="/images/logo.png" alt="logo.png">
         </a>
         <div class="links">
+            <div class="dropdown" th:if="|${null!=user}">
+                <div class="icon-with-text">
+                    <i class="fa-solid fa-xl fa-user-shield"></i>
+                    <span>Admin</span>
+                </div>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="@{/admin/phone}">Add phone</a></li>
+                </ul>
+            </div>
 
             <div class="dropdown" th:if="${null != user}">
+                <div class="icon-with-text">
                     <i class="fa-solid fa-xl fa-user"></i>
+                    <span>My Account</span>
+                </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
                     <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
                 </ul>
             </div>
-            <a th:if="${null == user}" th:href="@{/login}">
+            <a th:if="${null == user}" th:href="@{/login}" class="icon-with-text">
                 <i class="fa-solid fa-xl fa-user"></i>
+                <span>Login</span>
             </a>
-            <a th:href="@{/cart}">
+            <a th:href="@{/cart}" class="icon-with-text">
                 <i class="fa-solid fa-xl fa-cart-shopping"></i>
+                <span>Cart</span>
             </a>
         </div>
     </nav>
