@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
     <link rel="stylesheet" type="text/css" href="/css/filters.css">
     <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
@@ -46,8 +47,18 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+<h2 class="newest-heading">Най-нови предложения</h2>
+<div class="product-container">
+    <div class="product-card" th:each="phone : ${mostRecentPhones}">
+        <img th:src="${phone.images[0]}" alt="Phone Image">
+        <h3 th:text="${phone.brandAndModelResponse.brand}">Brand</h3>
+        <p th:text="${phone.brandAndModelResponse.model}">Model</p>
+        <span class="price" th:text="${phone.price + ' лв.'}">Price</span>
+        <button class="buy-btn">Купи</button>
+    </div>
+</div>
 </main>
-<footer></footer>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 </body>
 </html>
