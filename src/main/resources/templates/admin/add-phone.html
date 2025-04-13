@@ -10,6 +10,10 @@
 <body>
 <h1>Add Phone</h1>
 <form action="#" th:action="@{/admin/phone}" th:object="${submitPhoneRequest}" method="post" class="phone-add-form">
+
+    <h2 class="form-section-title">📌 Required Information</h2>
+
+    <div class="form-section">
     <!-- Brand and Model Section -->
     <div class="form-group">
         <label for="brand">Brand:</label>
@@ -47,30 +51,6 @@
         <label for="color">Color:</label>
         <input type="text" id="color" th:field="*{dimensions.color}" class="form-input" placeholder="Enter color"/>
         <p class="form-error" th:if="${#fields.hasErrors('dimensions.color')}" th:errors="*{dimensions.color}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="height">Height:</label>
-        <input type="number" id="height" th:field="*{dimensions.height}" class="form-input" placeholder="Enter height"/>
-        <p class="form-error" th:if="${#fields.hasErrors('dimensions.height')}" th:errors="*{dimensions.height}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="weight">Weight:</label>
-        <input type="number" id="weight" th:field="*{dimensions.weight}" class="form-input" placeholder="Enter weight"/>
-        <p class="form-error" th:if="${#fields.hasErrors('dimensions.weight')}" th:errors="*{dimensions.weight}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="thickness">Thickness:</label>
-        <input type="number" id="thickness" th:field="*{dimensions.thickness}" class="form-input" placeholder="Enter thickness"/>
-        <p class="form-error" th:if="${#fields.hasErrors('dimensions.thickness')}" th:errors="*{dimensions.thickness}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="width">Width:</label>
-        <input type="number" id="width" th:field="*{dimensions.width}" class="form-input" placeholder="Enter width"/>
-        <p class="form-error" th:if="${#fields.hasErrors('dimensions.width')}" th:errors="*{dimensions.width}"></p>
     </div>
 
     <div class="form-group">
@@ -124,18 +104,6 @@
     </div>
 
     <div class="form-group">
-        <label for="resolution">Resolution:</label>
-        <input type="number" id="resolution" th:field="*{hardware.resolution}" class="form-input" placeholder="Enter resolution"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.resolution')}" th:errors="*{hardware.resolution}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="refreshRate">Refresh Rate:</label>
-        <input type="number" id="refreshRate" th:field="*{hardware.refreshRate}" class="form-input" placeholder="Enter refresh rate"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.refreshRate')}" th:errors="*{hardware.refreshRate}"></p>
-    </div>
-
-    <div class="form-group">
         <label for="simType">SIM Type:</label>
         <select id="simType" th:field="*{hardware.simType}" class="form-input">
             <option value="" disabled>Select SIM Type</option>
@@ -147,29 +115,11 @@
         <p class="form-error" th:if="${#fields.hasErrors('hardware.simType')}" th:errors="*{hardware.simType}"></p>
     </div>
 
-    <div class="form-group">
-        <label for="coreCount">Core Count:</label>
-        <input type="number" id="coreCount" th:field="*{hardware.coreCount}" class="form-input" placeholder="Enter core count"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.coreCount')}" th:errors="*{hardware.coreCount}"></p>
-    </div>
-
     <!-- Camera Section -->
     <div class="form-group">
         <label for="cameraType">Camera count:</label>
         <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input" placeholder="Enter camera type"/>
         <p class="form-error" th:if="${#fields.hasErrors('camera.count')}" th:errors="*{camera.count}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="cameraVideoResolution">Camera Video Resolution:</label>
-        <input type="number" id="cameraVideoResolution" th:field="*{camera.videoResolution}" class="form-input" placeholder="Enter video resolution"/>
-        <p class="form-error" th:if="${#fields.hasErrors('camera.videoResolution')}" th:errors="*{camera.videoResolution}"></p>
-    </div>
-
-    <div class="form-group">
-        <label for="mainCameraResolution">Main Camera Resolution:</label>
-        <input type="number" id="mainCameraResolution" th:field="*{camera.resolution}" class="form-input" placeholder="Enter main camera resolution"/>
-        <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}" th:errors="*{camera.resolution}"></p>
     </div>
 
     <!-- Images Section -->
@@ -187,6 +137,59 @@
         <button type="button" onclick="addImageField()" class="form-add">Add Another Image</button>
         <p class="form-error" th:if="${#fields.hasErrors('imageUrls')}" th:errors="*{imageUrls}"></p>
     </div>
+    </div>
+
+    <h2 class="form-section-title">🧪 Optional Specifications</h2>
+    <div class="form-section optional">
+        <div class="form-group">
+            <label for="height">Height:</label>
+            <input type="number" id="height" step="0.5" th:field="*{dimensions.height}" class="form-input" placeholder="Enter height"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.height')}" th:errors="*{dimensions.height}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="weight">Weight:</label>
+            <input type="number" id="weight" step="0.5" th:field="*{dimensions.weight}" class="form-input" placeholder="Enter weight"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.weight')}" th:errors="*{dimensions.weight}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="thickness">Thickness:</label>
+            <input type="number" id="thickness" step="0.5" th:field="*{dimensions.thickness}" class="form-input" placeholder="Enter thickness"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.thickness')}" th:errors="*{dimensions.thickness}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="width">Width:</label>
+            <input type="number" id="width" step="0.5" th:field="*{dimensions.width}" class="form-input" placeholder="Enter width"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.width')}" th:errors="*{dimensions.width}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="cameraVideoResolution">Camera Video Resolution:</label>
+            <input type="number" id="cameraVideoResolution" step="0.5" th:field="*{camera.videoResolution}" class="form-input" placeholder="Enter video resolution"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.videoResolution')}" th:errors="*{camera.videoResolution}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="mainCameraResolution">Main Camera Resolution:</label>
+            <input type="number" id="mainCameraResolution" step="0.5" th:field="*{camera.resolution}" class="form-input" placeholder="Enter main camera resolution"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}" th:errors="*{camera.resolution}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="refreshRate">Screen Refresh Rate:</label>
+            <input type="number" id="refreshRate" step="0.5" th:field="*{hardware.refreshRate}" class="form-input" placeholder="Enter refresh rate"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.refreshRate')}" th:errors="*{hardware.refreshRate}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="coreCount">Hardware Core Count:</label>
+            <input type="number" id="coreCount" step="0.5" th:field="*{hardware.coreCount}" class="form-input" placeholder="Enter core count"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.coreCount')}" th:errors="*{hardware.coreCount}"></p>
+        </div>
+    </div>
+
 
     <div class="form-actions">
         <input type="submit" value="Submit" class="form-submit"/>

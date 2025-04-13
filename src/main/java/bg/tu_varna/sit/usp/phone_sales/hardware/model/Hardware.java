@@ -38,15 +38,12 @@ public class Hardware {
     private Double screenSize;
 
     @Column(nullable = false)
-    private Integer resolution;
-
-    @Column(nullable = false)
-    private Integer refreshRate;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SIMType simType;
 
-    @Column(nullable = false)
+    @Column
     private Integer coreCount;
+
+    @Column
+    private Integer refreshRate;
 }

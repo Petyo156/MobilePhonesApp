@@ -1,6 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,21 +12,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubmitPhoneDimensions {
+    @Size(min = 2, max = 30)
     @NotNull
     private String color;
 
-    @NotNull
     private Double height;
 
     @NotNull
     private Boolean waterResistance;
 
-    @NotNull
     private Double thickness;
 
-    @NotNull
     private Double weight;
 
-    @NotNull
     private Double width;
 }
