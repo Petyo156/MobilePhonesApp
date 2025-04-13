@@ -5,6 +5,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="/css/login.css">
     <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="login-page">
@@ -27,5 +28,7 @@
         <p class="register-link">Don't have account? <a th:href="@{register}">Sign up</a></p>
     </form>
 </div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
