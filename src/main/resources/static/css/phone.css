@@ -1,47 +1,398 @@
+:root {
+    --dark: #3b3b3b;
+    --light: #fff;
+    --dark-accent: #536edc;
+    --light-accent: #c1ccff;
+    --accent: #132d8f;
+    --error: #ff4d4d;
+}
+
 .phone-container {
-    margin-top: 80px;
-    padding: 20px;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#carouselExampleIndicators {
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-inner {
+    border-radius: 12px;
+}
+
+.carousel-item {
+    background: #ffffff;
+    padding: 2rem;
+    height: 500px;
+    overflow: hidden;
 }
 
 .phone-image {
-    max-height: 500px;
+    height: 100%;
     object-fit: contain;
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.carousel-item:hover .phone-image {
+    transform: scale(1.2);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%;
+    opacity: 0.8;
+    border: none;
+    background: none;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+}
+
+.carousel-control-prev:focus,
+.carousel-control-next:focus {
+    opacity: 1;
+    outline: none;
+}
+
+.carousel-indicators {
+    margin-bottom: 0.5rem;
+}
+
+.carousel-indicators button {
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    margin: 0 5px !important;
+    background-color: rgba(59, 59, 59, 0.5) !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.carousel-indicators button.active {
+    background-color: var(--dark) !important;
+    transform: scale(1.2) !important;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.text-muted {
+    font-size: 1.2rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
 }
 
 .phone-specifications {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 2rem 0;
 }
 
 .phone-specifications h3 {
+    font-size: 1.5rem;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.spec-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.spec-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 1.2rem;
+}
+
+.spec-content {
+    flex: 1;
+}
+
+.spec-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.spec-value {
+    font-size: 1.1rem;
     font-weight: 600;
+    color: #333;
 }
 
-.phone-specifications ul li {
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
+.price-container {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.phone-specifications ul li:last-child {
-    border-bottom: none;
+.price-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #dc3545;
 }
 
-.quantity-input {
-    width: 80px !important;
+.price-currency {
+    font-size: 1.5rem;
+    color: #dc3545;
+    margin-right: 0.5rem;
 }
 
 .add-to-cart-btn {
-    padding: 10px 20px;
-    font-weight: 500;
+    background: var(--light-accent);
+    color: var(--dark);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.add-to-cart-btn:hover {
+    background: var(--dark-accent);
+    color: var(--light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .add-to-cart-btn i {
-    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+.finance-calculator {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 1.5rem 0;
+}
+
+.finance-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.5rem;
+}
+
+.finance-logo {
+    flex: 0 0 auto;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.bank-logo {
+    height: 100%;
+    object-fit: contain;
+}
+
+.finance-options {
+    flex: 0 0 100px;
+}
+
+.finance-period {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.finance-period:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.monthly-payment {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.payment-details {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.payment-label {
+    font-size: 1rem;
+    color: #666;
+}
+
+.payment-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.payment-currency {
+    font-size: 1.2rem;
+    margin-right: 0.25rem;
+}
+
+.payment-period {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Modal styles */
+.modal-dialog.modal-xl {
+    max-width: 90%;
+    margin: 1.75rem auto;
+}
+
+.modal-content {
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 0;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 1rem 1.5rem;
+    background: transparent;
+}
+
+.modal-body {
+    background: transparent;
+    padding: 0;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--light);
+}
+
+.btn-close {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+#modalCarousel {
+    height: 85vh;
+}
+
+#modalCarousel .carousel-item {
+    height: 85vh;
+    background: transparent;
+}
+
+.modal-image {
+    max-height: 85vh;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    padding: 1rem;
+}
+
+#modalCarousel .carousel-control-prev,
+#modalCarousel .carousel-control-next {
+    width: 10%;
+    background: transparent;
+    opacity: 0.7;
+}
+
+#modalCarousel .carousel-control-prev:hover,
+#modalCarousel .carousel-control-next:hover {
+    opacity: 1;
+    background: transparent;
+}
+
+#modalCarousel .carousel-control-prev-icon,
+#modalCarousel .carousel-control-next-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    filter: invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(90%) contrast(90%);
+}
+
+#modalCarousel .carousel-control-prev:hover .carousel-control-prev-icon,
+#modalCarousel .carousel-control-next:hover .carousel-control-next-icon {
+    filter: invert(40%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(80%) contrast(95%);
+}
+
+#modalCarousel .carousel-indicators {
+    margin-bottom: 2rem;
+}
+
+#modalCarousel .carousel-indicators button {
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    margin: 0 6px !important;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+#modalCarousel .carousel-indicators button.active {
+    background-color: var(--light) !important;
+    transform: scale(1.2) !important;
+}
+
+#carouselExampleIndicators .carousel-control-prev-icon,
+#carouselExampleIndicators .carousel-control-next-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    filter: invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(90%) contrast(90%);
+}
+
+#carouselExampleIndicators .carousel-control-prev:hover .carousel-control-prev-icon,
+#carouselExampleIndicators .carousel-control-next:hover .carousel-control-next-icon {
+    filter: invert(40%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(80%) contrast(95%);
 }
