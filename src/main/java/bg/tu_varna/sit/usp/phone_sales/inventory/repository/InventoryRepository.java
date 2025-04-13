@@ -17,7 +17,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
 
     List<Inventory> getAllByUserAndInInventoryTrueOrderByDateTimeDesc(User user);
 
-    Optional<Inventory> getInventoryByUserAndInInventoryFalseAndId(User user, UUID id);
-
-    Optional<Inventory> getInventoryByUserAndPhone(User user, Phone phone);
+    Optional<Inventory> getInventoryByUserAndInInventoryFalseAndPhone_Slug(User user, String slug);
 }

@@ -6,7 +6,6 @@ import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
 import bg.tu_varna.sit.usp.phone_sales.inventory.model.OrderStatus;
 import bg.tu_varna.sit.usp.phone_sales.inventory.repository.InventoryRepository;
-import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -77,8 +75,8 @@ public class InventoryService {
         inventoryRepository.save(inventory);
     }
 
-    public void incrementProductQuantity(User user, UUID id) {
-        Inventory inventory = getInventoryByIdAndUser(user, id);
+    public void incrementProductQuantity(User user, String slug) {
+        Inventory inventory = getInCartInventoryByPhoneSlugAndUser(user, slug);
         if(inventory.getQuantity() >= 10){
             log.info("Item quantity in cart is maximum 10");
             return;
@@ -89,15 +87,34 @@ public class InventoryService {
         inventoryRepository.save(inventory);
     }
 
-    public void decrementProductQuantity(User user, UUID id) {
-        Inventory inventory = getInventoryByIdAndUser(user, id);
+    public void decrementProductQuantity(User user, String slug) {
+        Inventory inventory = getInCartInventoryByPhoneSlugAndUser(user, slug);
 
         log.info("Decrementing product quantity");
+        inventory.setQuantity(inventory.getQuantity() - 1);
         if(inventory.getQuantity() <= 0) {
+            removeProductFromCart(user, slug);
             return;
         }
-        inventory.setQuantity(inventory.getQuantity() - 1);
         inventoryRepository.save(inventory);
+    }
+
+    public String getTotalPriceForItemsInCart(List<Inventory> inCartItemsList) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Inventory inventory : inCartItemsList) {
+            BigDecimal pricePerUnit = inventory.getPhone().getPrice();
+            int quantityInCart = inventory.getQuantity();
+            BigDecimal itemTotal = pricePerUnit.multiply(BigDecimal.valueOf(quantityInCart));
+
+            totalPrice = totalPrice.add(itemTotal);
+        }
+        return decimalFormat.format(totalPrice);
+    }
+
+    public void removeProductFromCart(User user, String slug) {
+        Inventory inventory = getInCartInventoryByPhoneSlugAndUser(user, slug);
+        log.info("Removing product from cart");
+        inventoryRepository.delete(inventory);
     }
 
     private DeliveryOptionResponse getDeliveryOptionResponse(DeliveryOption deliveryOption) {
@@ -128,15 +145,6 @@ public class InventoryService {
         return initializeCartResponseFromPhoneResponses(phoneResponses, totalPrice);
     }
 
-    public String getTotalPriceForItemsInCart(List<Inventory> inCartItemsList) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (Inventory inventory : inCartItemsList) {
-            BigDecimal price = inventory.getPhone().getPrice();
-            totalPrice = totalPrice.add(price);
-        }
-        return decimalFormat.format(totalPrice);
-    }
-
     private List<GetPhoneResponse> getPhoneResponseByCartItemsList(List<Inventory> inCartItemsList) {
         List<GetPhoneResponse> responses = new ArrayList<>();
         for (Inventory inventory : inCartItemsList) {
@@ -156,19 +164,18 @@ public class InventoryService {
     }
 
     private Inventory initializeInCartInventory(String slug, User user) {
-        Phone phone = phoneService.getPhoneBySlug(slug);
-        Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndPhone(user, phone);
+        Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndInInventoryFalseAndPhone_Slug(user, slug);
         if(inventoryOptional.isPresent()){
             log.info("Product exists in cart");
             Inventory inventory = inventoryOptional.get();
 
-            incrementProductQuantity(user, inventory.getId());
+            incrementProductQuantity(user, inventory.getPhone().getSlug());
             return inventoryRepository.save(inventory);
         }
         log.info("New inventory added");
         return Inventory.builder()
                 .user(user)
-                .phone(phone)
+                .phone(phoneService.getPhoneBySlug(slug))
                 .inInventory(false)
                 .quantity(1)
                 .status(OrderStatus.PENDING)
@@ -176,8 +183,8 @@ public class InventoryService {
                 .build();
     }
 
-    private Inventory getInventoryByIdAndUser(User user, UUID id) {
-        Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndInInventoryFalseAndId(user, id);
+    private Inventory getInCartInventoryByPhoneSlugAndUser(User user, String slug) {
+        Optional<Inventory> inventoryOptional = inventoryRepository.getInventoryByUserAndInInventoryFalseAndPhone_Slug(user, slug);
         if(inventoryOptional.isEmpty()) {
             throw new DomainException(ExceptionMessages.INVENTORY_DOES_NOT_EXIST);
         }
