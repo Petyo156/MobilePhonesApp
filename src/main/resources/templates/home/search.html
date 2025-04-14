@@ -19,28 +19,33 @@
     <div class="container mt-5">
         <h2 class="mb-4">Search Results for: <span th:text="${param.result}" class="text-primary"></span></h2>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col" th:each="phone : ${searchResult}">
-                <a th:href="@{'/phone/' + ${phone.slug}}" class="text-decoration-none">
-                    <div class="card h-100">
-                        <img th:src="@{ ${phone.images[0]}}" class="card-img-top" alt="Phone Image">
-                        <div class="card-body">
-                            <h5 class="card-title"
-                                th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">
-                                Phone Name</h5>
-                            <p class="card-text">
-                                <strong>Storage:</strong> <span th:text="${phone.hardwareResponse.storage}">0</span> GB<br>
-                                <strong>RAM:</strong> <span th:text="${phone.hardwareResponse.ram}">0</span> GB<br>
-                                <strong>OS:</strong> <span
-                                    th:text="${phone.operatingSystemResponse.operatingSystemType + ' ' + phone.operatingSystemResponse.version}">OS</span>
-                            </p>
-                            <hr class="my-2">
-                            <p class="card-text text-danger fw-bold mb-0">
-                                $<span th:text="${phone.price}">0.00</span>
-                            </p>
+        <div class="product-container-container">
+            <div class="product-container">
+                <div class="product-card" th:each="phone : ${searchResult}">
+                    <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
+                        <img th:src="${phone.images[0]}" alt="Phone Image">
+                        <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB'}">
+                            Brand</h3>
+                        <div class="rating">
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-count">(4.5)</span>
                         </div>
-                    </div>
-                </a>
+                        <p>
+                            <strong>RAM:</strong> <span th:text="${phone.hardwareResponse.ram}">0</span> GB<br>
+                            <strong>OS:</strong> <span
+                                th:text="${phone.operatingSystemResponse.operatingSystemType + ' ' + phone.operatingSystemResponse.version}">OS</span>
+                        </p>
+                        <span class="discount-price">999.99 лв.</span>
+                        <span class="price" th:text="${phone.price + ' лв.'}">Price</span>
+                    </a>
+                    <a th:href="@{'/phone/' + ${phone.slug}}" class="buy-btn">Купи</a>
+                </div>
             </div>
         </div>
 

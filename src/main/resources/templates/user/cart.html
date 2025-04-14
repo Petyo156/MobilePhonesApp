@@ -36,6 +36,8 @@
                             <div class="item-price">
                                 $<span th:text="${phone.price}" class="price-value">0.00</span>
                             </div>
+                        </div>
+                        <div class="item-actions">
                             <div class="quantity-controls">
                                 <form th:action="@{'/cart/down/' + ${phone.slug}}" method="post"
                                       style="display: inline;">
@@ -46,8 +48,6 @@
                                     <button type="submit" class="btn btn-outline-secondary quantity-btn">+</button>
                                 </form>
                             </div>
-                        </div>
-                        <div class="item-actions">
                             <form th:action="@{'/cart/' + ${phone.slug} + '/delete'}" method="post"
                                   style="display: inline;">
                                 <button class="btn btn-link text-danger remove-item">
