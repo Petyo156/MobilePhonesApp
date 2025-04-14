@@ -97,10 +97,18 @@ h1 {
     margin-bottom: 8px;
 }
 
+.item-actions {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .quantity-controls {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin: 0;
 }
 
 .quantity-btn {
@@ -108,15 +116,25 @@ h1 {
     font-size: 14px;
     border: 1px solid #ddd;
     background: white;
+    cursor: pointer;
 }
 
 .quantity-display {
     min-width: 30px;
     text-align: center;
+    font-size: 14px;
 }
 
-.item-actions {
-    margin-left: 20px;
+.remove-item {
+    padding: 4px 8px;
+    color: #dc3545;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.remove-item:hover {
+    color: #c82333;
 }
 
 /* Order Summary Section */

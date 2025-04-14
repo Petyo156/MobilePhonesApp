@@ -3,7 +3,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f7fa;
     margin: 0;
-    padding: 30px;
+    padding: 80px 30px 30px 30px;
     color: #333;
 }
 
@@ -155,4 +155,46 @@ input[type="checkbox"] {
     width: 16px;
     height: 16px;
     margin-right: 8px;
+}
+
+.form-back {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+}
+
+.form-back:hover {
+    background-color: #5a6268;
+}
+
+.form-add-phone {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+}
+
+.form-add-phone:hover {
+    background-color: #27ae60;
 }

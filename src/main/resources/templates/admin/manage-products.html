@@ -4,54 +4,58 @@
     <meta charset="UTF-8">
     <title>Manage Products</title>
     <link rel="stylesheet" href="/css/manage-products.css">
+    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
 </head>
 <body>
-<div class="container">
-    <h1>Manage Products</h1>
+    <a href="/" class="form-back">← Back to Main Page</a>
+    <a href="/admin/phone" class="form-add-phone">+ Add New Phone</a>
 
-    <div class="section">
-        <h2>Visible Phones</h2>
-        <div class="phone-grid">
-            <th:block th:each="phone : ${allVisiblePhones}">
-                <div class="phone-card">
+    <div class="container">
+        <h1>Manage Products</h1>
+
+        <div class="section">
+            <h2>Visible Phones</h2>
+            <div class="phone-grid">
+                <th:block th:each="phone : ${allVisiblePhones}">
+                    <div class="phone-card">
+                        <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
+                            <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0] : '/img/placeholder.jpg'}"
+                                 alt="Phone Image">
+                            <div class="info">
+                                <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
+                                <p th:text="'Price: ' + ${phone.price != null ? phone.price : 'N/A'} + ' BGN'"></p>
+                                <p th:text="'Stock: ' + ${phone.quantity != null ? phone.quantity : 0}"></p>
+                                <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
+                                    <button class="toggle-btn hide" type="submit">Hide</button>
+                                </form>
+                            </div>
+                        </a>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Hidden Phones</h2>
+            <div class="phone-grid">
+                <th:block th:each="phone : ${allHiddenPhones}">
                     <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-                        <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0] : '/img/placeholder.jpg'}"
-                             alt="Phone Image">
-                        <div class="info">
-                            <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
-                            <p th:text="'Price: ' + ${phone.price != null ? phone.price : 'N/A'} + ' BGN'"></p>
-                            <p th:text="'Stock: ' + ${phone.quantity != null ? phone.quantity : 0}"></p>
-                            <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
-                                <button class="toggle-btn hide" type="submit">Hide</button>
-                            </form>
+                        <div class="phone-card">
+                            <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0] : '/img/placeholder.jpg'}"
+                                 alt="Phone Image">
+                            <div class="info">
+                                <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
+                                <p th:text="'Price: ' + ${phone.price} + ' BGN'"></p>
+                                <p th:text="'Stock: ' + ${phone.quantity}"></p>
+                                <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
+                                    <button class="toggle-btn show" type="submit">Show</button>
+                                </form>
+                            </div>
                         </div>
                     </a>
-                </div>
-            </th:block>
+                </th:block>
+            </div>
         </div>
     </div>
-
-    <div class="section">
-        <h2>Hidden Phones</h2>
-        <div class="phone-grid">
-            <th:block th:each="phone : ${allHiddenPhones}">
-                <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-                    <div class="phone-card">
-                        <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0] : '/img/placeholder.jpg'}"
-                             alt="Phone Image">
-                        <div class="info">
-                            <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
-                            <p th:text="'Price: ' + ${phone.price} + ' BGN'"></p>
-                            <p th:text="'Stock: ' + ${phone.quantity}"></p>
-                            <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
-                                <button class="toggle-btn show" type="submit">Show</button>
-                            </form>
-                        </div>
-                    </div>
-                </a>
-            </th:block>
-        </div>
-    </div>
-</div>
 </body>
 </html>
