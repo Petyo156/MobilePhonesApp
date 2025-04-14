@@ -5,38 +5,38 @@ body {
     flex-direction: row;
 }
 
-body div {
-    display: flex;
-    flex-direction: column;
-    height: 90vh;
-}
+/*body div {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    height: 90vh;*/
+/*}*/
 
-.account-section {
-    width: 40%;
-}
+/*.account-section {*/
+/*    width: 40%;*/
+/*}*/
 
-.change_pass-section {
-    display: flex;
-    gap: 5px;
-}
+/*.change_pass-section {*/
+/*    display: flex;*/
+/*    gap: 5px;*/
+/*}*/
 
-input {
-    width: 80%;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    transition: 0.3s ease;
-}
+/*input {*/
+/*    width: 80%;*/
+/*    padding: 0.75rem;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 0.5rem;*/
+/*    font-size: 1rem;*/
+/*    transition: 0.3s ease;*/
+/*}*/
 
-input:hover {
-    transform: scaleX(1.1);
-}
+/*input:hover {*/
+/*    transform: scaleX(1.1);*/
+/*}*/
 
-input:focus {
-    border-color: var(--accent);
-    outline: none;
-}
+/*input:focus {*/
+/*    border-color: var(--accent);*/
+/*    outline: none;*/
+/*}*/
 
 button {
     width: 80%;
