@@ -28,10 +28,6 @@ public class SubmitHardware {
 
     @NotNull
     @Min(0)
-    private Integer resolution;
-
-    @NotNull
-    @Min(0)
     private Double screenSize;
 
     @NotNull

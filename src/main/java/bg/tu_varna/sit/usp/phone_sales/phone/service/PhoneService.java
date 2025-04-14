@@ -120,6 +120,11 @@ public class PhoneService {
         return initializeGetPhoneListResponse(phones);
     }
 
+    public GetPhoneResponse getPhoneResponseForVisiblePhoneBySlug(String slug) {
+        log.info("Initializing phone response by slug");
+        return initializeGetPhoneResponse(getVisiblePhoneBySlug(slug));
+    }
+
     public GetPhoneResponse getPhoneResponseBySlug(String slug) {
         log.info("Initializing phone response by slug");
         return initializeGetPhoneResponse(getPhoneBySlug(slug));
@@ -132,6 +137,14 @@ public class PhoneService {
 
     public Phone getPhoneBySlug(String slug) {
         Optional<Phone> phone = phoneRepository.getPhoneBySlug(slug);
+        if (phone.isEmpty()) {
+            throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
+        }
+        return phone.get();
+    }
+
+    public Phone getVisiblePhoneBySlug(String slug) {
+        Optional<Phone> phone = phoneRepository.getPhoneBySlugAndIsVisibleTrue(slug);
         if (phone.isEmpty()) {
             throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }

@@ -25,4 +25,6 @@ public interface PhoneRepository extends JpaRepository<Phone, UUID> {
     List<Phone> findAllByIsVisibleFalse();
 
     Optional<Phone> getPhoneBySlug(String slug);
+
+    Optional<Phone> getPhoneBySlugAndIsVisibleTrue(String slug);
 }

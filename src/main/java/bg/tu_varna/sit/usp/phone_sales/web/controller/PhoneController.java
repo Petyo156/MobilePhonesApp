@@ -32,7 +32,7 @@ public class PhoneController {
     public ModelAndView getPhonePage(@PathVariable String slug, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("home/phone");
 
-        GetPhoneResponse phoneResponse = phoneService.getPhoneResponseBySlug(slug);
+        GetPhoneResponse phoneResponse = phoneService.getPhoneResponseForVisiblePhoneBySlug(slug);
         User user = userService.getAuthenticatedUser(authenticationMetadata);
 
         modelAndView.addObject("phoneResponse", phoneResponse);
