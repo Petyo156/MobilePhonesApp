@@ -1,104 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    margin: 5rem 2.5rem 0 2.5rem;
-    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6fb;
+    padding-top: var(--navbar-height);
+    color: var(--dark);
+}
+
+.account-section {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.left-column {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-/*body div {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    height: 90vh;*/
-/*}*/
+.right-column {
+    background-color: var(--light);
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    overflow-x: auto;
+}
 
-/*.account-section {*/
-/*    width: 40%;*/
-/*}*/
+.profile-section,
+.change_pass-section {
+    background-color: var(--light);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
 
-/*.change_pass-section {*/
-/*    display: flex;*/
-/*    gap: 5px;*/
-/*}*/
+.profile-section h2,
+.change_pass-section h2,
+.right-column h1 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
 
-/*input {*/
-/*    width: 80%;*/
-/*    padding: 0.75rem;*/
-/*    border: 1px solid #ccc;*/
-/*    border-radius: 0.5rem;*/
-/*    font-size: 1rem;*/
-/*    transition: 0.3s ease;*/
-/*}*/
+.account-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 
-/*input:hover {*/
-/*    transform: scaleX(1.1);*/
-/*}*/
+form {
+    display: flex;
+    flex-direction: column;
+}
 
-/*input:focus {*/
-/*    border-color: var(--accent);*/
-/*    outline: none;*/
-/*}*/
-
-button {
-    width: 80%;
+input[type="password"] {
+    width: 100%;
     padding: 0.75rem;
-    background: var(--accent);
-    color: var(--light);
-    font-size: 1rem;
-    border: none;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--dark-accent);
     border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+input[type="password"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--light-accent);
+}
+
+#submitButton {
+    background-color: var(--accent);
+    color: var(--light);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease-in-out;
     cursor: pointer;
-    transition: background 0.3s ease;
+    margin-top: 0.5rem;
 }
 
-button:hover {
-    background: var(--dark);
+#submitButton:hover {
+    background-color: var(--dark-accent);
 }
 
-.order-section {
-    width: 60%;
+.alert-success {
+    background-color: var(--light-accent);
+    color: var(--dark);
+    border: 1px solid var(--accent);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
 }
 
-table{
-    text-align: center;
+.error {
+    color: var(--error);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.table {
+    width: 100%;
     border-collapse: collapse;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: var(--light);
 }
 
-th, td{
-    border:0.2rem solid var(--dark);
-    height: 5rem;
+.table thead {
+    background-color: var(--accent);
+    color: var(--light);
 }
 
-thead, tfoot{
-    background: var(--accent);
-    color:var(--light);
-    height: 5rem;
+.table th,
+.table td {
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #ddd;
 }
 
-tbody{
-    background: var(--dark-accent);
-    max-height: 75vh;
+.table tbody tr:hover {
+    background-color: var(--light-accent);
 }
 
-tbody tr:nth-of-type(even){
-    background: var(--light-accent);
-}
-.order-section table th{
-    font-size: x-large;
-    min-width: 5rem;
-}
-
-.order-section table td{
-    font-size: large;
+.pagination {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-tfoot a{
-    background: var(--light);
-    border-radius: 10px;
-    padding:10px;
-    text-decoration: none;
+.pagination .page-link {
+    color: var(--accent);
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: var(--light);
+    box-shadow: 0 0 0 1px var(--light-accent);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.active{
-    background: var(--light-accent);
+.pagination .page-link:hover {
+    background-color: var(--light-accent);
 }
 
+.pagination .active .page-link {
+    background-color: var(--accent);
+    color: var(--light);
+    font-weight: bold;
+}
+
+@media (max-width: 992px) {
+    .account-section {
+        grid-template-columns: 1fr;
+    }
+
+    .right-column {
+        margin-top: 2rem;
+    }
+}

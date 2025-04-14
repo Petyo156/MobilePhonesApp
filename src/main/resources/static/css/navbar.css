@@ -115,7 +115,7 @@ img {
     font-size: clamp(0.875rem, 1vw, 1rem);
 }
 
-.search-button {
+.search-button{
     background: none;
     height: min(3.5vh, 35px);
     width: min(3.5vh, 35px);
@@ -133,6 +133,8 @@ img {
 
 .search-button i {
     color: var(--accent);
+    padding:0.5rem;
+    border-radius: 50%;
     font-size: clamp(1rem, 1.2vw, 1.2rem);
     transition: 0.3s ease-in-out;
 }
@@ -142,7 +144,8 @@ img {
 }
 
 .search-button i:hover {
-    color: var(--dark-accent);
+    background: var(--dark-accent);
+    color: var(--light);
     transform: scale(1.1);
 }
 
