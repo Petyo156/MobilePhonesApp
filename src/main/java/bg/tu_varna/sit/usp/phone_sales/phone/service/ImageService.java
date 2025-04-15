@@ -6,6 +6,7 @@ import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.ImageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ import java.util.UUID;
 @Slf4j
 public class ImageService {
     private final ImageRepository imageRepository;
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Autowired
     public ImageService(ImageRepository imageRepository) {
@@ -37,19 +41,19 @@ public class ImageService {
     }
 
     private void saveImage(MultipartFile imageFile, Boolean isThumbnail, Phone phone) {
-        String folder = "C:\\Codes\\Spring\\PhoneSales\\phone_sales\\src\\main\\resources\\static\\images\\phoneimages";
         try {
-            Files.createDirectories(Paths.get(folder));
+            Path uploadDir = Paths.get(uploadPath);
+            Files.createDirectories(uploadDir);
 
             String uniqueName = UUID.randomUUID() + "-" + imageFile.getOriginalFilename();
-            Path path = Paths.get(folder, uniqueName);
+            Path path = uploadDir.resolve(uniqueName);
             Files.write(path, imageFile.getBytes());
 
-            String relativePath ="static/images/phoneimages/" + uniqueName;
+            String relativePath = "/static/images/phoneimages/" + uniqueName;
 
             Image image = initializeImage(isThumbnail, phone, relativePath);
-
             imageRepository.save(image);
+            
             log.info("Saved image to {}", relativePath);
         } catch (IOException e) {
             throw new DomainException("Failed to save image: " + e.getMessage());
@@ -63,5 +67,4 @@ public class ImageService {
                 .imageUrl(relativePath)
                 .build();
     }
-
 }
