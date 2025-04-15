@@ -1,10 +1,13 @@
 package bg.tu_varna.sit.usp.phone_sales.user.model;
 
-import bg.tu_varna.sit.usp.phone_sales.inventory.model.Inventory;
+import bg.tu_varna.sit.usp.phone_sales.cart.model.Cart;
+import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
+import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,9 +35,6 @@ public class User {
     private String lastName;
 
     @Column
-    private String city;
-
-    @Column
     private String address;
 
     @Column(unique = true)
@@ -44,9 +44,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @OneToMany(mappedBy = "user")
-    private List<Inventory> inventories;
-
     @Column(nullable = false)
-    private LocalDateTime createdOn;
+    private LocalDateTime createdAt;
+
+    //nobodobaveni
+
+    @OneToOne(mappedBy = "user", optional = false)
+    private Cart cart;
+
+    @ManyToOne
+    private City city;
+
+    @OneToMany(mappedBy = "user")
+    private List<Sale> sales = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews = new ArrayList<>();
 }

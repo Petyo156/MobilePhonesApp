@@ -21,8 +21,7 @@ public class Hardware {
     @OneToOne(mappedBy = "hardware")
     private Phone phone;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "camera_id", referencedColumnName = "id")
+    @OneToOne
     private Camera camera;
 
     @Column(nullable = false)
@@ -46,4 +45,7 @@ public class Hardware {
 
     @Column
     private Integer refreshRate;
+
+    @Column
+    private String screenResolution;
 }
