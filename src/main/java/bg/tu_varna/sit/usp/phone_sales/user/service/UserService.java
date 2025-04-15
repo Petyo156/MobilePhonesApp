@@ -85,7 +85,7 @@ public class UserService implements UserDetailsService {
         return User.builder()
                 .email("admin")
                 .password(passwordEncoder.encode("admin"))
-                .createdOn(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .role(UserRole.ADMIN)
                 .build();
     }
@@ -108,7 +108,7 @@ public class UserService implements UserDetailsService {
         return User.builder()
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .createdOn(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .role(UserRole.USER)
                 .build();
     }
@@ -119,7 +119,7 @@ public class UserService implements UserDetailsService {
             return;
         }
         user.setAddress(address);
-        user.setCity(city);
+//        user.setCity(city);
         log.info("Updating user address and city preference");
         userRepository.save(user);
     }

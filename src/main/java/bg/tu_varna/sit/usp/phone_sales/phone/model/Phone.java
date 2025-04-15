@@ -1,5 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.model;
 
+import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
+import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import jakarta.persistence.*;
 import lombok.*;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
@@ -29,19 +31,21 @@ public class Phone {
     private BigDecimal price;
 
     @Column(nullable = false)
+    private BigDecimal discountPercent;
+
+    @Column(nullable = false)
     private Integer quantity;
 
     @Column(nullable = false)
     private Integer releaseYear;
 
-    @ManyToOne
-    @JoinColumn(name = "model_id", nullable = false)
+    @ManyToOne(optional = false)
     private PhoneModel phoneModel;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Hardware hardware;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private OperatingSystem operatingSystem;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -51,11 +55,22 @@ public class Phone {
     private List<Image> images = new ArrayList<>();
 
     @Column(nullable = false)
-    private LocalDateTime addedDate;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private Boolean isVisible;
 
     @Column(nullable = false, unique = true)
     private String slug;
+
+//   novodobaveni
+
+    @OneToMany(mappedBy = "phone")
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "phone")
+    private List<SaleItem> saleItems = new ArrayList<>();
+
+    @Column
+    private String modelUrl;
 }

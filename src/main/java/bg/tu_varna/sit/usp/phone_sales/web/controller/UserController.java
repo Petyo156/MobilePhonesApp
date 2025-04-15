@@ -1,12 +1,10 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
-import bg.tu_varna.sit.usp.phone_sales.inventory.service.InventoryService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ChangePasswordRequest;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.OrderResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,45 +22,45 @@ import java.util.List;
 @Controller
 @RequestMapping("/profile")
 public class UserController {
-    private final UserService userService;
-    private final InventoryService inventoryService;
-
-    @Autowired
-    public UserController(UserService userService, InventoryService inventoryService) {
-        this.userService = userService;
-        this.inventoryService = inventoryService;
-    }
-
-    @GetMapping()
-    @RequireAuthenticatedUser
-    public ModelAndView getProfilePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("home/profile");
-
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
-        List<OrderResponse> orders = inventoryService.getAllOrdersForUser(user);
-
-        modelAndView.addObject("changePasswordRequest", new ChangePasswordRequest());
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("orders", orders);
-
-        return modelAndView;
-    }
-
-    @PostMapping("/password")
-    @RequireAuthenticatedUser
-    public String changePassword(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                 @Valid @ModelAttribute ChangePasswordRequest changePasswordRequest,
-                                 BindingResult bindingResult,
-                                 RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            return "home/profile";
-        }
-
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
-        userService.changePassword(changePasswordRequest, user);
-
-        redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully");
-        return "redirect:/profile";
-    }
+//    private final UserService userService;
+//    private final InventoryService inventoryService;
+//
+//    @Autowired
+//    public UserController(UserService userService, InventoryService inventoryService) {
+//        this.userService = userService;
+//        this.inventoryService = inventoryService;
+//    }
+//
+//    @GetMapping()
+//    @RequireAuthenticatedUser
+//    public ModelAndView getProfilePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+//        ModelAndView modelAndView = new ModelAndView("home/profile");
+//
+//        User user = userService.getAuthenticatedUser(authenticationMetadata);
+//        List<OrderResponse> orders = inventoryService.getAllOrdersForUser(user);
+//
+//        modelAndView.addObject("changePasswordRequest", new ChangePasswordRequest());
+//        modelAndView.addObject("user", user);
+//        modelAndView.addObject("orders", orders);
+//
+//        return modelAndView;
+//    }
+//
+//    @PostMapping("/password")
+//    @RequireAuthenticatedUser
+//    public String changePassword(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+//                                 @Valid @ModelAttribute ChangePasswordRequest changePasswordRequest,
+//                                 BindingResult bindingResult,
+//                                 RedirectAttributes redirectAttributes) {
+//        if (bindingResult.hasErrors()) {
+//            return "home/profile";
+//        }
+//
+//        User user = userService.getAuthenticatedUser(authenticationMetadata);
+//        userService.changePassword(changePasswordRequest, user);
+//
+//        redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully");
+//        return "redirect:/profile";
+//    }
 
 }

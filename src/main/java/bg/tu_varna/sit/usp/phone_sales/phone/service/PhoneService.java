@@ -101,7 +101,7 @@ public class PhoneService {
     }
 
     public List<GetPhoneResponse> getMostRecentPhones() {
-        List<Phone> phones = phoneRepository.findTop5ByIsVisibleTrueOrderByAddedDateDesc();
+        List<Phone> phones = phoneRepository.findTop5ByIsVisibleTrueOrderByCreatedAtDesc();
 
         return initializeGetPhoneListResponse(phones);
     }
@@ -268,7 +268,7 @@ public class PhoneService {
                 .price(BigDecimal.valueOf(submitPhoneRequest.getPrice()))
                 .quantity(submitPhoneRequest.getQuantity())
                 .releaseYear(submitPhoneRequest.getReleaseYear())
-                .addedDate(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .isVisible(true)
                 .build();
 
