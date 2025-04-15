@@ -38,6 +38,9 @@ public class SubmitHardware {
     private Integer storage;
 
     @Nullable
+    private String screenResolution;
+
+    @Nullable
     @Min(0)
     private Integer coreCount;
 }
