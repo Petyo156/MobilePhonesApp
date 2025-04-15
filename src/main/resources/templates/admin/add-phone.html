@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add Phone</title>
     <link rel="stylesheet" th:href="@{/css/admin-form.css}">
@@ -10,184 +11,235 @@
 <body>
 <a href="/" class="form-back">← Back to Main Page</a>
 <h1>Add Phone</h1>
-<form action="#" th:action="@{/admin/phone}" th:object="${submitPhoneRequest}" method="post" class="phone-add-form">
+<form action="#" th:action="@{/admin/phone}" th:object="${submitPhoneRequest}" method="post" class="phone-add-form" enctype="multipart/form-data">
 
     <h2 class="form-section-title">📌 Required Information</h2>
 
     <div class="form-section">
-    <!-- Brand and Model Section -->
-    <div class="form-group">
-        <label for="brand">Brand:</label>
-        <input type="text" id="brand" th:field="*{brandAndModel.brand}" class="form-input" placeholder="Enter brand"/>
-        <p class="form-error" th:if="${#fields.hasErrors('brandAndModel.brand')}" th:errors="*{brandAndModel.brand}"></p>
-    </div>
+        <!-- Brand and Model Section -->
+        <div class="form-group">
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" th:field="*{brandAndModel.brand}" class="form-input"
+                   placeholder="Enter brand"/>
+            <p class="form-error" th:if="${#fields.hasErrors('brandAndModel.brand')}"
+               th:errors="*{brandAndModel.brand}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="model">Model:</label>
-        <input type="text" id="model" th:field="*{brandAndModel.model}" class="form-input" placeholder="Enter model"/>
-        <p class="form-error" th:if="${#fields.hasErrors('brandAndModel.model')}" th:errors="*{brandAndModel.model}"></p>
-    </div>
+        <div class="form-group">
+            <label for="model">Model:</label>
+            <input type="text" id="model" th:field="*{brandAndModel.model}" class="form-input"
+                   placeholder="Enter model"/>
+            <p class="form-error" th:if="${#fields.hasErrors('brandAndModel.model')}"
+               th:errors="*{brandAndModel.model}"></p>
+        </div>
 
-    <!-- Basic Info Section -->
-    <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" th:field="*{price}" class="form-input" placeholder="Enter price"/>
-        <p class="form-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
-    </div>
+        <!-- Basic Info Section -->
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" th:field="*{price}" class="form-input" placeholder="Enter price"/>
+            <p class="form-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" th:field="*{quantity}" class="form-input" placeholder="Enter quantity"/>
-        <p class="form-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></p>
-    </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" th:field="*{quantity}" class="form-input" placeholder="Enter quantity"/>
+            <p class="form-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="releaseYear">Year of Release:</label>
-        <input type="number" id="releaseYear" th:field="*{releaseYear}" class="form-input" placeholder="Enter year"/>
-        <p class="form-error" th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></p>
-    </div>
+        <div class="form-group">
+            <label for="releaseYear">Year of Release:</label>
+            <input type="number" id="releaseYear" th:field="*{releaseYear}" class="form-input"
+                   placeholder="Enter year"/>
+            <p class="form-error" th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></p>
+        </div>
 
-    <!-- Dimensions Section -->
-    <div class="form-group">
-        <label for="color">Color:</label>
-        <input type="text" id="color" th:field="*{dimensions.color}" class="form-input" placeholder="Enter color"/>
-        <p class="form-error" th:if="${#fields.hasErrors('dimensions.color')}" th:errors="*{dimensions.color}"></p>
-    </div>
+        <!-- Dimensions Section -->
+        <div class="form-group">
+            <label for="color">Color:</label>
+            <input type="text" id="color" th:field="*{dimensions.color}" class="form-input" placeholder="Enter color"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.color')}" th:errors="*{dimensions.color}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="waterResistance">Water Resistance:</label>
-        <input type="checkbox" id="waterResistance" th:field="*{dimensions.waterResistance}" />
-        <p class="form-error" th:if="${#fields.hasErrors('dimensions.waterResistance')}" th:errors="*{dimensions.waterResistance}"></p>
-    </div>
+        <div class="form-group">
+            <label for="waterResistance">Water Resistance:</label>
+            <input type="checkbox" id="waterResistance" th:field="*{dimensions.waterResistance}"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.waterResistance')}"
+               th:errors="*{dimensions.waterResistance}"></p>
+        </div>
 
-    <!-- Operating System Section -->
-    <div class="form-group">
-        <label for="osType">OS Type:</label>
-        <select id="osType" th:field="*{operatingSystem.operatingSystemType}" class="form-input">
-            <option value="" disabled>Select OS Type</option>
-            <option th:each="osType : ${T(bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystemType).values()}"
-                    th:value="${osType.name()}"
-            th:text="${#strings.capitalize(osType.name().toLowerCase())}">
-            </option>
-        </select>
-        <p class="form-error" th:if="${#fields.hasErrors('operatingSystem.operatingSystemType')}" th:errors="*{operatingSystem.operatingSystemType}"></p>
-    </div>
+        <!-- Operating System Section -->
+        <div class="form-group">
+            <label for="osType">OS Type:</label>
+            <select id="osType" th:field="*{operatingSystem.operatingSystemType}" class="form-input">
+                <option value="" disabled>Select OS Type</option>
+                <option th:each="osType : ${T(bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystemType).values()}"
+                        th:value="${osType.name()}"
+                        th:text="${#strings.capitalize(osType.name().toLowerCase())}">
+                </option>
+            </select>
+            <p class="form-error" th:if="${#fields.hasErrors('operatingSystem.operatingSystemType')}"
+               th:errors="*{operatingSystem.operatingSystemType}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="osVersion">OS Version:</label>
-        <input type="number" id="osVersion" th:field="*{operatingSystem.version}" class="form-input" placeholder="Enter OS version"/>
-        <p class="form-error" th:if="${#fields.hasErrors('operatingSystem.version')}" th:errors="*{operatingSystem.version}"></p>
-    </div>
+        <div class="form-group">
+            <label for="osVersion">OS Version:</label>
+            <input type="number" id="osVersion" th:field="*{operatingSystem.version}" class="form-input"
+                   placeholder="Enter OS version"/>
+            <p class="form-error" th:if="${#fields.hasErrors('operatingSystem.version')}"
+               th:errors="*{operatingSystem.version}"></p>
+        </div>
 
-    <!-- Hardware Section -->
-    <div class="form-group">
-        <label for="ram">RAM Size:</label>
-        <input type="number" id="ram" th:field="*{hardware.ram}" class="form-input" placeholder="Enter RAM size"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.ram')}" th:errors="*{hardware.ram}"></p>
-    </div>
+        <!-- Hardware Section -->
+        <div class="form-group">
+            <label for="ram">RAM Size:</label>
+            <input type="number" id="ram" th:field="*{hardware.ram}" class="form-input" placeholder="Enter RAM size"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.ram')}" th:errors="*{hardware.ram}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="storage">Storage Size:</label>
-        <input type="number" id="storage" th:field="*{hardware.storage}" class="form-input" placeholder="Enter storage size"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.storage')}" th:errors="*{hardware.storage}"></p>
-    </div>
+        <div class="form-group">
+            <label for="storage">Storage Size:</label>
+            <input type="number" id="storage" th:field="*{hardware.storage}" class="form-input"
+                   placeholder="Enter storage size"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.storage')}" th:errors="*{hardware.storage}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="batteryCapacity">Battery Capacity:</label>
-        <input type="number" id="batteryCapacity" th:field="*{hardware.batteryCapacity}" class="form-input" placeholder="Enter battery capacity"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.batteryCapacity')}" th:errors="*{hardware.batteryCapacity}"></p>
-    </div>
+        <div class="form-group">
+            <label for="batteryCapacity">Battery Capacity:</label>
+            <input type="number" id="batteryCapacity" th:field="*{hardware.batteryCapacity}" class="form-input"
+                   placeholder="Enter battery capacity"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.batteryCapacity')}"
+               th:errors="*{hardware.batteryCapacity}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="screenSize">Screen Size:</label>
-        <input type="number" id="screenSize" th:field="*{hardware.screenSize}" class="form-input" placeholder="Enter screen size"/>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.screenSize')}" th:errors="*{hardware.screenSize}"></p>
-    </div>
+        <div class="form-group">
+            <label for="screenSize">Screen Size:</label>
+            <input type="number" id="screenSize" th:field="*{hardware.screenSize}" class="form-input"
+                   placeholder="Enter screen size"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.screenSize')}"
+               th:errors="*{hardware.screenSize}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="simType">SIM Type:</label>
-        <select id="simType" th:field="*{hardware.simType}" class="form-input">
-            <option value="" disabled>Select SIM Type</option>
-            <option th:each="simType : ${T(bg.tu_varna.sit.usp.phone_sales.hardware.model.SIMType).values()}"
-                    th:value="${simType.name()}"
-                    th:text="${#strings.capitalize(simType.name().toLowerCase())}">
-            </option>
-        </select>
-        <p class="form-error" th:if="${#fields.hasErrors('hardware.simType')}" th:errors="*{hardware.simType}"></p>
-    </div>
+        <div class="form-group">
+            <label for="simType">SIM Type:</label>
+            <select id="simType" th:field="*{hardware.simType}" class="form-input">
+                <option value="" disabled>Select SIM Type</option>
+                <option th:each="simType : ${T(bg.tu_varna.sit.usp.phone_sales.hardware.model.SIMType).values()}"
+                        th:value="${simType.name()}"
+                        th:text="${#strings.capitalize(simType.name().toLowerCase())}">
+                </option>
+            </select>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.simType')}" th:errors="*{hardware.simType}"></p>
+        </div>
 
-    <!-- Camera Section -->
-    <div class="form-group">
-        <label for="cameraType">Camera count:</label>
-        <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input" placeholder="Enter camera type"/>
-        <p class="form-error" th:if="${#fields.hasErrors('camera.count')}" th:errors="*{camera.count}"></p>
-    </div>
+        <!-- Camera Section -->
+        <div class="form-group">
+            <label for="cameraType">Camera count:</label>
+            <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input"
+                   placeholder="Enter camera type"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.count')}" th:errors="*{camera.count}"></p>
+        </div>
 
-    <!-- Images Section -->
-    <div class="form-group">
-        <label>Image URLs:</label>
-        <div id="imageFields">
-            <div th:if="*{imageUrls != null and imageUrls.size() > 0}"
-                 th:each="imageUrl, iterStat : *{imageUrls}">
-                <div class="image-url-group">
-                    <input type="text" th:field="*{imageUrls[__${iterStat.index}__]}" class="form-input" placeholder="Enter image URL"/>
-                    <button type="button" class="form-remove" onclick="removeImageField(this)">Remove</button>
-                </div>
+        <div id="fileInputs">
+            <div class="form-group">
+                <input type="file" name="imageFile" class="form-input"/>
+                <label>
+                    <input type="radio" name="thumbnailIndex" value="0" checked/> Thumbnail
+                </label>
             </div>
         </div>
-        <button type="button" onclick="addImageField()" class="form-add">Add Another Image</button>
-        <p class="form-error" th:if="${#fields.hasErrors('imageUrls')}" th:errors="*{imageUrls}"></p>
-    </div>
+        <button type="button" onclick="addFileInput()" class="form-add">Add Another Image File</button>
+
+
+
+        <!-- Images Section -->
+        <div class="form-group">
+            <label>Image URLs:</label>
+            <div id="imageFields">
+                <div th:if="*{imageUrls != null and imageUrls.size() > 0}"
+                     th:each="imageUrl, iterStat : *{imageUrls}">
+                    <div class="image-url-group">
+                        <input type="text" th:field="*{imageUrls[__${iterStat.index}__]}" class="form-input"
+                               placeholder="Enter image URL"/>
+                        <button type="button" class="form-remove" onclick="removeImageField(this)">Remove</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="addImageField()" class="form-add">Add Another Image</button>
+            <p class="form-error" th:if="${#fields.hasErrors('imageUrls')}" th:errors="*{imageUrls}"></p>
+        </div>
     </div>
 
     <h2 class="form-section-title">🧪 Optional Specifications</h2>
     <div class="form-section optional">
         <div class="form-group">
             <label for="height">Height:</label>
-            <input type="number" id="height" step="0.5" th:field="*{dimensions.height}" class="form-input" placeholder="Enter height"/>
-            <p class="form-error" th:if="${#fields.hasErrors('dimensions.height')}" th:errors="*{dimensions.height}"></p>
+            <input type="number" id="height" step="0.5" th:field="*{dimensions.height}" class="form-input"
+                   placeholder="Enter height"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.height')}"
+               th:errors="*{dimensions.height}"></p>
         </div>
 
         <div class="form-group">
             <label for="weight">Weight:</label>
-            <input type="number" id="weight" step="0.5" th:field="*{dimensions.weight}" class="form-input" placeholder="Enter weight"/>
-            <p class="form-error" th:if="${#fields.hasErrors('dimensions.weight')}" th:errors="*{dimensions.weight}"></p>
+            <input type="number" id="weight" step="0.5" th:field="*{dimensions.weight}" class="form-input"
+                   placeholder="Enter weight"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.weight')}"
+               th:errors="*{dimensions.weight}"></p>
         </div>
 
         <div class="form-group">
             <label for="thickness">Thickness:</label>
-            <input type="number" id="thickness" step="0.5" th:field="*{dimensions.thickness}" class="form-input" placeholder="Enter thickness"/>
-            <p class="form-error" th:if="${#fields.hasErrors('dimensions.thickness')}" th:errors="*{dimensions.thickness}"></p>
+            <input type="number" id="thickness" step="0.5" th:field="*{dimensions.thickness}" class="form-input"
+                   placeholder="Enter thickness"/>
+            <p class="form-error" th:if="${#fields.hasErrors('dimensions.thickness')}"
+               th:errors="*{dimensions.thickness}"></p>
         </div>
 
         <div class="form-group">
             <label for="width">Width:</label>
-            <input type="number" id="width" step="0.5" th:field="*{dimensions.width}" class="form-input" placeholder="Enter width"/>
+            <input type="number" id="width" step="0.5" th:field="*{dimensions.width}" class="form-input"
+                   placeholder="Enter width"/>
             <p class="form-error" th:if="${#fields.hasErrors('dimensions.width')}" th:errors="*{dimensions.width}"></p>
         </div>
 
         <div class="form-group">
             <label for="cameraVideoResolution">Camera Video Resolution:</label>
-            <input type="number" id="cameraVideoResolution" step="0.5" th:field="*{camera.videoResolution}" class="form-input" placeholder="Enter video resolution"/>
-            <p class="form-error" th:if="${#fields.hasErrors('camera.videoResolution')}" th:errors="*{camera.videoResolution}"></p>
+            <input type="number" id="cameraVideoResolution" step="0.5" th:field="*{camera.videoResolution}"
+                   class="form-input" placeholder="Enter video resolution"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.videoResolution')}"
+               th:errors="*{camera.videoResolution}"></p>
         </div>
 
         <div class="form-group">
             <label for="mainCameraResolution">Main Camera Resolution:</label>
-            <input type="number" id="mainCameraResolution" step="0.5" th:field="*{camera.resolution}" class="form-input" placeholder="Enter main camera resolution"/>
-            <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}" th:errors="*{camera.resolution}"></p>
+            <input type="number" id="mainCameraResolution" step="0.5" th:field="*{camera.resolution}" class="form-input"
+                   placeholder="Enter main camera resolution"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}"
+               th:errors="*{camera.resolution}"></p>
         </div>
 
         <div class="form-group">
             <label for="refreshRate">Screen Refresh Rate:</label>
-            <input type="number" id="refreshRate" step="0.5" th:field="*{hardware.refreshRate}" class="form-input" placeholder="Enter refresh rate"/>
-            <p class="form-error" th:if="${#fields.hasErrors('hardware.refreshRate')}" th:errors="*{hardware.refreshRate}"></p>
+            <input type="number" id="refreshRate" step="0.5" th:field="*{hardware.refreshRate}" class="form-input"
+                   placeholder="Enter refresh rate"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.refreshRate')}"
+               th:errors="*{hardware.refreshRate}"></p>
         </div>
 
         <div class="form-group">
             <label for="coreCount">Hardware Core Count:</label>
-            <input type="number" id="coreCount" step="0.5" th:field="*{hardware.coreCount}" class="form-input" placeholder="Enter core count"/>
-            <p class="form-error" th:if="${#fields.hasErrors('hardware.coreCount')}" th:errors="*{hardware.coreCount}"></p>
+            <input type="number" id="coreCount" step="0.5" th:field="*{hardware.coreCount}" class="form-input"
+                   placeholder="Enter core count"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.coreCount')}"
+               th:errors="*{hardware.coreCount}"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="screenResolution">Hardware Core Count:</label>
+            <input type="text" id="screenResolution" step="0.5" th:field="*{hardware.screenResolution}"
+                   class="form-input" placeholder="Enter screen resolution"/>
+            <p class="form-error" th:if="${#fields.hasErrors('hardware.screenResolution')}"
+               th:errors="*{hardware.screenResolution}"></p>
         </div>
     </div>
 
@@ -231,6 +283,25 @@
             imageIndex++;
         });
     }
+
+    let imageFileIndex = 1;
+
+    function addFileInput() {
+        const index = document.querySelectorAll('#fileInputs .form-group').length;
+
+        const container = document.createElement('div');
+        container.className = 'form-group';
+        container.innerHTML = `
+        <input type="file" name="imageFile" class="form-input"/>
+        <label>
+            <input type="radio" name="thumbnailIndex" value="${index}"/> Thumbnail
+        </label>
+        <button type="button" class="form-remove" onclick="removeFileInput(this)">Remove</button>
+    `;
+        document.getElementById('fileInputs').appendChild(container);
+    }
+
+
 </script>
 </body>
 </html>
