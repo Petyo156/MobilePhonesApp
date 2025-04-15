@@ -12,7 +12,7 @@ import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.service.OperatingSystemService;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
-import bg.tu_varna.sit.usp.phone_sales.phone.repository.ImagesRepository;
+import bg.tu_varna.sit.usp.phone_sales.phone.repository.ImageRepository;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.PhoneRepository;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.*;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
@@ -34,22 +34,24 @@ import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_
 @Slf4j
 public class PhoneService {
     private final PhoneRepository phoneRepository;
-    private final ImagesRepository imagesRepository;
+    private final ImageRepository imageRepository;
     private final DimensionService dimensionService;
     private final HardwareService hardwareService;
     private final OperatingSystemService operatingSystemService;
     private final ModelService modelService;
     private final DecimalFormat decimalFormat;
+    private final ImageService imageService;
 
     @Autowired
-    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, ImagesRepository imagesRepository, DecimalFormat decimalFormat) {
+    public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, ImageRepository imageRepository, DecimalFormat decimalFormat, ImageService imageService) {
         this.phoneRepository = phoneRepository;
         this.dimensionService = dimensionService;
         this.hardwareService = hardwareService;
         this.operatingSystemService = operatingSystemService;
         this.modelService = modelService;
-        this.imagesRepository = imagesRepository;
+        this.imageRepository = imageRepository;
         this.decimalFormat = decimalFormat;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -71,6 +73,9 @@ public class PhoneService {
         Phone initializedPhone = initializePhone(submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
         Phone savedPhone = phoneRepository.save(initializedPhone);
 
+
+
+
         List<Image> images = initializePhoneImages(submitPhoneRequest, savedPhone);
         savedPhone.setImages(images);
 
@@ -81,7 +86,8 @@ public class PhoneService {
     private List<Image> initializePhoneImages(SubmitPhoneRequest submitPhoneRequest, Phone phone) {
         List<Image> images = new ArrayList<>();
         for (String imageUrl : submitPhoneRequest.getImageUrls()) {
-            Image save = imagesRepository.save(
+
+            Image save = imageRepository.save(
                     Image.builder()
                             .imageUrl(imageUrl)
                             .phone(phone)
@@ -162,8 +168,8 @@ public class PhoneService {
 
     private String generateSlug(Phone phone) {
         log.info("Generating slug for phone");
-        return (phone.getPhoneModel().getBrand().getName() + "-" + phone.getPhoneModel().getName() + "-" + phone.getDimension().getColor() + "-" +
-                phone.getHardware().getStorage().toString() + "gb-" + phone.getHardware().getRam().toString() + "ram")
+        return (phone.getPhoneModel().getBrand().getName() + "-" + phone.getPhoneModel().getName() + "-" +
+                phone.getHardware().getStorage().toString() + "gb-" + phone.getHardware().getRam().toString() + "ram-" + phone.getDimension().getColor())
                 .toLowerCase()
                 .replaceAll("[^a-z0-9]+", "-")
                 .replaceAll("^-|-$", "");
@@ -207,7 +213,7 @@ public class PhoneService {
 
     private List<String> initializePhoneImagesResponse(Phone phone) {
         List<String> images = new ArrayList<>();
-        for (Image image : phone.getImages()){
+        for (Image image : phone.getImages()) {
             images.add(image.getImageUrl());
         }
         return images;
@@ -240,6 +246,7 @@ public class PhoneService {
                 .simType(phone.getHardware().getSimType())
                 .storage(phone.getHardware().getStorage())
                 .coreCount(phone.getHardware().getCoreCount())
+                .screenResolution(phone.getHardware().getScreenResolution())
                 .build();
     }
 
@@ -270,10 +277,12 @@ public class PhoneService {
                 .releaseYear(submitPhoneRequest.getReleaseYear())
                 .createdAt(LocalDateTime.now())
                 .isVisible(true)
+                .discountPercent(BigDecimal.ZERO)
+                .modelUrl(submitPhoneRequest.getModelUrl())
                 .build();
 
         String slug = generateSlug(builtPhone);
-        if(phoneRepository.getPhoneBySlug(slug).isPresent()) {
+        if (phoneRepository.getPhoneBySlug(slug).isPresent()) {
             throw new DomainException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
         }
 

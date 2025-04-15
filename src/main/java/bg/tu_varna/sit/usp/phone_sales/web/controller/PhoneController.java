@@ -17,35 +17,33 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/phone")
 public class PhoneController {
-//    private final PhoneService phoneService;
-//    private final InventoryService inventoryService;
-//    private final UserService userService;
-//
-//    public PhoneController(PhoneService phoneService, InventoryService inventoryService, UserService userService) {
-//        this.phoneService = phoneService;
-//        this.inventoryService = inventoryService;
-//        this.userService = userService;
-//    }
-//
-//    @GetMapping("/{slug}")
-//    public ModelAndView getPhonePage(@PathVariable String slug, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-//        ModelAndView modelAndView = new ModelAndView("home/phone");
-//
-//        GetPhoneResponse phoneResponse = phoneService.getPhoneResponseForVisiblePhoneBySlug(slug);
-//        User user = userService.getAuthenticatedUser(authenticationMetadata);
-//
-//        modelAndView.addObject("phoneResponse", phoneResponse);
-//        modelAndView.addObject("user", user);
-//        return modelAndView;
-//    }
-//
-//    @PostMapping("/{slug}")
-//    @RequireAuthenticatedUser
-//    public String addPhoneToCart(@AuthenticationPrincipal AuthenticationMetadata auth,
-//                                 @PathVariable String slug) {
-//        User user = userService.getAuthenticatedUser(auth);
+    private final PhoneService phoneService;
+    private final UserService userService;
+
+    public PhoneController(PhoneService phoneService,UserService userService) {
+        this.phoneService = phoneService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/{slug}")
+    public ModelAndView getPhonePage(@PathVariable String slug, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("home/phone");
+
+        GetPhoneResponse phoneResponse = phoneService.getPhoneResponseForVisiblePhoneBySlug(slug);
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
+
+        modelAndView.addObject("phoneResponse", phoneResponse);
+        modelAndView.addObject("user", user);
+        return modelAndView;
+    }
+
+    @PostMapping("/{slug}")
+    @RequireAuthenticatedUser
+    public String addPhoneToCart(@AuthenticationPrincipal AuthenticationMetadata auth,
+                                 @PathVariable String slug) {
+        User user = userService.getAuthenticatedUser(auth);
 //        inventoryService.addPhoneToCartForUser(user, slug);
-//
-//        return "redirect:/phone/" + slug;
-//    }
+
+        return "redirect:/phone/" + slug;
+    }
 }

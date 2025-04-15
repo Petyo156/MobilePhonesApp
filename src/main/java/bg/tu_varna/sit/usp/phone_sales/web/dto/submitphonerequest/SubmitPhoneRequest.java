@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -48,4 +49,7 @@ public class SubmitPhoneRequest {
 
     @NotEmpty(message = "Set at least one image.")
     private List<String> imageUrls = new ArrayList<>();
+
+    @Nullable
+    private String modelUrl;
 }

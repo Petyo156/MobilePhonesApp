@@ -1,6 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
+import bg.tu_varna.sit.usp.phone_sales.phone.service.ImageService;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
@@ -14,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
@@ -23,11 +25,13 @@ public class AdminController {
 
     private final UserService userService;
     private final PhoneService phoneService;
+    private final ImageService imageService;
 
     @Autowired
-    public AdminController(UserService userService, PhoneService phoneService) {
+    public AdminController(UserService userService, PhoneService phoneService, ImageService imageService) {
         this.userService = userService;
         this.phoneService = phoneService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/phone")
@@ -46,7 +50,9 @@ public class AdminController {
     @PostMapping("/phone")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView submitPhone(@Valid @ModelAttribute SubmitPhoneRequest submitPhoneRequest,
-                                    BindingResult bindingResult) {
+                                    BindingResult bindingResult,
+                                    @RequestParam("imageFile") List<MultipartFile> files,
+                                    @RequestParam("thumbnailIndex") int thumbnailIndex) {
 
         ModelAndView modelAndView = new ModelAndView("admin/add-phone");
         if (bindingResult.hasErrors()) {
@@ -55,6 +61,7 @@ public class AdminController {
         }
 
         Phone phone = phoneService.submitPhone(submitPhoneRequest);
+        imageService.saveImages(files, thumbnailIndex, phone);
 
         return new ModelAndView("redirect:/phone/" + phone.getSlug());
     }

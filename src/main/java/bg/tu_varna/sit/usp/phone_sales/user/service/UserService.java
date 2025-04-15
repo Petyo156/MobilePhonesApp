@@ -3,6 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.user.service;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
+import bg.tu_varna.sit.usp.phone_sales.user.model.City;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.model.UserRole;
 import bg.tu_varna.sit.usp.phone_sales.user.repository.UserRepository;
@@ -74,6 +75,30 @@ public class UserService implements UserDetailsService {
         return userRepository.count() > 0;
     }
 
+    public void updateUserAddressPreference(String address, City city, User user) {
+        if(user.getAddress().equals(address) && user.getCity().equals(city)) {
+            log.info("User address and city have not changed since last order");
+            return;
+        }
+        user.setAddress(address);
+        user.setCity(city);
+        log.info("Updating user address and city preference");
+        userRepository.save(user);
+    }
+
+    public void changePassword(ChangePasswordRequest changePasswordRequest, User user) {
+        String oldPassword = changePasswordRequest.getOldPassword();
+        if(passwordEncoder.matches(oldPassword, user.getPassword())) {
+            if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
+                user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+                userRepository.save(user);
+                log.info("Successfully changed password");
+                return;
+            }
+        }
+        throw new DomainException(ExceptionMessages.INVALID_CHANGE_PASSWORD_REQUEST);
+    }
+
     public void insertAdmin() {
         User admin = initializeAdmin();
         log.info("Inserting admin user");
@@ -111,29 +136,5 @@ public class UserService implements UserDetailsService {
                 .createdAt(LocalDateTime.now())
                 .role(UserRole.USER)
                 .build();
-    }
-
-    public void updateUserAddressPreference(String address, String city, User user) {
-        if(user.getAddress().equals(address) && user.getCity().equals(city)) {
-            log.info("User address and city have not changed since last order");
-            return;
-        }
-        user.setAddress(address);
-//        user.setCity(city);
-        log.info("Updating user address and city preference");
-        userRepository.save(user);
-    }
-
-    public void changePassword(ChangePasswordRequest changePasswordRequest, User user) {
-        String oldPassword = changePasswordRequest.getOldPassword();
-        if(passwordEncoder.matches(oldPassword, user.getPassword())) {
-            if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
-                user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-                userRepository.save(user);
-                log.info("Successfully changed password");
-                return;
-            }
-        }
-        throw new DomainException(ExceptionMessages.INVALID_CHANGE_PASSWORD_REQUEST);
     }
 }

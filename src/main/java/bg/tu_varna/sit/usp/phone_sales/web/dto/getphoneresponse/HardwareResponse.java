@@ -17,7 +17,7 @@ public class HardwareResponse {
 
     private Integer refreshRate;
 
-    private Integer resolution;
+    private String screenResolution;
 
     private Double screenSize;
 
