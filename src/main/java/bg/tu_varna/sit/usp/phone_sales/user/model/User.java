@@ -49,7 +49,7 @@ public class User {
 
     //nobodobaveni
 
-    @OneToOne(mappedBy = "user", optional = false)
+    @OneToOne(mappedBy = "user", optional = false, cascade = CascadeType.ALL)
     private Cart cart;
 
     @ManyToOne
