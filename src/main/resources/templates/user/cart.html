@@ -61,7 +61,7 @@
 
             <div class="col-md-4">
                 <div class="order-summary">
-                    <h2>Summary (<span th:text="${#lists.size(cart.phones)}">0</span> items)</h2>
+                    <h2>Summary (<span th:text="${cart.summary}">0</span> items)</h2>
                     <div class="summary-item">
                         <span>Subtotal</span>
                         <span>$<span th:text="${cart.totalPrice}">0.00</span></span>

@@ -48,11 +48,14 @@ public class CartService {
     public CartResponse getCartResponseForUser(User user) {
         Cart cart = user.getCart();
         List<CartItem> cartItems = cart.getCartItems();
+        Integer summary = 0;
 
         List<GetPhoneResponse> phoneResponses = new ArrayList<>();
         BigDecimal totalPrice = BigDecimal.ZERO;
 
         for (CartItem item : cartItems) {
+            summary += item.getQuantity();
+
             GetPhoneResponse phoneResponse = phoneService.getPhoneResponseByPhone(item.getPhone());
             phoneResponse.setQuantity(item.getQuantity());
             phoneResponses.add(phoneResponse);
@@ -63,13 +66,14 @@ public class CartService {
             totalPrice = totalPrice.add(itemTotal);
         }
         log.info("Initializing cart response");
-        return initializeCartResponse(phoneResponses, totalPrice);
+        return initializeCartResponse(phoneResponses, totalPrice, summary);
     }
 
-    private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice) {
+    private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
         return CartResponse.builder()
                 .phones(phoneResponses)
                 .totalPrice(totalPrice.toString())
+                .summary(summary)
                 .build();
     }
 

@@ -16,4 +16,6 @@ public class CartResponse {
     private List<GetPhoneResponse> phones;
 
     private String totalPrice;
+
+    private Integer summary;
 }
