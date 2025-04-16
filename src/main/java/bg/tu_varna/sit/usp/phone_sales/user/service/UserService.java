@@ -1,5 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.user.service;
 
+import bg.tu_varna.sit.usp.phone_sales.cart.model.Cart;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
@@ -25,11 +27,13 @@ import java.time.LocalDateTime;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CartService cartService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CartService cartService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cartService = cartService;
     }
 
     @Transactional
@@ -39,7 +43,7 @@ public class UserService implements UserDetailsService {
         checkIfEmailAlreadyExists(registerRequest.getEmail());
         checkIfPasswordsMatch(registerRequest.getPassword(), registerRequest.getConfirmPassword());
 
-        User user = initializeUser(registerRequest);
+        User user = setupUser(registerRequest);
         userRepository.save(user);
 
         log.info("Successfully registered user");
@@ -76,7 +80,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUserAddressPreference(String address, City city, User user) {
-        if(user.getAddress().equals(address) && user.getCity().equals(city)) {
+        if (user.getAddress().equals(address) && user.getCity().equals(city)) {
             log.info("User address and city have not changed since last order");
             return;
         }
@@ -88,8 +92,8 @@ public class UserService implements UserDetailsService {
 
     public void changePassword(ChangePasswordRequest changePasswordRequest, User user) {
         String oldPassword = changePasswordRequest.getOldPassword();
-        if(passwordEncoder.matches(oldPassword, user.getPassword())) {
-            if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            if (changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
                 user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
                 userRepository.save(user);
                 log.info("Successfully changed password");
@@ -107,13 +111,21 @@ public class UserService implements UserDetailsService {
     }
 
     private User initializeAdmin() {
-        return User.builder()
+        RegisterRequest registerRequest = RegisterRequest.builder()
                 .email("admin")
-                .password(passwordEncoder.encode("admin"))
-                .createdAt(LocalDateTime.now())
-                .role(UserRole.ADMIN)
+                .password("admin")
+                .confirmPassword("admin")
                 .build();
+
+        User user = initializeUser(registerRequest);
+        user.setRole(UserRole.ADMIN);
+
+        Cart cart = cartService.initializeCartForUser(user);
+        user.setCart(cart);
+
+        return userRepository.save(user);
     }
+
 
     private void checkIfPasswordsMatch(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
@@ -127,6 +139,16 @@ public class UserService implements UserDetailsService {
             throw new DomainException(ExceptionMessages.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
         log.info("Email is valid");
+    }
+
+    @Transactional
+    public User setupUser(RegisterRequest registerRequest) {
+        User user = userRepository.save(initializeUser(registerRequest));
+
+        Cart cart = cartService.initializeCartForUser(user);
+        user.setCart(cart);
+
+        return userRepository.save(user);
     }
 
     private User initializeUser(RegisterRequest registerRequest) {

@@ -22,7 +22,7 @@
             <p>Email: <span th:text="${user.email}"></span></p>
             <p>Address: <span th:text="|${user.city} ${user.address}|"></span></p>
             <p>Phone number: <span th:text="${user.phoneNumber}"></span></p>
-            <p>User since: <span th:text="${user.createdOn}"></span></p>
+            <p>User since: <span th:text="${user.createdAt}"></span></p>
         </div>
         <div class="change_pass-section">
             <h2>Change Password</h2>
@@ -52,18 +52,18 @@
                 <th>Total Price</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="order,index : ${orders}">
-                <td th:text="${index.index+1}"></td>
-                <td th:text="${order.orderDate}"></td>
-                <td th:text="|  ${order.phone.brandAndModelResponse.brand}
-                                ${order.phone.brandAndModelResponse.model}
-                                x ${order.quantity}|"></td>
-                <td th:text="|${order.deliveryOption.city} ${order.deliveryOption.address}|"></td>
-                <td th:text="${order.deliveryOption.deliveryMethod}"></td>
-                <td th:text="|${order.phone.price} (${order.deliveryOption.paymentMethod})|"></td>
-            </tr>
-            </tbody>
+<!--            <tbody>-->
+<!--            <tr th:each="order,index : ${orders}">-->
+<!--                <td th:text="${index.index+1}"></td>-->
+<!--                <td th:text="${order.orderDate}"></td>-->
+<!--                <td th:text="|  ${order.phone.brandAndModelResponse.brand}-->
+<!--                                ${order.phone.brandAndModelResponse.model}-->
+<!--                                x ${order.quantity}|"></td>-->
+<!--                <td th:text="|${order.deliveryOption.city} ${order.deliveryOption.address}|"></td>-->
+<!--                <td th:text="${order.deliveryOption.deliveryMethod}"></td>-->
+<!--                <td th:text="|${order.phone.price} (${order.deliveryOption.paymentMethod})|"></td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
         </table>
     </div>
 </div>
