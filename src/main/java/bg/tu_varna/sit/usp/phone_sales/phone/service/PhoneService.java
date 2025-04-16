@@ -131,11 +131,6 @@ public class PhoneService {
         return initializeGetPhoneResponse(getVisiblePhoneBySlug(slug));
     }
 
-    public GetPhoneResponse getPhoneResponseBySlug(String slug) {
-        log.info("Initializing phone response by slug");
-        return initializeGetPhoneResponse(getPhoneBySlug(slug));
-    }
-
     public GetPhoneResponse getPhoneResponseByPhone(Phone phone) {
         log.info("Initializing phone response by phone entity");
         return initializeGetPhoneResponse(getPhoneBySlug(phone.getSlug()));
@@ -192,12 +187,22 @@ public class PhoneService {
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
         List<String> images = initializePhoneImagesResponse(phone);
         String price = decimalFormat.format(phone.getPrice());
+        String discountPrice = calculateDiscountPrice(phone);
+
         Integer quantity = phone.getQuantity();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, quantity);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, quantity);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, Integer quantity) {
+    private String calculateDiscountPrice(Phone phone) {
+        BigDecimal price = phone.getPrice();
+        BigDecimal discount = phone.getDiscountPercent();
+        BigDecimal discountedAmount = price.multiply(discount);
+        BigDecimal finalPrice = price.subtract(discountedAmount);
+        return decimalFormat.format(finalPrice);
+    }
+
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, Integer quantity) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -208,6 +213,7 @@ public class PhoneService {
                 .images(images)
                 .price(price)
                 .quantity(quantity)
+                .discountPrice(discountPrice)
                 .build();
     }
 
