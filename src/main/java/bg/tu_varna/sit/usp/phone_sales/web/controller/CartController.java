@@ -76,6 +76,6 @@ public class CartController {
         User user = userService.getAuthenticatedUser(auth);
         cartService.addPhoneToCart(slug, user);
 
-        return "redirect:/phone/" + slug;
+        return "redirect:/cart";
     }
 }
