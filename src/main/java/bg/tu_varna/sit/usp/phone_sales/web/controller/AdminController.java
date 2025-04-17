@@ -25,13 +25,11 @@ public class AdminController {
 
     private final UserService userService;
     private final PhoneService phoneService;
-    private final ImageService imageService;
 
     @Autowired
     public AdminController(UserService userService, PhoneService phoneService, ImageService imageService) {
         this.userService = userService;
         this.phoneService = phoneService;
-        this.imageService = imageService;
     }
 
     @GetMapping("/phone")
