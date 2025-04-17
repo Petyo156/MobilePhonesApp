@@ -93,29 +93,31 @@
 
     <h2 class="newest-heading">Най-нови предложения</h2>
     <div class="product-container-container">
-        <div class="product-card" th:each="phone : ${mostRecentPhones}">
-            <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-                <img th:src="${phone.images[0]}" alt="Phone Image">
-                <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB'}">
-                    Brand</h3>
-                <div class="rating">
-                    <div class="rating-stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
+        <div class="product-container">
+            <div class="product-card" th:each="phone : ${mostRecentPhones}">
+                <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
+                    <img th:src="${phone.images[0]}" alt="Phone Image">
+                    <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB'}">
+                        Brand</h3>
+                    <div class="rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="rating-count">(4.5)</span>
                     </div>
-                    <span class="rating-count">(4.5)</span>
-                </div>
-                <span class="discount-price">999.99 лв.</span>
-                <span class="price" th:text="${phone.price + ' лв.'}">Price</span>
-            </a>
+                    <span class="discount-price">999.99 лв.</span>
+                    <span class="price" th:text="${phone.price + ' лв.'}">Price</span>
+                </a>
 
-            <form th:action="@{'/cart/' + ${phone.slug}}" method="post" style="margin-top: 10px;">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="buy-btn">Купи</button>
-            </form>
+                <form th:action="@{'/cart/' + ${phone.slug}}" method="post" style="margin-top: 10px;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="buy-btn">Купи</button>
+                </form>
+            </div>
         </div>
     </div>
 </main>
