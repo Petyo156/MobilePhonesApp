@@ -57,6 +57,10 @@ public class PhoneService {
 
     @Transactional
     public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest, List<MultipartFile> files, int thumbnailIndex) {
+        if(files.isEmpty()){
+            throw new DomainException(ExceptionMessages.SET_ATLEAST_ONE_PHONE_PICTURE);
+        }
+
         SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
         SubmitBrandAndModel brandAndModel = submitPhoneRequest.getBrandAndModel();
         SubmitHardware hardwareInfo = submitPhoneRequest.getHardware();

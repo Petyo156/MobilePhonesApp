@@ -68,7 +68,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getAuthenticatedUser(AuthenticationMetadata auth) {
-        if (auth == null) {
+        if (null == auth) {
             return null;
         }
 
