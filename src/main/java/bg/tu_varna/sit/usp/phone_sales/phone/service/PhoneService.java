@@ -35,7 +35,6 @@ import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_
 @Slf4j
 public class PhoneService {
     private final PhoneRepository phoneRepository;
-    private final ImageRepository imageRepository;
     private final DimensionService dimensionService;
     private final HardwareService hardwareService;
     private final OperatingSystemService operatingSystemService;
@@ -50,7 +49,6 @@ public class PhoneService {
         this.hardwareService = hardwareService;
         this.operatingSystemService = operatingSystemService;
         this.modelService = modelService;
-        this.imageRepository = imageRepository;
         this.decimalFormat = decimalFormat;
         this.imageService = imageService;
     }
@@ -58,7 +56,7 @@ public class PhoneService {
     @Transactional
     public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest, List<MultipartFile> files, int thumbnailIndex) {
         if (files == null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
-            throw new DomainException(ExceptionMessages.SET_ATLEAST_ONE_PHONE_PICTURE);
+            throw new DomainException(ExceptionMessages.SET_AT_LEAST_ONE_PHONE_PICTURE);
         }
 
         SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
@@ -82,20 +80,6 @@ public class PhoneService {
         log.info("Phone initialized successfully");
         return phoneRepository.save(phone);
     }
-
-
-//    private List<Image> initializePhoneImages(SubmitPhoneRequest submitPhoneRequest, Phone phone) {
-//        List<Image> images = new ArrayList<>();
-//        for (String imageUrl : submitPhoneRequest.getImageUrls()) {
-//            Image image = Image.builder()
-//                    .imageUrl(imageUrl)
-//                    .phone(phone)
-//                    .build();
-//            images.add(image);
-//        }
-//        log.info("Phone images initialized successfully");
-//        return images;
-//    }
 
     public List<GetPhoneResponse> getSearchResult(String info) {
         List<Phone> phones = phoneRepository.searchVisiblePhonesByModelOrBrand(info);

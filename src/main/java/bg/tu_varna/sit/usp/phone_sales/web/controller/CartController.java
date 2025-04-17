@@ -2,7 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
-import bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser;
+import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUser;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;

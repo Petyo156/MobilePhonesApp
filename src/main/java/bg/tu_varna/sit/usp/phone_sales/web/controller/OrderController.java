@@ -1,9 +1,14 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
+import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
+import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
-import bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser;
+import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUser;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,25 +22,28 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/checkout")
 public class OrderController {
     private final UserService userService;
+    private final OrderService orderService;
+    private final CartService cartService;
 
     @Autowired
-    public OrderController(UserService userService) {
+    public OrderController(UserService userService, OrderService orderService, CartService cartService) {
         this.userService = userService;
+        this.orderService = orderService;
+        this.cartService = cartService;
     }
 
     @GetMapping
     @RequireAuthenticatedUser
+    @RequireNotEmptyCart
     public ModelAndView getCheckoutPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/checkout");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-//        List<Inventory> cart = inventoryService.getAllItemsInCartForUser(user);
-//        String price = inventoryService.getTotalPriceForItemsInCart(cart);
+        CartResponse cart = cartService.getCartResponseForUser(user);
 
         modelAndView.addObject("user", user);
-//        modelAndView.addObject("cart", cart);
-//        modelAndView.addObject("price", price);
-//        modelAndView.addObject("checkoutRequest", new CheckoutRequest());
+        modelAndView.addObject("orderRequest", new OrderRequest());
+        modelAndView.addObject("cart", cart);
 
         return modelAndView;
     }
