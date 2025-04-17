@@ -57,7 +57,7 @@ public class PhoneService {
 
     @Transactional
     public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest, List<MultipartFile> files, int thumbnailIndex) {
-        if(files.isEmpty()){
+        if (files == null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
             throw new DomainException(ExceptionMessages.SET_ATLEAST_ONE_PHONE_PICTURE);
         }
 
