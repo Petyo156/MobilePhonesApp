@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.usp.phone_sales.security.aspect;
+package bg.tu_varna.sit.usp.phone_sales.aspect;
 
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class RequireAuthenticatedUserAspect {
 
-    @Before("@annotation(bg.tu_varna.sit.usp.phone_sales.security.annotation.RequireAuthenticatedUser)")
+    @Before("@annotation(bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUser)")
     public void checkAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {

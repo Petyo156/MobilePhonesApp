@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.usp.phone_sales.security.annotation;
+package bg.tu_varna.sit.usp.phone_sales.aspect.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
