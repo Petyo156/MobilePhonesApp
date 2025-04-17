@@ -60,8 +60,7 @@ public class AdminController {
             return modelAndView;
         }
 
-        Phone phone = phoneService.submitPhone(submitPhoneRequest);
-        imageService.saveImages(files, thumbnailIndex, phone);
+        Phone phone = phoneService.submitPhone(submitPhoneRequest, files, thumbnailIndex);
 
         return new ModelAndView("redirect:/phone/" + phone.getSlug());
     }

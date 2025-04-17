@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -55,7 +56,7 @@ public class PhoneService {
     }
 
     @Transactional
-    public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest) {
+    public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest, List<MultipartFile> files, int thumbnailIndex) {
         SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
         SubmitBrandAndModel brandAndModel = submitPhoneRequest.getBrandAndModel();
         SubmitHardware hardwareInfo = submitPhoneRequest.getHardware();
@@ -63,41 +64,34 @@ public class PhoneService {
         SubmitOperatingSystem operatingSystemInfo = submitPhoneRequest.getOperatingSystem();
 
         Dimension dimension = dimensionService.submitDimension(dimensions);
-
         PhoneModel phoneModel = modelService.submitBrandAndModel(brandAndModel);
-
         Hardware hardware = hardwareService.submitHardware(hardwareInfo, cameraInfo);
-
         OperatingSystem operatingSystem = operatingSystemService.submitOperatingSystem(operatingSystemInfo);
 
-        Phone initializedPhone = initializePhone(submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
-        Phone savedPhone = phoneRepository.save(initializedPhone);
+        Phone phone = initializePhone(submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
 
+        List<Image> images = imageService.saveImages(files, thumbnailIndex, phone);
 
+        phone.setImages(images);
 
-
-        List<Image> images = initializePhoneImages(submitPhoneRequest, savedPhone);
-        savedPhone.setImages(images);
 
         log.info("Phone initialized successfully");
-        return phoneRepository.save(initializedPhone);
+        return phoneRepository.save(phone);
     }
 
-    private List<Image> initializePhoneImages(SubmitPhoneRequest submitPhoneRequest, Phone phone) {
-        List<Image> images = new ArrayList<>();
-        for (String imageUrl : submitPhoneRequest.getImageUrls()) {
 
-            Image save = imageRepository.save(
-                    Image.builder()
-                            .imageUrl(imageUrl)
-                            .phone(phone)
-                            .build()
-            );
-            images.add(save);
-        }
-        log.info("Phone images initialized successfully");
-        return images;
-    }
+//    private List<Image> initializePhoneImages(SubmitPhoneRequest submitPhoneRequest, Phone phone) {
+//        List<Image> images = new ArrayList<>();
+//        for (String imageUrl : submitPhoneRequest.getImageUrls()) {
+//            Image image = Image.builder()
+//                    .imageUrl(imageUrl)
+//                    .phone(phone)
+//                    .build();
+//            images.add(image);
+//        }
+//        log.info("Phone images initialized successfully");
+//        return images;
+//    }
 
     public List<GetPhoneResponse> getSearchResult(String info) {
         List<Phone> phones = phoneRepository.searchVisiblePhonesByModelOrBrand(info);

@@ -51,7 +51,7 @@ public class Phone {
     @OneToOne(cascade = CascadeType.ALL)
     private Dimension dimension;
 
-    @OneToMany(mappedBy = "phone")
+    @OneToMany(mappedBy = "phone", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     @Column(nullable = false)
