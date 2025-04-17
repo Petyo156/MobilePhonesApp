@@ -47,9 +47,6 @@ public class SubmitPhoneRequest {
     @Min(1800)
     private Integer releaseYear;
 
-    @NotEmpty(message = "Set at least one image.")
-    private List<String> imageUrls = new ArrayList<>();
-
     @Nullable
     private String modelUrl;
 }

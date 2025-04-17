@@ -152,21 +152,21 @@
 
 
         <!-- Images Section -->
-        <div class="form-group">
-            <label>Image URLs:</label>
-            <div id="imageFields">
-                <div th:if="*{imageUrls != null and imageUrls.size() > 0}"
-                     th:each="imageUrl, iterStat : *{imageUrls}">
-                    <div class="image-url-group">
-                        <input type="text" th:field="*{imageUrls[__${iterStat.index}__]}" class="form-input"
-                               placeholder="Enter image URL"/>
-                        <button type="button" class="form-remove" onclick="removeImageField(this)">Remove</button>
-                    </div>
-                </div>
-            </div>
-            <button type="button" onclick="addImageField()" class="form-add">Add Another Image</button>
-            <p class="form-error" th:if="${#fields.hasErrors('imageUrls')}" th:errors="*{imageUrls}"></p>
-        </div>
+<!--        <div class="form-group">-->
+<!--            <label>Image URLs:</label>-->
+<!--            <div id="imageFields">-->
+<!--                <div th:if="*{imageUrls != null and imageUrls.size() > 0}"-->
+<!--                     th:each="imageUrl, iterStat : *{imageUrls}">-->
+<!--                    <div class="image-url-group">-->
+<!--                        <input type="text" th:field="*{imageUrls[__${iterStat.index}__]}" class="form-input"-->
+<!--                               placeholder="Enter image URL"/>-->
+<!--                        <button type="button" class="form-remove" onclick="removeImageField(this)">Remove</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <button type="button" onclick="addImageField()" class="form-add">Add Another Image</button>-->
+<!--            <p class="form-error" th:if="${#fields.hasErrors('imageUrls')}" th:errors="*{imageUrls}"></p>-->
+<!--        </div>-->
     </div>
 
     <h2 class="form-section-title">🧪 Optional Specifications</h2>

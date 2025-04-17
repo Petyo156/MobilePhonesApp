@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,17 +31,19 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public void saveImages(List<MultipartFile> imageFiles, int thumbnailIndex, Phone phone) {
+    public List<Image> saveImages(List<MultipartFile> imageFiles, int thumbnailIndex, Phone phone) {
+        List<Image> images = new ArrayList<>();
         for (int i = 0; i < imageFiles.size(); i++) {
             MultipartFile file = imageFiles.get(i);
             if (!file.isEmpty()) {
                 Boolean isThumbnail = i == thumbnailIndex;
-                saveImage(file, isThumbnail, phone);
+                images.add(saveImage(file, isThumbnail, phone));
             }
         }
+        return images;
     }
 
-    private void saveImage(MultipartFile imageFile, Boolean isThumbnail, Phone phone) {
+    private Image saveImage(MultipartFile imageFile, Boolean isThumbnail, Phone phone) {
         try {
             Path uploadDir = Paths.get(uploadPath);
             Files.createDirectories(uploadDir);
@@ -52,9 +55,9 @@ public class ImageService {
             String relativePath = "/static/images/phoneimages/" + uniqueName;
 
             Image image = initializeImage(isThumbnail, phone, relativePath);
-            imageRepository.save(image);
-            
+
             log.info("Saved image to {}", relativePath);
+            return image;
         } catch (IOException e) {
             throw new DomainException("Failed to save image: " + e.getMessage());
         }

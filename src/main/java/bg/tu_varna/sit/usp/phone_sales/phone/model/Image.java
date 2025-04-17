@@ -23,6 +23,6 @@ public class Image {
     private Boolean isThumbnail;
 
     @ManyToOne
-    @JoinColumn(name = "phone_id", nullable = false)
+    @JoinColumn(name = "phone_id")
     private Phone phone;
 }
