@@ -49,10 +49,6 @@ h2 {
     transition: 0.3s ease;
 }
 
-input:hover {
-    transform: scaleX(1.1);
-}
-
 .input-group input:focus {
     border-color: var(--accent);
     outline: none;
@@ -86,5 +82,20 @@ button:hover {
 }
 
 .login-link a:hover {
+    text-decoration: underline;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.register-link a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.register-link a:hover {
     text-decoration: underline;
 }
