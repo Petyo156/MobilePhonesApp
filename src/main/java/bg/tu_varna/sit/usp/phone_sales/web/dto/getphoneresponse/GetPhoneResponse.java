@@ -26,6 +26,8 @@ public class GetPhoneResponse {
 
     private String discountPrice;
 
+    private String discountPercent;
+
     private Integer quantity;
 
     private Integer releaseYear;

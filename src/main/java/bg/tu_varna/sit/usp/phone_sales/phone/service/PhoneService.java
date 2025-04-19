@@ -170,21 +170,21 @@ public class PhoneService {
         List<String> images = initializePhoneImagesResponse(phone);
         String price = decimalFormat.format(phone.getPrice());
         String discountPrice = calculateDiscountPrice(phone);
-
+        String discountPercent = String.format("%.0f", phone.getDiscountPercent());
         Integer quantity = phone.getQuantity();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, quantity);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, discountPercent, quantity);
     }
 
     private String calculateDiscountPrice(Phone phone) {
         BigDecimal price = phone.getPrice();
-        BigDecimal discount = phone.getDiscountPercent();
+        BigDecimal discount = phone.getDiscountPercent().divide(BigDecimal.valueOf(100));
         BigDecimal discountedAmount = price.multiply(discount);
         BigDecimal finalPrice = price.subtract(discountedAmount);
         return decimalFormat.format(finalPrice);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, Integer quantity) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, String discountPercent, Integer quantity) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -195,6 +195,7 @@ public class PhoneService {
                 .images(images)
                 .price(price)
                 .quantity(quantity)
+                .discountPercent(discountPercent)
                 .discountPrice(discountPrice)
                 .build();
     }
