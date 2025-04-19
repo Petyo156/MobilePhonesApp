@@ -60,7 +60,22 @@ public class CartService {
             phoneResponse.setQuantity(item.getQuantity());
             phoneResponses.add(phoneResponse);
 
-            BigDecimal itemPrice = item.getPhone().getPrice();
+            BigDecimal itemPrice;
+            if (phoneResponse.getDiscountPrice() != null && !phoneResponse.getDiscountPrice().isEmpty()) {
+                String priceStr = phoneResponse.getDiscountPrice().replace(" лв.", "").replace(",", ".");
+                priceStr = priceStr.replace(".", "");
+                if (priceStr.length() > 2) {
+                    priceStr = priceStr.substring(0, priceStr.length() - 2) + "." + priceStr.substring(priceStr.length() - 2);
+                }
+                itemPrice = new BigDecimal(priceStr);
+            } else {
+                String priceStr = phoneResponse.getPrice().replace(" лв.", "").replace(",", ".");
+                priceStr = priceStr.replace(".", "");
+                if (priceStr.length() > 2) {
+                    priceStr = priceStr.substring(0, priceStr.length() - 2) + "." + priceStr.substring(priceStr.length() - 2);
+                }
+                itemPrice = new BigDecimal(priceStr);
+            }
             BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
 
             totalPrice = totalPrice.add(itemTotal);

@@ -92,9 +92,17 @@ h1 {
 }
 
 .item-price {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 8px;
+    margin-top: 10px;
+}
+
+.original-price {
+    font-size: 0.9em;
+    margin-right: 8px;
+}
+
+.discounted-price {
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 .item-actions {

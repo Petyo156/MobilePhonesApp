@@ -34,7 +34,17 @@
                                 Storage: <span th:text="${phone.hardwareResponse.storage + 'GB'}">Storage</span>
                             </p>
                             <div class="item-price">
-                                $<span th:text="${phone.price}" class="price-value">0.00</span>
+                                <div th:if="${phone.discountPrice != null and phone.discountPrice != phone.price}">
+                                    <span class="original-price" style="text-decoration: line-through; color: #999;">
+                                        $<span th:text="${phone.price}">0.00</span>
+                                    </span>
+                                    <span class="discounted-price" style="color: #dc3545;">
+                                        $<span th:text="${phone.discountPrice}">0.00</span>
+                                    </span>
+                                </div>
+                                <div th:unless="${phone.discountPrice != null and phone.discountPrice != phone.price}">
+                                    $<span th:text="${phone.price}" class="price-value">0.00</span>
+                                </div>
                             </div>
                         </div>
                         <div class="item-actions">
