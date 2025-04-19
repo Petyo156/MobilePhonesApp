@@ -3,17 +3,17 @@
         <a href="/">
             <img class="logo" src="/images/logo.png" alt="logo.png">
         </a>
-            <div class="search-bar">
-                <form th:action="@{/search}" method="get">
-                    <input type="text" name="result" placeholder="Search" required>
-                    <button type="submit" class="search-button navbar-search-button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-            </div>
+        <div class="search-bar" th:if="${hasHiddenElements == null}">
+            <form th:action="@{/search}" method="get">
+                <input type="text" name="result" placeholder="Search" required>
+                <button type="submit" class="search-button navbar-search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
 
         <div class="links">
-<!--            user.role.name() == 'ADMIN'  && ${user.role.name() == 'USER'}-->
+            <!--            user.role.name() == 'ADMIN'  && ${user.role.name() == 'USER'}-->
             <div class="dropdown" th:if="${null != user && user.role.name == 'ADMIN'}">
                 <div class="icon-with-text">
                     <i class="fa-solid fa-user-shield"></i>

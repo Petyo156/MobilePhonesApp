@@ -65,6 +65,7 @@ public class IndexController {
         modelAndView.setViewName("index/register");
         modelAndView.addObject("registerRequest", new RegisterRequest());
         modelAndView.addObject("user", null);
+        modelAndView.addObject("hasHiddenElements", true);
 
         return modelAndView;
     }
@@ -94,6 +95,7 @@ public class IndexController {
         modelAndView.addObject("error", errorParam);
         modelAndView.addObject("loginRequest", loginRequest);
         modelAndView.addObject("user", null);
+        modelAndView.addObject("hasHiddenElements", true);
 
         if (errorParam != null || bindingResult.hasErrors()) {
             modelAndView.addObject("errorMessage", "Incorrect username or password!");
