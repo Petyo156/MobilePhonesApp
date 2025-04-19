@@ -57,12 +57,14 @@ public class IndexController {
 
     @GetMapping("/register")
     public ModelAndView register(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView();
+        if (authenticationMetadata != null) {
+            return new ModelAndView("redirect:/");
+        }
 
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index/register");
         modelAndView.addObject("registerRequest", new RegisterRequest());
-        modelAndView.addObject("user", user);
+        modelAndView.addObject("user", null);
 
         return modelAndView;
     }
@@ -78,14 +80,20 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam, @Valid LoginRequest loginRequest, BindingResult bindingResult, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam, 
+                            @Valid LoginRequest loginRequest, 
+                            BindingResult bindingResult, 
+                            @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        if (authenticationMetadata != null) {
+            return new ModelAndView("redirect:/");
+        }
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index/login");
 
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
         modelAndView.addObject("error", errorParam);
         modelAndView.addObject("loginRequest", loginRequest);
-        modelAndView.addObject("user", user);
+        modelAndView.addObject("user", null);
 
         if (errorParam != null || bindingResult.hasErrors()) {
             modelAndView.addObject("errorMessage", "Incorrect username or password!");
