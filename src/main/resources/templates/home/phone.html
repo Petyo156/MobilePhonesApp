@@ -71,8 +71,15 @@
 
             <div class="price-container">
                 <div>
-                    <span class="price-currency">$</span>
-                    <span class="price-amount" th:text="${phoneResponse.price}">0.00</span>
+                    <div class="price-amount">
+                        <div th:if="${phoneResponse.discountPrice != phoneResponse.price}">
+                            <span class="discount-price" th:text="${phoneResponse.price + ' лв.'}">Price</span>
+                            <span class="price" th:text="${phoneResponse.discountPrice + ' лв.'}">Discount price</span>
+                        </div>
+                        <div th:unless="${phoneResponse.discountPrice != phoneResponse.price}">
+                            <span class="price" th:text="${phoneResponse.price + ' лв.'}">Price</span>
+                        </div>
+                    </div>
                 </div>
                 <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>

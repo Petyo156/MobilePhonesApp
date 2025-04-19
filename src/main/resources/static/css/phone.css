@@ -162,16 +162,17 @@ h1 {
     justify-content: space-between;
 }
 
-.price-amount {
+.discount-price {
+    font-size: 1.2rem;
+    text-decoration: line-through;
+    color: #666;
+    margin-right: 0.5rem;
+}
+
+.price {
     font-size: 2rem;
     font-weight: 700;
     color: #dc3545;
-}
-
-.price-currency {
-    font-size: 1.5rem;
-    color: #dc3545;
-    margin-right: 0.5rem;
 }
 
 .add-to-cart-btn {
