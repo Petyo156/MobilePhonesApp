@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/css/filters.css">
     <link rel="stylesheet" href="/css/navbar.css"/>
     <link rel="stylesheet" type="text/css" href="/css/footer.css">
-<!--    <link rel="stylesheet" type="text/css" href="/css/product-card.css">-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
@@ -106,21 +105,25 @@
                     </div>
                     <div class="finance-options">
                         <select class="form-select finance-period" id="financePeriod">
-                            <option value="6">6 months</option>
-                            <option value="12">12 months</option>
-                            <option value="24">24 months</option>
-                            <option value="36">36 months</option>
+                            <option value="6">6 месеца</option>
+                            <option value="12">12 месеца</option>
+                            <option value="24">24 месеца</option>
+                            <option value="36">36 месеца</option>
                         </select>
                     </div>
                     <div class="monthly-payment">
                         <div class="payment-details">
-                            <span class="payment-label">Monthly Payment:</span>
+                            <span class="payment-label">Месечна вноска:</span>
                             <span class="payment-amount">
-                                <span class="payment-currency">$</span>
-                                <span id="monthlyPayment">0.00</span>
+                                <span class="payment-main" id="monthlyPaymentMain">0</span>
+                                <sup class="payment-decimal" id="monthlyPaymentDecimal">00</sup>
+                                <span class="payment-currency"> лв.</span>
                             </span>
+                            <button class="info-btn" data-bs-toggle="modal" data-bs-target="#financeInfoModal">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
                         </div>
-                        <div class="payment-period" id="totalMonths">for 6 months</div>
+                        <div class="payment-period" id="totalMonths">за 6 месеца</div>
                     </div>
                 </div>
             </div>
@@ -247,6 +250,91 @@
     </div>
 </div>
 
+<!-- modalche -->
+<div class="modal fade pr-0 fast-leasing-modal" id="financeInfoModal" tabindex="-1" role="dialog" aria-labelledby="financeInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-leasing" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="header-logo">
+                    <h5 class="modal-title">Вземи на изплащане</h5>
+                    <div class="leasing-logo">
+                        <img src="/images/aitaiba.png" alt="TBI Bank" class="leasing-logo-img">
+                    </div>
+                </div>
+                <button class="modal__close-btn" data-bs-dismiss="modal" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17.521" height="17.521" viewBox="0 0 17.521 17.521">
+                        <path d="M17.521,1.752,15.769,0,8.76,7.008,1.752,0,0,1.752,7.008,8.76,0,15.769l1.752,1.752L8.76,10.513l7.008,7.008,1.752-1.752L10.513,8.76Z" fill="#29479d"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="apply-conditions">
+                <span class="leasing-text">Задължителни условия за кандидатстване за кредит</span>
+                <ul class="leasing-list">
+                    <li class="leasing-list-item">
+                        <i class="fas fa-check icon-checked"></i>
+                        <span>Навършени 18 години</span>
+                    </li>
+                    <li class="leasing-list-item">
+                        <i class="fas fa-check icon-checked"></i>
+                        <span>Без лоша кредитна история</span>
+                    </li>
+                    <li class="leasing-list-item">
+                        <i class="fas fa-check icon-checked"></i>
+                        <span>Минимална сума за кандидатсване е 200лв с ДДС</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body">
+                <div class="leasing-wrapper">
+                    <div class="form-group">
+                        <label for="modal_down_payment" class="label-leasing">Първоначална вноска</label>
+                        <div class="input-group">
+                            <input id="modal_down_payment" type="number" class="form-control down-payment" 
+                                   placeholder="Въведете сумата, която искате да поставите като депозит"
+                                   min="0">
+                            <div class="invalid-feedback">
+                                Сумата не може да надвишава цената на продукта
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentRange" class="label-leasing">Период на кредита</label>
+                        <div class="leasing-options-panel">
+                            <div class="leasing-options">
+                                <strong class="range-tooltip" id="paymentMonths">6 вноски</strong>
+                                <input type="range" id="paymentRange" min="6" max="36" step="1" value="6">
+                                <div class="labels">
+                                    <label>6 вноски</label>
+                                    <label>36 вноски</label>
+                                </div>
+                            </div>
+                            <div class="credit-summary">
+                                <p class="m-0">Годишен процент на разходите: <strong id="aprValue">0%</strong></p>
+                                <p class="m-0">Месечна вноска: <strong id="monthlyPaymentValue">0 лв.</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="credit-bottom">
+                        <p class="m-0"><span>Общ размер на кредита:</span> <strong id="totalCreditValue">0 лв.</strong></p>
+                        <p class="m-0"><span>Месечна вноска:</span> <strong id="finalMonthlyPayment">0 лв.</strong>
+                            <span class="apr-tag">ГПР: <span id="finalAprValue">0%</span></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="fast-order">
+                    <button type="button" class="primary-button" id="applyCreditBtn">
+                        <span class="text">
+                            <i class="fas fa-shopping-cart"></i>
+                            Купи
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
@@ -272,16 +360,39 @@
             });
         });
 
-        const priceElement = document.querySelector('.price-amount');
-        const price = parseFloat(priceElement.textContent.replace(/[^0-9.]/g, ''));
+        const discountedPriceElement = document.querySelector('.discounted-price');
+        const regularPriceElement = document.querySelector('.price');
+        const priceElement = discountedPriceElement || regularPriceElement;
+        
+        const priceText = priceElement.textContent.trim();
+        const mainPrice = priceText.match(/\d+/)[0];
+        const decimalPart = priceText.match(/\.(\d+)/)?.[1] || '00';
+        const price = parseFloat(`${mainPrice}.${decimalPart}`);
+        
         const financePeriod = document.getElementById('financePeriod');
-        const monthlyPayment = document.getElementById('monthlyPayment');
+        const monthlyPaymentMain = document.getElementById('monthlyPaymentMain');
+        const monthlyPaymentDecimal = document.getElementById('monthlyPaymentDecimal');
         const totalMonths = document.getElementById('totalMonths');
+
+        const periods = [
+            { months: 6, apr: 7.9 },
+            { months: 12, apr: 8.9 },
+            { months: 24, apr: 9.9 },
+            { months: 36, apr: 11.9 }
+        ];
 
         function calculateMonthlyPayment() {
             const months = parseInt(financePeriod.value);
-            monthlyPayment.textContent = (price / months).toFixed(2);
-            totalMonths.textContent = `for ${months} months`;
+            const period = periods.find(p => p.months === months);
+            const interestRate = period.apr / 100;
+            
+            const totalAmount = price * (1 + interestRate);
+            const monthlyAmount = totalAmount / months;
+            
+            const [main, decimal] = monthlyAmount.toFixed(2).split('.');
+            monthlyPaymentMain.textContent = main;
+            monthlyPaymentDecimal.textContent = decimal;
+            totalMonths.textContent = `за ${months} месеца`;
         }
 
         financePeriod.addEventListener('change', calculateMonthlyPayment);
@@ -309,6 +420,55 @@
             const modalCarouselInstance = bootstrap.Carousel.getInstance(modalCarousel);
             modalCarouselInstance.to(activeIndex);
         });
+
+        const downPaymentInput = document.getElementById('modal_down_payment');
+        const paymentRange = document.getElementById('paymentRange');
+        const paymentMonths = document.getElementById('paymentMonths');
+        const aprValue = document.getElementById('aprValue');
+        const monthlyPaymentValue = document.getElementById('monthlyPaymentValue');
+        const totalCreditValue = document.getElementById('totalCreditValue');
+        const finalMonthlyPayment = document.getElementById('finalMonthlyPayment');
+        const finalAprValue = document.getElementById('finalAprValue');
+
+        function validateDownPayment() {
+            const value = parseFloat(downPaymentInput.value) || 0;
+            if (value > price) {
+                downPaymentInput.classList.add('is-invalid');
+                return false;
+            }
+            downPaymentInput.classList.remove('is-invalid');
+            return true;
+        }
+
+        function updateCreditInfo() {
+            if (!validateDownPayment()) {
+                monthlyPaymentValue.textContent = '0.00 лв.';
+                totalCreditValue.textContent = '0.00 лв.';
+                finalMonthlyPayment.textContent = '0.00 лв.';
+                return;
+            }
+
+            const months = parseInt(paymentRange.value);
+            const period = periods.find(p => p.months >= months) || periods[periods.length - 1];
+            const currentAPR = period.apr;
+            const downPayment = parseFloat(downPaymentInput.value) || 0;
+            const creditAmount = price - downPayment;
+            
+            const totalAmount = creditAmount * (1 + (currentAPR / 100));
+            const monthlyPayment = totalAmount / months;
+
+            paymentMonths.textContent = `${months} вноски`;
+            aprValue.textContent = `${currentAPR}%`;
+            monthlyPaymentValue.textContent = `${monthlyPayment.toFixed(2)} лв.`;
+            totalCreditValue.textContent = `${creditAmount.toFixed(2)} лв.`;
+            finalMonthlyPayment.textContent = `${monthlyPayment.toFixed(2)} лв.`;
+            finalAprValue.textContent = `${currentAPR}%`;
+        }
+
+        downPaymentInput.addEventListener('input', updateCreditInfo);
+        paymentRange.addEventListener('input', updateCreditInfo);
+
+        updateCreditInfo();
     });
 </script>
 </body>
