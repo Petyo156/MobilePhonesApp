@@ -36,14 +36,14 @@
                             <div class="item-price">
                                 <div th:if="${phone.discountPrice != null and phone.discountPrice != phone.price}">
                                     <span class="original-price" style="text-decoration: line-through; color: #999;">
-                                        $<span th:text="${phone.price}">0.00</span>
+                                        <span th:text="${phone.price}">0.00</span> лв.
                                     </span>
                                     <span class="discounted-price" style="color: #dc3545;">
-                                        $<span th:text="${phone.discountPrice}">0.00</span>
+                                        <span th:text="${phone.discountPrice}">0.00</span> лв.
                                     </span>
                                 </div>
                                 <div th:unless="${phone.discountPrice != null and phone.discountPrice != phone.price}">
-                                    $<span th:text="${phone.price}" class="price-value">0.00</span>
+                                    <span th:text="${phone.price}" class="price-value">0.00</span> лв.
                                 </div>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                     <h2>Summary (<span th:text="${cart.summary}">0</span> items)</h2>
                     <div class="summary-item">
                         <span>Subtotal</span>
-                        <span>$<span th:text="${cart.totalPrice}">0.00</span></span>
+                        <span><span th:text="${cart.totalPrice}">0.00</span> лв.</span>
                     </div>
                     <div class="summary-item">
                         <span>Shipping</span>
@@ -90,7 +90,7 @@
                     </div>
                     <div class="summary-total">
                         <span>Total</span>
-                        <span>$<span th:text="${cart.totalPrice}">0.00</span></span>
+                        <span><span th:text="${cart.totalPrice}">0.00</span> лв.</span>
                     </div>
                     <a href="/checkout" class="btn btn-primary checkout-btn">Proceed to Checkout</a>
                 </div>
