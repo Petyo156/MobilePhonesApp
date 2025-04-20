@@ -21,7 +21,7 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg, var(--accent) 0%, #123a9f 100%);
+    background: var(--accent);
     height: var(--navbar-height);
     width: 100%;
     position: fixed;

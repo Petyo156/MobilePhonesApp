@@ -23,6 +23,7 @@
                 <h1>Your Cart</h1>
                 <div class="cart-items">
                     <div class="cart-item" th:each="phone : ${cart.phones}">
+                        <a th:href="@{'/phone/' + ${phone.slug}}" class="item-link"></a>
                         <div class="item-image">
                             <img th:src="@{${phone.images[0]}}" alt="Product Image">
                         </div>
@@ -35,10 +36,10 @@
                             </p>
                             <div class="item-price">
                                 <div th:if="${phone.discountPrice != null and phone.discountPrice != phone.price}">
-                                    <span class="original-price" style="text-decoration: line-through; color: #999;">
+                                    <span class="original-price">
                                         <span th:text="${phone.price}">0.00</span> лв.
                                     </span>
-                                    <span class="discounted-price" style="color: #dc3545;">
+                                    <span class="discounted-price">
                                         <span th:text="${phone.discountPrice}">0.00</span> лв.
                                     </span>
                                 </div>
@@ -49,23 +50,24 @@
                         </div>
                         <div class="item-actions">
                             <div class="quantity-controls">
-                                <form th:action="@{'/cart/down/' + ${phone.slug}}" method="post"
-                                      style="display: inline;">
+                                <form th:action="@{'/cart/down/' + ${phone.slug}}" method="post">
                                     <button type="submit" class="btn btn-outline-secondary quantity-btn">-</button>
                                 </form>
                                 <span class="quantity-display" th:text="${phone.quantity}">1</span>
-                                <form th:action="@{'/cart/up/' + ${phone.slug}}" method="post" style="display: inline;">
+                                <form th:action="@{'/cart/up/' + ${phone.slug}}" method="post">
                                     <button type="submit" class="btn btn-outline-secondary quantity-btn">+</button>
                                 </form>
                             </div>
-                            <form th:action="@{'/cart/' + ${phone.slug} + '/delete'}" method="post"
-                                  style="display: inline;">
+                            <form th:action="@{'/cart/' + ${phone.slug} + '/delete'}" method="post">
                                 <button class="btn btn-link text-danger remove-item">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
+                </div>
+                <div th:if="${#lists.isEmpty(cart.phones)}" class="alert alert-info mt-4">
+                    Your cart is empty 🛒
                 </div>
             </div>
 

@@ -14,13 +14,13 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 76px); /* Subtract navbar height */
+    min-height: calc(100vh - 76px);
 }
 
 .cart-container {
     flex: 1;
     max-width: 1200px;
-    margin: 20px auto; /* Reduced from 40px since we have padding-top on body */
+    margin: 20px auto;
     padding: 0 20px;
     display: flex;
     flex-direction: column;
@@ -56,10 +56,10 @@ h1 {
 }
 
 .cart-item {
+    position: relative;
     display: flex;
-    align-items: center;
-    padding: 20px 0;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
 }
 
 .item-image {
@@ -96,16 +96,30 @@ h1 {
 }
 
 .original-price {
+    text-decoration: line-through;
+    color: #999;
     font-size: 0.9em;
     margin-right: 8px;
 }
 
 .discounted-price {
+    color: #dc3545;
     font-size: 1.1em;
     font-weight: bold;
 }
 
+.item-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
 .item-actions {
+    position: relative;
+    z-index: 2;
     margin-left: 20px;
     display: flex;
     align-items: center;
@@ -117,6 +131,10 @@ h1 {
     align-items: center;
     gap: 10px;
     margin: 0;
+}
+
+.quantity-controls form {
+    display: inline;
 }
 
 .quantity-btn {

@@ -162,10 +162,10 @@ h1 {
     justify-content: space-between;
 }
 
-.discount-price {
+.discounted-price {
     display: block;
     color: #666;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: normal;
     text-decoration: line-through;
     transition: transform 0.3s ease, color 0.3s ease;
@@ -173,7 +173,7 @@ h1 {
     line-height: 1.2;
 }
 
-.discount-price sup {
+.discounted-price sup {
     font-size: 0.7em;
     position: relative;
     top: -0.5em;
