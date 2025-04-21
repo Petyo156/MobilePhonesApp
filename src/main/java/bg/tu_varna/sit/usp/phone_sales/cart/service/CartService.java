@@ -48,38 +48,74 @@ public class CartService {
     public CartResponse getCartResponseForUser(User user) {
         Cart cart = user.getCart();
         List<CartItem> cartItems = cart.getCartItems();
-        Integer summary = 0;
+        BigDecimal totalPrice = getTotalPrice(cartItems);
+        Integer summary = getSummary(cartItems);
 
         List<GetPhoneResponse> phoneResponses = new ArrayList<>();
-        BigDecimal totalPrice = BigDecimal.ZERO;
-
         for (CartItem item : cartItems) {
-            summary += item.getQuantity();
-
             GetPhoneResponse phoneResponse = phoneService.getPhoneResponseByPhone(item.getPhone());
             phoneResponse.setQuantity(item.getQuantity());
             phoneResponses.add(phoneResponse);
-
-            String priceToUse = phoneResponse.getDiscountPrice() != null && !phoneResponse.getDiscountPrice().isEmpty() 
-                ? phoneResponse.getDiscountPrice() 
-                : phoneResponse.getPrice();
-            
-            BigDecimal itemPrice = convertPriceToBigDecimal(priceToUse);
-            BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
-            totalPrice = totalPrice.add(itemTotal);
         }
         log.info("Initializing cart response");
         return initializeCartResponse(phoneResponses, totalPrice, summary);
     }
 
-    private BigDecimal convertPriceToBigDecimal(String priceStr) {
-        priceStr = priceStr.replace(" лв.", "").replace(",", ".");
-        priceStr = priceStr.replace(".", "");
-        if (priceStr.length() > 2) {
-            priceStr = priceStr.substring(0, priceStr.length() - 2) + "." + priceStr.substring(priceStr.length() - 2);
+    public Integer getSummary(List<CartItem> cartItems) {
+        int summary = 0;
+        for (CartItem item : cartItems) {
+            summary = summary + item.getQuantity();
         }
-        return new BigDecimal(priceStr);
+        return summary;
     }
+
+    public BigDecimal getTotalPrice(List<CartItem> cartItems) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        for (CartItem item : cartItems) {
+            BigDecimal itemPrice = item.getPhone().getPrice();
+            BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+
+            totalPrice = totalPrice.add(itemTotal);
+        }
+        return totalPrice;
+    }
+
+//    public CartResponse getCartResponseForUser(User user) {
+//        Cart cart = user.getCart();
+//        List<CartItem> cartItems = cart.getCartItems();
+//        Integer summary = 0;
+//
+//        List<GetPhoneResponse> phoneResponses = new ArrayList<>();
+//        BigDecimal totalPrice = BigDecimal.ZERO;
+//
+//        for (CartItem item : cartItems) {
+//            summary += item.getQuantity();
+//
+//            GetPhoneResponse phoneResponse = phoneService.getPhoneResponseByPhone(item.getPhone());
+//            phoneResponse.setQuantity(item.getQuantity());
+//            phoneResponses.add(phoneResponse);
+//
+//            String priceToUse = phoneResponse.getDiscountPrice() != null && !phoneResponse.getDiscountPrice().isEmpty()
+//                    ? phoneResponse.getDiscountPrice()
+//                    : phoneResponse.getPrice();
+//
+//            BigDecimal itemPrice = convertPriceToBigDecimal(priceToUse);
+//            BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+//            totalPrice = totalPrice.add(itemTotal);
+//        }
+//        log.info("Initializing cart response");
+//        return initializeCartResponse(phoneResponses, totalPrice, summary);
+//    }
+//
+//    private BigDecimal convertPriceToBigDecimal(String priceStr) {
+//        priceStr = priceStr.replace(" лв.", "").replace(",", ".");
+//        priceStr = priceStr.replace(".", "");
+//        if (priceStr.length() > 2) {
+//            priceStr = priceStr.substring(0, priceStr.length() - 2) + "." + priceStr.substring(priceStr.length() - 2);
+//        }
+//        return new BigDecimal(priceStr);
+//    }
 
     private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
         return CartResponse.builder()

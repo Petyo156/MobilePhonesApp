@@ -231,6 +231,14 @@
             <p class="form-error" th:if="${#fields.hasErrors('hardware.screenResolution')}"
                th:errors="*{hardware.screenResolution}"></p>
         </div>
+
+        <div class="form-group">
+            <label for="modelUrl">Model Url:</label>
+            <input type="text" id="modelUrl" step="0.5" th:field="*{modelUrl}"
+                   class="form-input" placeholder="Enter model url"/>
+            <p class="form-error" th:if="${#fields.hasErrors('modelUrl')}"
+               th:errors="*{modelUrl}"></p>
+        </div>
     </div>
 
 

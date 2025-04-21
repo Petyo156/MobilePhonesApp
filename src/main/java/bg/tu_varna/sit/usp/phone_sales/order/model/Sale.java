@@ -1,6 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.order.model;
 
-import bg.tu_varna.sit.usp.phone_sales.discount.DiscountCode;
+import bg.tu_varna.sit.usp.phone_sales.discount.model.DiscountCode;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.SaleDetails;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;

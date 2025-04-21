@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.usp.phone_sales.discount;
+package bg.tu_varna.sit.usp.phone_sales.discount.model;
 
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import jakarta.persistence.*;
