@@ -174,8 +174,9 @@ public class PhoneService {
         Integer quantity = phone.getQuantity();
         String modelUrl = phone.getModelUrl();
         Integer releaseYear = phone.getReleaseYear();
+        String slug = phone.getSlug();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, discountPercent, quantity, modelUrl, releaseYear);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, slug, images, price, discountPrice, discountPercent, quantity, modelUrl, releaseYear);
     }
 
     private String calculateDiscountPrice(Phone phone) {
