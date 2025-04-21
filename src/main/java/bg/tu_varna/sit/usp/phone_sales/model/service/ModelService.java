@@ -24,8 +24,8 @@ public class ModelService {
     }
 
     public PhoneModel submitBrandAndModel(SubmitBrandAndModel brandAndModel) {
-        String brandName = brandAndModel.getBrand().toLowerCase().trim();
-        String modelName = brandAndModel.getModel().toLowerCase().trim();
+        String brandName = brandAndModel.getBrand().trim();
+        String modelName = brandAndModel.getModel().trim();
 
         Brand brand = brandService.findOrCreateBrand(brandName);
 
