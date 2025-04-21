@@ -172,8 +172,10 @@ public class PhoneService {
         String discountPrice = calculateDiscountPrice(phone);
         String discountPercent = String.format("%.0f", phone.getDiscountPercent());
         Integer quantity = phone.getQuantity();
+        String modelUrl = phone.getModelUrl();
+        Integer releaseYear = phone.getReleaseYear();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, discountPercent, quantity, phone);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, discountPercent, quantity, modelUrl, releaseYear);
     }
 
     private String calculateDiscountPrice(Phone phone) {
@@ -184,7 +186,7 @@ public class PhoneService {
         return decimalFormat.format(finalPrice);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, String discountPercent, Integer quantity, Phone phone) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -197,8 +199,8 @@ public class PhoneService {
                 .quantity(quantity)
                 .discountPercent(discountPercent)
                 .discountPrice(discountPrice)
-                .releaseYear(phone.getReleaseYear())
-                .modelUrl(phone.getModelUrl())
+                .releaseYear(releaseYear)
+                .modelUrl(modelUrl)
                 .build();
     }
 
