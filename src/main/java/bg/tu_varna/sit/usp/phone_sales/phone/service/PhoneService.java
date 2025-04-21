@@ -173,7 +173,7 @@ public class PhoneService {
         String discountPercent = String.format("%.0f", phone.getDiscountPercent());
         Integer quantity = phone.getQuantity();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, discountPercent, quantity);
+        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, phone.getSlug(), images, price, discountPrice, discountPercent, quantity, phone);
     }
 
     private String calculateDiscountPrice(Phone phone) {
@@ -184,7 +184,7 @@ public class PhoneService {
         return decimalFormat.format(finalPrice);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, String discountPercent, Integer quantity) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, String discountPercent, Integer quantity, Phone phone) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -197,6 +197,7 @@ public class PhoneService {
                 .quantity(quantity)
                 .discountPercent(discountPercent)
                 .discountPrice(discountPrice)
+                .releaseYear(phone.getReleaseYear())
                 .build();
     }
 
