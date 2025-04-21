@@ -19,20 +19,11 @@
         </div>
         <div class="price-container">
             <div th:if="${phone.discountPrice != phone.price}">
-                                <span class="discounted-price">
-                                    <span th:text="${#strings.substring(phone.price, 0, #strings.indexOf(phone.price, '.'))}"></span>
-                                    <sup th:text="${#strings.substring(phone.price, #strings.indexOf(phone.price, '.') + 1)}"></sup> лв.
-                                </span>
-                <span class="price">
-                                    <span th:text="${#strings.substring(phone.discountPrice, 0, #strings.indexOf(phone.discountPrice, '.'))}"></span>
-                                    <sup th:text="${#strings.substring(phone.discountPrice, #strings.indexOf(phone.discountPrice, '.') + 1)}"></sup> лв.
-                                </span>
+                <span class="discounted-price" th:text="${phone.price + ' лв.'}"></span>
+                <span class="price" th:text="${phone.discountPrice + ' лв.'}"></span>
             </div>
             <div th:unless="${phone.discountPrice != phone.price}">
-                                <span class="price">
-                                    <span th:text="${#strings.substring(phone.price, 0, #strings.indexOf(phone.price, '.'))}"></span>
-                                    <sup th:text="${#strings.substring(phone.price, #strings.indexOf(phone.price, '.') + 1)}"></sup> лв.
-                                </span>
+                <span class="price" th:text="${phone.price + ' лв.'}"></span>
             </div>
         </div>
     </a>

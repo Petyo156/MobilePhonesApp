@@ -70,23 +70,12 @@
 
             <div class="price-container">
                 <div>
-                    <div class="price-amount">
-                        <div th:if="${phoneResponse.discountPrice != phoneResponse.price}">
-                            <span class="discounted-price">
-                                <span th:text="${#strings.substring(phoneResponse.price, 0, #strings.indexOf(phoneResponse.price, '.'))}"></span>
-                                <sup th:text="${#strings.substring(phoneResponse.price, #strings.indexOf(phoneResponse.price, '.') + 1)}"></sup> лв.
-                            </span>
-                            <span class="price">
-                                <span th:text="${#strings.substring(phoneResponse.discountPrice, 0, #strings.indexOf(phoneResponse.discountPrice, '.'))}"></span>
-                                <sup th:text="${#strings.substring(phoneResponse.discountPrice, #strings.indexOf(phoneResponse.discountPrice, '.') + 1)}"></sup> лв.
-                            </span>
-                        </div>
-                        <div th:unless="${phoneResponse.discountPrice != phoneResponse.price}">
-                            <span class="price">
-                                <span th:text="${#strings.substring(phoneResponse.price, 0, #strings.indexOf(phoneResponse.price, '.'))}"></span>
-                                <sup th:text="${#strings.substring(phoneResponse.price, #strings.indexOf(phoneResponse.price, '.') + 1)}"></sup> лв.
-                            </span>
-                        </div>
+                    <div th:if="${phoneResponse.discountPrice != phoneResponse.price}">
+                        <span class="discounted-price" th:text="${phoneResponse.price + ' лв.'}"></span>
+                        <span class="price" th:text="${phoneResponse.discountPrice + ' лв.'}"></span>
+                    </div>
+                    <div th:unless="${phoneResponse.discountPrice != phoneResponse.price}">
+                        <span class="price" th:text="${phoneResponse.price + ' лв.'}"></span>
                     </div>
                 </div>
                 <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">

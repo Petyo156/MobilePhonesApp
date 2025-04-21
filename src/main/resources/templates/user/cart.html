@@ -36,15 +36,11 @@
                             </p>
                             <div class="item-price">
                                 <div th:if="${phone.discountPrice != null and phone.discountPrice != phone.price}">
-                                    <span class="original-price">
-                                        <span th:text="${phone.price}">0.00</span> лв.
-                                    </span>
-                                    <span class="discounted-price">
-                                        <span th:text="${phone.discountPrice}">0.00</span> лв.
-                                    </span>
+                                    <span class="original-price" th:text="${phone.price + ' лв.'}"></span>
+                                    <span class="discounted-price" th:text="${phone.discountPrice + ' лв.'}"></span>
                                 </div>
                                 <div th:unless="${phone.discountPrice != null and phone.discountPrice != phone.price}">
-                                    <span th:text="${phone.price}" class="price-value">0.00</span> лв.
+                                    <span class="price-value" th:text="${phone.price + ' лв.'}"></span>
                                 </div>
                             </div>
                         </div>

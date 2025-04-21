@@ -23,7 +23,7 @@
                                  alt="Phone Image">
                             <div class="info">
                                 <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
-                                <p th:text="'Price: ' + ${phone.price != null ? phone.price : 'N/A'} + ' BGN'"></p>
+                                <p th:text="'Price: ' + ${phone.price != null ? phone.price + ' лв.' : 'N/A'}"></p>
                                 <p th:text="'Stock: ' + ${phone.quantity != null ? phone.quantity : 0}"></p>
                                 <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
                                     <button class="toggle-btn hide" type="submit">Hide</button>
@@ -45,7 +45,7 @@
                                  alt="Phone Image">
                             <div class="info">
                                 <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
-                                <p th:text="'Price: ' + ${phone.price} + ' BGN'"></p>
+                                <p th:text="'Price: ' + ${phone.price + ' лв.'}"></p>
                                 <p th:text="'Stock: ' + ${phone.quantity}"></p>
                                 <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
                                     <button class="toggle-btn show" type="submit">Show</button>
