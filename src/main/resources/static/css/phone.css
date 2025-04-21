@@ -818,3 +818,107 @@ input[type="range"]::-webkit-slider-thumb {
 .is-invalid ~ .invalid-feedback {
     display: block;
 }
+
+.selection-container {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+}
+
+.selection-section {
+    margin-bottom: 1.5rem;
+}
+
+.selection-section:last-child {
+    margin-bottom: 0;
+}
+
+.selection-section h4 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #eee;
+}
+
+.color-options, .storage-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.color-option, .storage-option {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    color: #333;
+}
+
+.color-option {
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    position: relative;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    color: #333;
+}
+
+.color-option::after {
+    display: none;
+}
+
+.color-option.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.color-option::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.color-option[data-color="black"]::before {
+    background-color: #000000;
+}
+
+.color-option[data-color="white"]::before {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+}
+
+.color-option[data-color="silver"]::before {
+    background-color: #c0c0c0;
+}
+
+.color-option[data-color="gold"]::before {
+    background-color: #ffd700;
+}
+
+.storage-option {
+    border: 1px solid #ddd;
+}
+
+.storage-option.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.color-option:hover, .storage-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

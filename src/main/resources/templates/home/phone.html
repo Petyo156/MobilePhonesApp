@@ -66,7 +66,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h1 th:text="${phoneResponse.brandAndModelResponse.model}">Phone Name</h1>
+            <h1 th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model + ' ' + phoneResponse.hardwareResponse.storage + 'GB ' + phoneResponse.hardwareResponse.ram + 'GB RAM'}"></h1>
             <p class="text-muted" th:text="${phoneResponse.brandAndModelResponse.brand}">Brand</p>
 
             <div class="price-container">
@@ -96,6 +96,28 @@
                         <i class="fas fa-shopping-cart"></i>Add to Cart
                     </button>
                 </form>
+            </div>
+
+            <div class="selection-container">
+                <div class="selection-section">
+                    <h4>Color</h4>
+                    <div class="color-options">
+                        <button class="color-option active" style="background-color: #000000;" data-color="black">Black</button>
+                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="white">White</button>
+                        <button class="color-option" style="background-color: #c0c0c0;" data-color="silver">Silver</button>
+                        <button class="color-option" style="background-color: #ffd700;" data-color="gold">Gold</button>
+                    </div>
+                </div>
+
+                <div class="selection-section">
+                    <h4>Storage</h4>
+                    <div class="storage-options">
+                        <button class="storage-option active" data-storage="128">128GB</button>
+                        <button class="storage-option" data-storage="256">256GB</button>
+                        <button class="storage-option" data-storage="512">512GB</button>
+                        <button class="storage-option" data-storage="1024">1TB</button>
+                    </div>
+                </div>
             </div>
 
             <div class="finance-calculator">
