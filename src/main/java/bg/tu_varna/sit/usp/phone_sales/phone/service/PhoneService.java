@@ -198,6 +198,7 @@ public class PhoneService {
                 .discountPercent(discountPercent)
                 .discountPrice(discountPrice)
                 .releaseYear(phone.getReleaseYear())
+                .modelUrl(phone.getModelUrl())
                 .build();
     }
 

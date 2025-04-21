@@ -34,5 +34,7 @@ public class GetPhoneResponse {
 
     private String slug;
 
+    private String modelUrl;
+
     private List<String> images;
 }

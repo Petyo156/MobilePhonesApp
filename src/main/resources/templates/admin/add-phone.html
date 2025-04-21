@@ -154,6 +154,14 @@
     <h2 class="form-section-title">🧪 Optional Specifications</h2>
     <div class="form-section optional">
         <div class="form-group">
+            <label for="model_url">3D model url:</label>
+            <input type="url" id="model_url" th:field="*{modelUrl}" class="form-input"
+                   placeholder="Enter 3d model url"/>
+            <p class="form-error" th:if="${#fields.hasErrors('modelUrl')}"
+               th:errors="*{modelUrl}"></p>
+        </div>
+
+        <div class="form-group">
             <label for="height">Height:</label>
             <input type="number" id="height" step="0.5" th:field="*{dimensions.height}" class="form-input"
                    placeholder="Enter height"/>
