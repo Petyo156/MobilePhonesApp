@@ -78,12 +78,12 @@
                         <span class="price" th:text="${phoneResponse.price + ' лв.'}"></span>
                     </div>
                 </div>
-<!--                <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">-->
-<!--                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-<!--                    <button type="submit" class="add-to-cart-btn">-->
-<!--                        <i class="fas fa-shopping-cart"></i>Add to Cart-->
-<!--                    </button>-->
-<!--                </form>-->
+                <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="add-to-cart-btn">
+                        <i class="fas fa-shopping-cart"></i>Add to Cart
+                    </button>
+                </form>
             </div>
 
             <div class="selection-container">
@@ -183,7 +183,7 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Camera</div>
-                            <div class="spec-value" th:text="${phoneResponse.cameraResponse.count} + ' cameras (' + ${phoneResponse.cameraResponse.resolution} + ' MP)'">0 cameras (0 MP)</div>
+                            <div class="spec-value" th:text="${phoneResponse.cameraResponse.resolution} + 'MP'">0 cameras (0 MP)</div>
                         </div>
                     </div>
                     <div class="spec-item">
