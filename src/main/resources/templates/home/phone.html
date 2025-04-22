@@ -33,15 +33,15 @@
                         <button th:each="image, stat : ${phoneResponse.images}"
                                 type="button"
                                 data-bs-target="#carouselExampleIndicators"
-                                th:data-bs-slide-to="${stat.index}"
-                                th:class="${stat.first} ? 'active' : ''"
+                                th:data-bs-slide-to="${image.imageIndex}"
+                                th:class="${image.imageIndex == 0} ? 'active' : ''"
                                 th:aria-label="'Slide ' + ${stat.count}">
                         </button>
                     </div>
                     <div class="carousel-inner">
                         <div th:each="image, stat : ${phoneResponse.images}"
-                             th:class="${stat.first} ? 'carousel-item active' : 'carousel-item'">
-                            <img th:src="${image}"
+                             th:class="${image.imageIndex == 0} ? 'carousel-item active' : 'carousel-item'">
+                            <img th:src="${image.imageUrl}"
                                  class="d-block w-100 phone-image"
                                  th:alt="'Phone Image ' + ${stat.count}"
                                  data-bs-toggle="modal"
@@ -241,7 +241,7 @@
                     <div class="carousel-inner">
                         <div th:each="image, stat : ${phoneResponse.images}"
                              th:class="${stat.first} ? 'carousel-item active' : 'carousel-item'">
-                            <img th:src="${image}"
+                            <img th:src="${image.imageUrl}"
                                  class="d-block w-100 modal-image"
                                  th:alt="'Phone Image ' + ${stat.count}">
                         </div>

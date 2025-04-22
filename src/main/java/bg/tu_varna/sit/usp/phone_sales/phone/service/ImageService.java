@@ -34,19 +34,16 @@ public class ImageService {
         for (int i = 0; i < imageFiles.size(); i++) {
             MultipartFile file = imageFiles.get(i);
             if (!file.isEmpty()) {
-                Boolean isThumbnail = i == thumbnailIndex;
-                images.add(saveImage(file, isThumbnail, phone));
+                images.add(saveImage(file, i, phone));
             }
         }
         return images;
     }
 
-    private Image saveImage(MultipartFile imageFile, Boolean isThumbnail, Phone phone) {
+    private Image saveImage(MultipartFile imageFile, int index, Phone phone) {
         try {
-            // Generate a unique public ID for the image
             String publicId = UUID.randomUUID().toString();
             
-            // Upload the image to Cloudinary
             Map uploadResult = cloudinary.uploader().upload(
                 imageFile.getBytes(),
                 ObjectUtils.asMap(
@@ -55,10 +52,9 @@ public class ImageService {
                 )
             );
 
-            // Get the secure URL from the upload result
             String secureUrl = (String) uploadResult.get("secure_url");
 
-            Image image = initializeImage(isThumbnail, phone, secureUrl);
+            Image image = initializeImage(index, phone, secureUrl);
 
             log.info("Uploaded image to Cloudinary: {}", secureUrl);
             return image;
@@ -67,10 +63,10 @@ public class ImageService {
         }
     }
 
-    private Image initializeImage(Boolean isThumbnail, Phone phone, String imageUrl) {
+    private Image initializeImage(int index, Phone phone, String imageUrl) {
         return Image.builder()
                 .phone(phone)
-                .isThumbnail(isThumbnail)
+                .imageIndex(index)
                 .imageUrl(imageUrl)
                 .build();
     }

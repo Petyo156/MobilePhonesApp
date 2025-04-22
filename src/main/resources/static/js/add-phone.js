@@ -16,11 +16,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
+        const orderedFiles = Array.from(imagePreview.children).map(wrapper => {
+            const index = parseInt(wrapper.dataset.index);
+            return selectedImages[index].file;
+        });
+
         const dataTransfer = new DataTransfer();
-        selectedImages.forEach(image => {
-            dataTransfer.items.add(image.file);
+        orderedFiles.forEach(file => {
+            dataTransfer.items.add(file);
         });
         fileInput.files = dataTransfer.files;
+
+        thumbnailIndexInput.value = '0';
     });
 
     const sortable = new Sortable(imagePreview, {
@@ -30,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateImageNumbers();
             updateThumbnailBadge();
             updateThumbnailIndex();
+            updateSelectedImagesOrder();
         }
     });
 
@@ -192,7 +200,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 imagePreview.appendChild(wrapper);
                 selectedImages.push({
                     file: file,
-                    preview: wrapper
+                    preview: wrapper,
+                    index: selectedImages.length
                 });
 
                 if (selectedImages.length === fileList.length) {
@@ -208,10 +217,29 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.value = '';
     }
 
+    function updateSelectedImagesOrder() {
+        const currentOrder = Array.from(imagePreview.children).map(wrapper =>
+            parseInt(wrapper.dataset.index)
+        );
+        
+        const reorderedImages = currentOrder.map(index => selectedImages[index]);
+        selectedImages = reorderedImages;
+        
+        selectedImages.forEach((image, i) => {
+            image.index = i;
+            image.preview.dataset.index = i;
+        });
+    }
+
     function removeImage(wrapper) {
         const index = parseInt(wrapper.dataset.index);
         wrapper.remove();
         selectedImages.splice(index, 1);
+        
+        selectedImages.forEach((image, i) => {
+            image.index = i;
+            image.preview.dataset.index = i;
+        });
         
         updateImageNumbers();
         updateThumbnailBadge();

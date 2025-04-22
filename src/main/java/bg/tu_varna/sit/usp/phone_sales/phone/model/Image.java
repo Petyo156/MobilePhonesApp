@@ -19,8 +19,8 @@ public class Image {
     @Column(nullable = false)
     private String imageUrl;
 
-    @Column
-    private Boolean isThumbnail;
+    @Column(name = "image_index", nullable = false)
+    private Integer imageIndex;
 
     @ManyToOne
     @JoinColumn(name = "phone_id")
