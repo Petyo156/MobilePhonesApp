@@ -32,6 +32,7 @@ public class PhoneController {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
 
         modelAndView.addObject("phoneResponse", phoneResponse);
+        modelAndView.addObject("modelUrl", phoneResponse.getModelUrl());
         modelAndView.addObject("user", user);
         return modelAndView;
     }
