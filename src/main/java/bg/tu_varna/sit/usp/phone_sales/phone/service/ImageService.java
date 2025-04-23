@@ -20,12 +20,10 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class ImageService {
-    private final ImageRepository imageRepository;
     private final Cloudinary cloudinary;
 
     @Autowired
-    public ImageService(ImageRepository imageRepository, Cloudinary cloudinary) {
-        this.imageRepository = imageRepository;
+    public ImageService(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
     }
 

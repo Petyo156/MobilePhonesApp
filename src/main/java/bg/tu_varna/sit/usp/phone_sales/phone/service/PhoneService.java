@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -144,6 +145,22 @@ public class PhoneService {
         log.info("Phone visibility state updated");
     }
 
+    public void setDiscountPercentForPhone(String slug, String discountPercent) {
+        Phone phone = getPhoneBySlug(slug);
+        try {
+            BigDecimal fullPercent = new BigDecimal(discountPercent);
+            if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
+                throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+            }
+            phone.setDiscountPercent(fullPercent);
+            phoneRepository.save(phone);
+
+            log.info("Discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
+        } catch (NumberFormatException e) {
+            throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+        }
+    }
+
     private String generateSlug(Phone phone) {
         log.info("Generating slug for phone");
         return (phone.getPhoneModel().getBrand().getName() + "-" + phone.getPhoneModel().getName() + "-" +
@@ -182,10 +199,12 @@ public class PhoneService {
 
     private String calculateDiscountPrice(Phone phone) {
         BigDecimal price = phone.getPrice();
-        BigDecimal discount = phone.getDiscountPercent().divide(BigDecimal.valueOf(100));
-        BigDecimal discountedAmount = price.multiply(discount);
+        BigDecimal discountPercent = phone.getDiscountPercent().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+
+        BigDecimal discountedAmount = price.multiply(discountPercent);
         BigDecimal finalPrice = price.subtract(discountedAmount);
-        return decimalFormat.format(finalPrice);
+
+        return decimalFormat.format(finalPrice.setScale(2, RoundingMode.HALF_UP));
     }
 
     private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<ImageResponse> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
@@ -289,5 +308,4 @@ public class PhoneService {
                 .slug(slug)
                 .build();
     }
-
 }

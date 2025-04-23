@@ -12,4 +12,5 @@ public class ExceptionMessages {
     public static final String SET_AT_LEAST_ONE_PHONE_PICTURE = "Set at least one phone picture";
     public static final String EXPECTED_AUTHENTICATION_METADATA_PRINCIPLE = "Expected AuthenticationMetadata principal.";
     public static final String ADD_STUFF_TO_YOUR_CART_BEFORE_CHECKING_OUT = "Add stuff to your cart before checking out.";
+    public static final String INVALID_DISCOUNT_PERCENT = "Invalid discount percent value";
 }

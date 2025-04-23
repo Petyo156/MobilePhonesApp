@@ -76,6 +76,28 @@ public class AdminController {
         return modelAndView;
     }
 
+    @GetMapping("/discounts")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getDiscountsPage() {
+        ModelAndView modelAndView = new ModelAndView("admin/add-promotion");
+        List<GetPhoneResponse> allVisiblePhones = phoneService.getAllVisiblePhones();
+        List<GetPhoneResponse> allHiddenPhones = phoneService.getAllHiddenPhones();
+
+        modelAndView.addObject("allVisiblePhones", allVisiblePhones);
+        modelAndView.addObject("allHiddenPhones", allHiddenPhones);
+
+        return modelAndView;
+    }
+
+    @PostMapping("/discounts/{slug}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String setDiscount(@PathVariable String slug,
+                                  @RequestParam String discountPercent) {
+        phoneService.setDiscountPercentForPhone(slug, discountPercent);
+
+        return "redirect:/admin/discounts";
+    }
+
     @PostMapping("/products/{slug}")
     @PreAuthorize("hasRole('ADMIN')")
     public String updateVisibility(@PathVariable String slug) {
