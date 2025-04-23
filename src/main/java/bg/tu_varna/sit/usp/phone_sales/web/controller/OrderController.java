@@ -1,8 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
-import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
-import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountService;
+import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUser;
@@ -17,20 +16,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/checkout")
 public class OrderController {
     private final UserService userService;
     private final OrderService orderService;
-    private final DiscountService discountService;
+    private final DiscountCodeService discountCodeService;
 
     @Autowired
-    public OrderController(UserService userService, OrderService orderService, DiscountService discountService) {
+    public OrderController(UserService userService, OrderService orderService, DiscountCodeService discountCodeService) {
         this.userService = userService;
         this.orderService = orderService;
-        this.discountService = discountService;
+        this.discountCodeService = discountCodeService;
     }
 
     @GetMapping
@@ -54,29 +52,6 @@ public class OrderController {
         modelAndView.addObject("error", error);
 
         return modelAndView;
-    }
-
-    //tova trqbva da e v kolichkata
-    @PostMapping("/discount")
-    @RequireAuthenticatedUser
-    @RequireNotEmptyCart
-    public ModelAndView applyDiscount(
-            @RequestParam("discountCode") String discountCode,
-            @AuthenticationPrincipal AuthenticationMetadata auth,
-            RedirectAttributes redirectAttributes) {
-
-        User user = userService.getAuthenticatedUser(auth);
-        boolean codeIsValid = discountService.isValidCode(discountCode);
-        if (codeIsValid) {
-            CheckoutResponse checkoutResponse = orderService.applyDiscount(user, discountCode);
-            redirectAttributes.addFlashAttribute("checkoutResponse", checkoutResponse);
-            redirectAttributes.addFlashAttribute("discountApplied", true);
-            redirectAttributes.addFlashAttribute("discountCode", discountCode);
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Invalid discount code.");
-        }
-
-        return new ModelAndView("redirect:/checkout");
     }
 
     @PostMapping

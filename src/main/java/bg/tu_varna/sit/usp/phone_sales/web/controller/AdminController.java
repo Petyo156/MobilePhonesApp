@@ -1,11 +1,13 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
+import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.ImageService;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.DiscountCodeResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitPhoneRequest;
 import jakarta.validation.Valid;
@@ -25,11 +27,13 @@ public class AdminController {
 
     private final UserService userService;
     private final PhoneService phoneService;
+    private final DiscountCodeService discountCodeService;
 
     @Autowired
-    public AdminController(UserService userService, PhoneService phoneService, ImageService imageService) {
+    public AdminController(UserService userService, PhoneService phoneService, ImageService imageService, DiscountCodeService discountCodeService) {
         this.userService = userService;
         this.phoneService = phoneService;
+        this.discountCodeService = discountCodeService;
     }
 
     @GetMapping("/phone")
@@ -87,6 +91,33 @@ public class AdminController {
         modelAndView.addObject("allHiddenPhones", allHiddenPhones);
 
         return modelAndView;
+    }
+
+    @GetMapping("/codes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getCodesPage() {
+        ModelAndView modelAndView = new ModelAndView("admin/add-code");
+        List<DiscountCodeResponse> discountCodes = discountCodeService.getAllDiscountCodesResponse();
+
+        modelAndView.addObject("discountCodes", discountCodes);
+
+        return modelAndView;
+    }
+
+    @PostMapping("/codes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addCode(@RequestParam String name, @RequestParam String discountPercent) {
+        discountCodeService.addNewCode(name, discountPercent);
+
+        return "redirect:/admin/codes";
+    }
+
+    @PostMapping("/codes/deletion/{name}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteCode(@PathVariable String name) {
+        discountCodeService.deleteCodeByName(name);
+
+        return "redirect:/admin/codes";
     }
 
     @PostMapping("/discounts/{slug}")
