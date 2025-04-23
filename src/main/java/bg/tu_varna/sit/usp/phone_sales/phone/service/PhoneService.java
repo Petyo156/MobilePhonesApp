@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -167,7 +168,7 @@ public class PhoneService {
         HardwareResponse hardware = initializeHardwareResponse(phone);
         OperatingSystemResponse operatingSystem = initializeOperatingSystemResponse(phone);
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
-        List<String> images = initializePhoneImagesResponse(phone);
+        List<ImageResponse> images = initializePhoneImagesResponse(phone);
         String price = decimalFormat.format(phone.getPrice());
         String discountPrice = calculateDiscountPrice(phone);
         String discountPercent = String.format("%.0f", phone.getDiscountPercent());
@@ -187,7 +188,7 @@ public class PhoneService {
         return decimalFormat.format(finalPrice);
     }
 
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<String> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
+    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<ImageResponse> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
         return GetPhoneResponse.builder()
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
@@ -205,11 +206,15 @@ public class PhoneService {
                 .build();
     }
 
-    private List<String> initializePhoneImagesResponse(Phone phone) {
-        List<String> images = new ArrayList<>();
+    private List<ImageResponse> initializePhoneImagesResponse(Phone phone) {
+        List<ImageResponse> images = new ArrayList<>();
         for (Image image : phone.getImages()) {
-            images.add(image.getImageUrl());
+            images.add(ImageResponse.builder()
+                    .imageUrl(image.getImageUrl())
+                    .imageIndex(image.getImageIndex())
+                    .build());
         }
+        images.sort(Comparator.comparing(ImageResponse::getImageIndex));
         return images;
     }
 

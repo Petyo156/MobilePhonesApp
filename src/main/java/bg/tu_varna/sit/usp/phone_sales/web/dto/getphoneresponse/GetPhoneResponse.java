@@ -36,5 +36,5 @@ public class GetPhoneResponse {
 
     private String modelUrl;
 
-    private List<String> images;
+    private List<ImageResponse> images;
 }

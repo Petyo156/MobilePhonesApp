@@ -4,31 +4,29 @@ import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.ImageRepository;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Slf4j
 public class ImageService {
     private final ImageRepository imageRepository;
-
-    @Value("${upload.path}")
-    private String uploadPath;
+    private final Cloudinary cloudinary;
 
     @Autowired
-    public ImageService(ImageRepository imageRepository) {
+    public ImageService(ImageRepository imageRepository, Cloudinary cloudinary) {
         this.imageRepository = imageRepository;
+        this.cloudinary = cloudinary;
     }
 
     public List<Image> saveImages(List<MultipartFile> imageFiles, int thumbnailIndex, Phone phone) {
@@ -36,38 +34,40 @@ public class ImageService {
         for (int i = 0; i < imageFiles.size(); i++) {
             MultipartFile file = imageFiles.get(i);
             if (!file.isEmpty()) {
-                Boolean isThumbnail = i == thumbnailIndex;
-                images.add(saveImage(file, isThumbnail, phone));
+                images.add(saveImage(file, i, phone));
             }
         }
         return images;
     }
 
-    private Image saveImage(MultipartFile imageFile, Boolean isThumbnail, Phone phone) {
+    private Image saveImage(MultipartFile imageFile, int index, Phone phone) {
         try {
-            Path uploadDir = Paths.get(uploadPath);
-            Files.createDirectories(uploadDir);
+            String publicId = UUID.randomUUID().toString();
+            
+            Map uploadResult = cloudinary.uploader().upload(
+                imageFile.getBytes(),
+                ObjectUtils.asMap(
+                    "public_id", publicId,
+                    "resource_type", "auto"
+                )
+            );
 
-            String uniqueName = UUID.randomUUID() + "-" + imageFile.getOriginalFilename();
-            Path path = uploadDir.resolve(uniqueName);
-            Files.write(path, imageFile.getBytes());
+            String secureUrl = (String) uploadResult.get("secure_url");
 
-            String relativePath = "/static/images/phoneimages/" + uniqueName;
+            Image image = initializeImage(index, phone, secureUrl);
 
-            Image image = initializeImage(isThumbnail, phone, relativePath);
-
-            log.info("Saved image to {}", relativePath);
+            log.info("Uploaded image to Cloudinary: {}", secureUrl);
             return image;
         } catch (IOException e) {
-            throw new DomainException("Failed to save image: " + e.getMessage());
+            throw new DomainException("Failed to upload image to Cloudinary: " + e.getMessage());
         }
     }
 
-    private Image initializeImage(Boolean isThumbnail, Phone phone, String relativePath) {
+    private Image initializeImage(int index, Phone phone, String imageUrl) {
         return Image.builder()
                 .phone(phone)
-                .isThumbnail(isThumbnail)
-                .imageUrl(relativePath)
+                .imageIndex(index)
+                .imageUrl(imageUrl)
                 .build();
     }
 }

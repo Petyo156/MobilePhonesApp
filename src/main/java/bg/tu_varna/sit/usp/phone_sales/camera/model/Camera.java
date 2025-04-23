@@ -20,10 +20,10 @@ public class Camera {
     @OneToOne(mappedBy = "camera")
     private Hardware hardware;
 
-    @Column(nullable = false)
+    @Column
     private Integer count;
 
-    @Column
+    @Column(nullable = false)
     private Integer resolution;
 
     @Column

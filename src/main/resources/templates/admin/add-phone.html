@@ -6,7 +6,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add Phone</title>
-    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
+    <link rel="stylesheet" th:href="@{/css/add-phone.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script th:src="@{/js/add-phone.js}" defer></script>
 </head>
 <body>
 <a href="/" class="form-back">← Back to Main Page</a>
@@ -16,7 +18,6 @@
     <h2 class="form-section-title">📌 Required Information</h2>
 
     <div class="form-section">
-        <!-- Brand and Model Section -->
         <div class="form-group">
             <label for="brand">Brand:</label>
             <input type="text" id="brand" th:field="*{brandAndModel.brand}" class="form-input"
@@ -33,7 +34,6 @@
                th:errors="*{brandAndModel.model}"></p>
         </div>
 
-        <!-- Basic Info Section -->
         <div class="form-group">
             <label for="price">Price:</label>
             <input type="number" id="price" th:field="*{price}" class="form-input" placeholder="Enter price"/>
@@ -53,7 +53,6 @@
             <p class="form-error" th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}"></p>
         </div>
 
-        <!-- Dimensions Section -->
         <div class="form-group">
             <label for="color">Color:</label>
             <input type="text" id="color" th:field="*{dimensions.color}" class="form-input" placeholder="Enter color"/>
@@ -67,7 +66,6 @@
                th:errors="*{dimensions.waterResistance}"></p>
         </div>
 
-        <!-- Operating System Section -->
         <div class="form-group">
             <label for="osType">OS Type:</label>
             <select id="osType" th:field="*{operatingSystem.operatingSystemType}" class="form-input">
@@ -89,7 +87,6 @@
                th:errors="*{operatingSystem.version}"></p>
         </div>
 
-        <!-- Hardware Section -->
         <div class="form-group">
             <label for="ram">RAM Size:</label>
             <input type="number" id="ram" th:field="*{hardware.ram}" class="form-input" placeholder="Enter RAM size"/>
@@ -131,24 +128,34 @@
             <p class="form-error" th:if="${#fields.hasErrors('hardware.simType')}" th:errors="*{hardware.simType}"></p>
         </div>
 
-        <!-- Camera Section -->
         <div class="form-group">
-            <label for="cameraType">Camera count:</label>
-            <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input"
-                   placeholder="Enter camera type"/>
-            <p class="form-error" th:if="${#fields.hasErrors('camera.count')}" th:errors="*{camera.count}"></p>
+            <label for="mainCameraResolution">Main Camera Resolution:</label>
+            <input type="number" id="mainCameraResolution" step="0.5" th:field="*{camera.resolution}" class="form-input"
+                   placeholder="Enter main camera resolution"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}"
+               th:errors="*{camera.resolution}"></p>
         </div>
+    </div>
 
-        <div id="fileInputs">
-            <div class="form-group">
-                <input type="file" name="imageFile" class="form-input"/>
-                <label>
-                    <input type="radio" name="thumbnailIndex" value="0" checked/> Thumbnail
-                </label>
+    <div class="form-section image-upload-section">
+        <div class="form-group full-width">
+            <input type="hidden" id="thumbnailIndex" name="thumbnailIndex" value="0"/>
+            <div class="drag-drop-area" id="dragDropArea">
+                <input type="file" id="imageFile" name="imageFile" class="form-input" multiple accept=".png,.jpg,.jpeg"/>
+                <div class="drag-drop-text">
+                    <p>Drag & drop your images here</p>
+                    <p>or paste from clipboard (Ctrl+V)</p>
+                    <p>(max 6 files .png, .jpg)</p>
+                    <button type="button" class="browse-button">Browse Files</button>
+                </div>
             </div>
         </div>
-        <button type="button" onclick="addFileInput()" class="form-add">Add Another Image File</button>
 
+        <!-- image preview -->
+        <div class="image-preview-section">
+            <div id="imagePreview" class="image-preview-container">
+            </div>
+        </div>
     </div>
 
     <h2 class="form-section-title">🧪 Optional Specifications</h2>
@@ -193,19 +200,18 @@
         </div>
 
         <div class="form-group">
+            <label for="cameraType">Camera count:</label>
+            <input type="text" id="cameraType" th:field="*{camera.count}" class="form-input"
+                   placeholder="Enter camera type"/>
+            <p class="form-error" th:if="${#fields.hasErrors('camera.count')}" th:errors="*{camera.count}"></p>
+        </div>
+
+        <div class="form-group">
             <label for="cameraVideoResolution">Camera Video Resolution:</label>
             <input type="number" id="cameraVideoResolution" step="0.5" th:field="*{camera.videoResolution}"
                    class="form-input" placeholder="Enter video resolution"/>
             <p class="form-error" th:if="${#fields.hasErrors('camera.videoResolution')}"
                th:errors="*{camera.videoResolution}"></p>
-        </div>
-
-        <div class="form-group">
-            <label for="mainCameraResolution">Main Camera Resolution:</label>
-            <input type="number" id="mainCameraResolution" step="0.5" th:field="*{camera.resolution}" class="form-input"
-                   placeholder="Enter main camera resolution"/>
-            <p class="form-error" th:if="${#fields.hasErrors('camera.resolution')}"
-               th:errors="*{camera.resolution}"></p>
         </div>
 
         <div class="form-group">
@@ -231,48 +237,15 @@
             <p class="form-error" th:if="${#fields.hasErrors('hardware.screenResolution')}"
                th:errors="*{hardware.screenResolution}"></p>
         </div>
+    </div>
 
-        <div class="form-group">
-            <label for="modelUrl">Model Url:</label>
-            <input type="text" id="modelUrl" step="0.5" th:field="*{modelUrl}"
-                   class="form-input" placeholder="Enter model url"/>
-            <p class="form-error" th:if="${#fields.hasErrors('modelUrl')}"
-               th:errors="*{modelUrl}"></p>
+    <div class="form-section form-actions-section">
+        <div class="form-actions">
+            <input type="submit" value="Submit" class="form-submit"/>
+            <input type="reset" value="Reset" class="form-reset"/>
         </div>
     </div>
-
-
-    <div class="form-actions">
-        <input type="submit" value="Submit" class="form-submit"/>
-        <input type="reset" value="Reset" class="form-reset"/>
-    </div>
-
 </form>
-
-<script>
-
-    function addFileInput() {
-        const index = document.querySelectorAll('#fileInputs .form-group').length;
-
-        const container = document.createElement('div');
-        container.className = 'form-group';
-        container.innerHTML = `
-        <input type="file" name="imageFile" class="form-input"/>
-        <label>
-            <input type="radio" name="thumbnailIndex" value="${index}"/> Thumbnail
-        </label>
-        <button type="button" class="form-remove" onclick="removeFileInput(this)">Remove</button>
-    `;
-        document.getElementById('fileInputs').appendChild(container);
-    }
-
-    function removeFileInput(button) {
-        const container = button.parentElement;
-        container.remove();
-    }
-
-
-</script>
 </body>
 </html>
 

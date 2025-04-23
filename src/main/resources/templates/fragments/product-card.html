@@ -4,7 +4,7 @@
 </div>
 <div class="product-card">
     <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-        <img th:src="${phone.images[0]}" alt="Phone Image">
+        <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
         <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB'}">
             Brand</h3>
         <div class="rating">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Manage Products</title>
     <link rel="stylesheet" href="/css/manage-products.css">
-    <link rel="stylesheet" th:href="@{/css/admin-form.css}">
+    <link rel="stylesheet" th:href="@{/css/add-phone.css}">
 </head>
 <body>
     <a href="/" class="form-back">← Back to Main Page</a>
@@ -19,8 +19,7 @@
                 <th:block th:each="phone : ${allVisiblePhones}">
                     <div class="phone-card">
                         <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-                            <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0] : '/img/placeholder.jpg'}"
-                                 alt="Phone Image">
+                            <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
                             <div class="info">
                                 <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
                                 <p th:text="'Price: ' + ${phone.price != null ? phone.price + ' лв.' : 'N/A'}"></p>
@@ -41,7 +40,7 @@
                 <th:block th:each="phone : ${allHiddenPhones}">
                     <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
                         <div class="phone-card">
-                            <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0] : '/img/placeholder.jpg'}"
+                            <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0].imageUrl : '/img/placeholder.jpg'}"
                                  alt="Phone Image">
                             <div class="info">
                                 <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
