@@ -29,17 +29,22 @@
             </div>
             <div class="change_pass-section">
                 <h2>Change Password</h2>
-                <div class="alert alert-success">Password updated!</div>
-                <form method="post">
-                    <input type="password" placeholder="Current Password">
-                    <div class="error">Incorrect password</div>
-                    <input type="password" placeholder="New Password">
-                    <div class="error"></div>
-                    <input type="password" placeholder="Confirm New Password">
-                    <div class="error"></div>
-                    <button id="submitButton" type="submit">Change</button>
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+                <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
+                    <div class="mb-2">
+                        <input class="form-control" type="password" th:field="*{oldPassword}" placeholder="Current Password">
+                    </div>
+                    <div class="mb-2">
+                        <input class="form-control" type="password" th:field="*{newPassword}" placeholder="New Password">
+                    </div>
+                    <div class="mb-2">
+                        <input class="form-control" type="password" th:field="*{confirmNewPassword}" placeholder="Confirm New Password">
+                    </div>
+                    <button id="submitButton" type="submit" class="btn btn-primary">Change</button>
                 </form>
             </div>
+
         </div>
 
         <div class="right-column">

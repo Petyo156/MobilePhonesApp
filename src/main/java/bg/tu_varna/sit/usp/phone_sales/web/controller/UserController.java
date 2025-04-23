@@ -49,7 +49,9 @@ public class UserController {
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "home/profile";
+            redirectAttributes.addFlashAttribute("changePasswordRequest", changePasswordRequest);
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must be at least 3 symbols.");
+            return "redirect:/profile";
         }
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
