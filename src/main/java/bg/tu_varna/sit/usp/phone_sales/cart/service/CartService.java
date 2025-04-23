@@ -4,6 +4,7 @@ import bg.tu_varna.sit.usp.phone_sales.cart.model.Cart;
 import bg.tu_varna.sit.usp.phone_sales.cart.repository.CartRepository;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.service.CartItemService;
+import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
@@ -23,12 +24,14 @@ public class CartService {
     private final CartRepository cartRepository;
     private final PhoneService phoneService;
     private final CartItemService cartItemService;
+    private final DiscountCodeService discountCodeService;
 
     @Autowired
-    public CartService(CartRepository cartRepository, PhoneService phoneService, CartItemService cartItemService) {
+    public CartService(CartRepository cartRepository, PhoneService phoneService, CartItemService cartItemService, DiscountCodeService discountCodeService) {
         this.cartRepository = cartRepository;
         this.phoneService = phoneService;
         this.cartItemService = cartItemService;
+        this.discountCodeService = discountCodeService;
     }
 
     public Cart initializeCartForUser(User user) {
@@ -79,6 +82,11 @@ public class CartService {
             totalPrice = totalPrice.add(itemTotal);
         }
         return totalPrice;
+    }
+
+    public BigDecimal getTotalPriceAfterDiscountCode(List<CartItem> cartItems, BigDecimal discountCodePercent) {
+        BigDecimal totalPrice = getTotalPrice(cartItems);
+        return discountCodeService.calculateDiscountPrice(totalPrice, discountCodePercent);
     }
 
     private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
