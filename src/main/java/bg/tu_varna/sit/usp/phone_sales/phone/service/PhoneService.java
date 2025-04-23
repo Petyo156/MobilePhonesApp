@@ -187,7 +187,7 @@ public class PhoneService {
         PhoneDimensionsResponse dimensions = initializeDimensionsResponse(phone);
         List<ImageResponse> images = initializePhoneImagesResponse(phone);
         String price = decimalFormat.format(phone.getPrice());
-        String discountPrice = calculateDiscountPrice(phone);
+        String discountPrice = getDiscountPrice(phone);
         String discountPercent = String.format("%.0f", phone.getDiscountPercent());
         Integer quantity = phone.getQuantity();
         String modelUrl = phone.getModelUrl();
@@ -197,13 +197,16 @@ public class PhoneService {
         return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, slug, images, price, discountPrice, discountPercent, quantity, modelUrl, releaseYear);
     }
 
-    private String calculateDiscountPrice(Phone phone) {
+    public BigDecimal calculateDiscountPrice(Phone phone) {
         BigDecimal price = phone.getPrice();
         BigDecimal discountPercent = phone.getDiscountPercent().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
         BigDecimal discountedAmount = price.multiply(discountPercent);
-        BigDecimal finalPrice = price.subtract(discountedAmount);
+        return price.subtract(discountedAmount);
+    }
 
+    private String getDiscountPrice(Phone phone) {
+        BigDecimal finalPrice = calculateDiscountPrice(phone);
         return decimalFormat.format(finalPrice.setScale(2, RoundingMode.HALF_UP));
     }
 
