@@ -35,16 +35,12 @@ public class OrderController {
     @RequireAuthenticatedUser
     @RequireNotEmptyCart
     public ModelAndView getCheckoutPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                        @ModelAttribute("checkoutResponse") CheckoutResponse checkoutResponse,
                                         @ModelAttribute("error") String error) {
 
         ModelAndView modelAndView = new ModelAndView("user/checkout");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-
-        if (checkoutResponse == null) {
-            checkoutResponse = orderService.getCheckoutResponse(user);
-        }
+        CheckoutResponse checkoutResponse = orderService.getCheckoutResponse(user);
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("orderRequest", new OrderRequest());
