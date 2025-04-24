@@ -35,7 +35,12 @@ public class CartController {
 
     @GetMapping
     @RequireAuthenticatedUser
-    public ModelAndView getCartPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getCartPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                    @ModelAttribute("checkoutResponse") CheckoutResponse checkoutResponse,
+                                    @RequestParam(value = "discountApplied", required = false) boolean discountApplied,
+                                    @RequestParam(value = "discountCode", required = false) String discountCode,
+                                    @RequestParam(value = "error", required = false) String error) {
+
         ModelAndView modelAndView = new ModelAndView("user/cart");
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         CartResponse cart = cartService.getCartResponseForUser(user);
@@ -43,10 +48,19 @@ public class CartController {
         modelAndView.addObject("user", user);
         modelAndView.addObject("cart", cart);
 
+        if (discountApplied) {
+            modelAndView.addObject("discountCode", discountCode);
+            modelAndView.addObject("checkoutResponse", checkoutResponse);
+        }
+        if (error != null) {
+            modelAndView.addObject("error", error);
+        }
+
         return modelAndView;
     }
 
-    @PostMapping("/discount")
+
+    @PostMapping("/apply-discount")
     @RequireAuthenticatedUser
     @RequireNotEmptyCart
     public ModelAndView applyDiscount(
@@ -55,8 +69,8 @@ public class CartController {
             RedirectAttributes redirectAttributes) {
 
         User user = userService.getAuthenticatedUser(auth);
-        boolean codeIsValid = discountCodeService.isValidCode(discountCode);
-        if (codeIsValid) {
+
+        if (discountCodeService.isValidCode(discountCode)) {
             CheckoutResponse checkoutResponse = orderService.applyDiscount(user, discountCode);
             redirectAttributes.addFlashAttribute("checkoutResponse", checkoutResponse);
             redirectAttributes.addFlashAttribute("discountApplied", true);
@@ -65,8 +79,9 @@ public class CartController {
             redirectAttributes.addFlashAttribute("error", "Invalid discount code.");
         }
 
-        return new ModelAndView("redirect:/checkout");
+        return new ModelAndView("redirect:/cart");
     }
+
 
     @PostMapping("/up/{slug}")
     @RequireAuthenticatedUser

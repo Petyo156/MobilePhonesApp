@@ -28,7 +28,7 @@ public class OrderService {
     }
 
 
-    public void makeOrder(User user, OrderRequest orderRequest) {
+    public void makeOrder(User user, OrderRequest orderRequest, CheckoutResponse checkoutResponse) {
 
     }
 
@@ -57,6 +57,7 @@ public class OrderService {
                 .totalPrice(decimalFormat.format(totalPrice))
                 .discountPercent(decimalFormat.format(discountPercent))
                 .discountPrice(decimalFormat.format(discountPrice))
+                .priceDifference(decimalFormat.format(totalPrice.subtract(discountPrice)))
                 .build();
     }
 }
