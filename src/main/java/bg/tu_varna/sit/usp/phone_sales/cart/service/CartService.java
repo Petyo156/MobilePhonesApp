@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +26,15 @@ public class CartService {
     private final PhoneService phoneService;
     private final CartItemService cartItemService;
     private final DiscountCodeService discountCodeService;
+    private final DecimalFormat decimalFormat;
 
     @Autowired
-    public CartService(CartRepository cartRepository, PhoneService phoneService, CartItemService cartItemService, DiscountCodeService discountCodeService) {
+    public CartService(CartRepository cartRepository, PhoneService phoneService, CartItemService cartItemService, DiscountCodeService discountCodeService, DecimalFormat decimalFormat) {
         this.cartRepository = cartRepository;
         this.phoneService = phoneService;
         this.cartItemService = cartItemService;
         this.discountCodeService = discountCodeService;
+        this.decimalFormat = decimalFormat;
     }
 
     public Cart initializeCartForUser(User user) {
@@ -92,7 +95,7 @@ public class CartService {
     private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
         return CartResponse.builder()
                 .phones(phoneResponses)
-                .totalPrice(totalPrice.toString())
+                .totalPrice(decimalFormat.format(totalPrice))
                 .summary(summary)
                 .build();
     }
