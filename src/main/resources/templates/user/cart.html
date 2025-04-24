@@ -25,7 +25,7 @@
                     <div class="cart-item" th:each="phone : ${cart.phones}">
                         <a th:href="@{'/phone/' + ${phone.slug}}" class="item-link"></a>
                         <div class="item-image">
-                            <img th:src="@{${phone.images[0]}}" alt="Product Image">
+                            <img th:src="@{${phone.images[0].imageUrl}}" alt="Product Image">
                         </div>
                         <div class="item-details">
                             <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">

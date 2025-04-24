@@ -110,7 +110,7 @@
 
         <div class="form-group">
             <label for="screenSize">Screen Size:</label>
-            <input type="number" id="screenSize" th:field="*{hardware.screenSize}" class="form-input"
+            <input type="text" id="screenSize" th:field="*{hardware.screenSize}" class="form-input"
                    placeholder="Enter screen size"/>
             <p class="form-error" th:if="${#fields.hasErrors('hardware.screenSize')}"
                th:errors="*{hardware.screenSize}"></p>
