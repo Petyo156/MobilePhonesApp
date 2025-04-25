@@ -1,6 +1,5 @@
 package bg.tu_varna.sit.usp.phone_sales.order.service;
 
-import bg.tu_varna.sit.usp.phone_sales.cart.model.Cart;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
@@ -27,9 +26,8 @@ public class OrderService {
         this.decimalFormat = decimalFormat;
     }
 
-
     public void makeOrder(User user, OrderRequest orderRequest, CheckoutResponse checkoutResponse) {
-
+        System.out.println();
     }
 
     public CheckoutResponse getCheckoutResponse(User user) {
@@ -37,7 +35,7 @@ public class OrderService {
         BigDecimal totalPrice = cartService.getTotalPrice(cartItems);
         Integer summary = cartService.getSummary(cartItems);
 
-        return initializeCheckoutResponse(summary, totalPrice, totalPrice, BigDecimal.ZERO);
+        return initializeCheckoutResponse(summary, totalPrice, totalPrice, BigDecimal.ZERO, null);
     }
 
     public CheckoutResponse applyDiscount(User user, String discountCode) {
@@ -48,16 +46,17 @@ public class OrderService {
         BigDecimal discountPercent = discountCodeService.getDiscountCodePercent(discountCode);
         BigDecimal discountPrice = cartService.getTotalPriceAfterDiscountCode(cartItems, discountPercent);
 
-        return initializeCheckoutResponse(summary, totalPrice, discountPrice, discountPercent);
+        return initializeCheckoutResponse(summary, totalPrice, discountPrice, discountPercent, discountCode);
     }
 
-    private CheckoutResponse initializeCheckoutResponse(Integer summary, BigDecimal totalPrice, BigDecimal discountPrice, BigDecimal discountPercent) {
+    private CheckoutResponse initializeCheckoutResponse(Integer summary, BigDecimal totalPrice, BigDecimal discountPrice, BigDecimal discountPercent, String discountCode) {
         return CheckoutResponse.builder()
                 .summary(summary)
                 .totalPrice(decimalFormat.format(totalPrice))
                 .discountPercent(decimalFormat.format(discountPercent))
                 .discountPrice(decimalFormat.format(discountPrice))
                 .priceDifference(decimalFormat.format(totalPrice.subtract(discountPrice)))
+                .discountCode(discountCode)
                 .build();
     }
 }

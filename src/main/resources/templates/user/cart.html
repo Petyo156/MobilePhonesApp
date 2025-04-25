@@ -26,8 +26,7 @@
                             <img th:src="@{${phone.images[0].imageUrl}}" alt="Product Image">
                         </div>
                         <div class="item-details">
-                            <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">
-                                Phone Name</h3>
+                            <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">Phone Name</h3>
                             <p class="text-muted">
                                 Color: <span th:text="${phone.dimensions.color}">Color</span>
                                 Storage: <span th:text="${phone.hardwareResponse.storage + 'GB'}">Storage</span>
@@ -77,7 +76,7 @@
                         <span>-</span>
                     </div>
                     <!-- Discount Item: Show only if the discountPrice is not null -->
-                    <div class="summary-item" th:if="${checkoutResponse.discountPrice != null}">
+                    <div class="summary-item" th:if="${checkoutResponse != null and checkoutResponse.discountPrice != null}">
                         <span>Discount</span>
                         <span>-<span th:text="${checkoutResponse.priceDifference}">0.00</span> лв.</span>
                     </div>
@@ -85,11 +84,17 @@
                     <div th:if="${discountApplied}" class="summary-item">
                         <span>Applied Code:</span>
                         <span><strong th:text="${discountCode}">CODE</strong></span>
+                        <form th:action="@{/cart/clear-discount}" method="post" class="d-inline">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                            <button type="submit" class="btn btn-link text-danger remove-item">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </form>
                     </div>
                     <form th:action="@{/cart/apply-discount}" method="post" class="discount-code mt-3">
                         <input type="text" class="form-control mb-2" name="discountCode"
-                               placeholder="Gift card or discount code" required
-                               th:value="${discountCode}">
+                               placeholder="Gift card or discount code"
+                               th:value="${discountCode}" />
                         <button type="submit" class="btn btn-outline-secondary w-100">Apply</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                         <div th:if="${discountApplied}" class="text-success mt-2">
@@ -103,17 +108,15 @@
                     <div class="summary-total">
                         <span>Total</span>
                         <span>
-                            <span th:if="${checkoutResponse.discountPrice != checkoutResponse.totalPrice}"
+                            <span th:if="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}"
                                   th:text="${checkoutResponse.discountPrice}"></span>
 
-                            <span th:unless="${checkoutResponse.discountPrice != checkoutResponse.totalPrice}"
+                            <span th:unless="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}"
                                   th:text="${cart.totalPrice}"></span>
 
                             лв.
                         </span>
                     </div>
-
-
                     <a href="/checkout" class="btn btn-primary checkout-btn">Proceed to Checkout</a>
                 </div>
             </div>
@@ -126,26 +129,4 @@
 </main>
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
-<script>
-    const csrfToken = document.querySelector('input[name="_csrf"]').value;
-    fetch('/cart/apply-discount', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRF-TOKEN': csrfToken // Make sure this header is properly sent
-        },
-        body: new URLSearchParams({
-            discountCode: document.querySelector('input[name="discountCode"]').value
-        })
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json(); // Or handle your response
-            } else {
-                throw new Error('CSRF token validation failed.');
-            }
-        })
-        .catch(error => console.error('Error applying discount:', error));
-
-</script>
 </html>
