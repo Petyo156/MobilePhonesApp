@@ -1,6 +1,8 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartSessionService;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartViewModelService;
 import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUser;
@@ -8,6 +10,7 @@ import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.OrderRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,32 +24,28 @@ import org.springframework.web.servlet.ModelAndView;
 public class OrderController {
     private final UserService userService;
     private final OrderService orderService;
+    private final CartViewModelService cartViewModelService;
 
     @Autowired
-    public OrderController(UserService userService, OrderService orderService) {
+    public OrderController(UserService userService, OrderService orderService, CartViewModelService cartViewModelService) {
         this.userService = userService;
         this.orderService = orderService;
+        this.cartViewModelService = cartViewModelService;
     }
 
     @GetMapping
     @RequireAuthenticatedUser
     @RequireNotEmptyCart
-    public ModelAndView getCheckoutPage(@RequestParam String discountCode,
-                                        @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                        @ModelAttribute("error") String error) {
+    public ModelAndView getCheckoutPage(
+            @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+            HttpSession session) {
 
         ModelAndView modelAndView = new ModelAndView("user/checkout");
-
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-        CheckoutResponse checkoutResponse = orderService.getCheckoutResponse(user);
+        cartViewModelService.attachSessionAttributes(modelAndView, session, user);
+        cartViewModelService.attachAndClearError(modelAndView, session);
 
-
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("discountCode", discountCode);
         modelAndView.addObject("orderRequest", new OrderRequest());
-        modelAndView.addObject("checkoutResponse", checkoutResponse);
-        modelAndView.addObject("error", error);
-
         return modelAndView;
     }
 
@@ -54,18 +53,17 @@ public class OrderController {
     @RequireAuthenticatedUser
     @RequireNotEmptyCart
     public ModelAndView checkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                 BindingResult bindingResult,
                                  @Valid @ModelAttribute OrderRequest orderRequest,
-                                 @ModelAttribute CheckoutResponse checkoutResponse) {
+                                 BindingResult bindingResult,
+                                 HttpSession session) {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-
+        CheckoutResponse checkoutResponse = cartViewModelService.getCheckoutResponse(session, user);
         ModelAndView modelAndView = new ModelAndView("user/checkout");
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("orderRequest", orderRequest);
             modelAndView.addObject("checkoutResponse", checkoutResponse);
             return modelAndView;
         }
-
         orderService.makeOrder(user, orderRequest, checkoutResponse);
         return new ModelAndView("redirect:/checkout/success");
     }
