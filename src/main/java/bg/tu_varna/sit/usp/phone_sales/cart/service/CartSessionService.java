@@ -1,9 +1,11 @@
 package bg.tu_varna.sit.usp.phone_sales.cart.service;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class CartSessionService {
 
     private static final String CHECKOUT_RESPONSE = "checkoutResponse";
@@ -19,6 +21,7 @@ public class CartSessionService {
 
     public void storeCheckoutResponse(HttpSession session, Object checkoutResponse) {
         session.setAttribute(CHECKOUT_RESPONSE, checkoutResponse);
+        log.info("Storing new checkout response in session");
     }
 
     public void clearDiscountInfo(HttpSession session) {
@@ -26,14 +29,11 @@ public class CartSessionService {
         session.removeAttribute(DISCOUNT_CODE);
         session.removeAttribute(DISCOUNT_APPLIED);
         session.removeAttribute(ERROR);
+        log.info("Clearing discount info");
     }
 
     public Object getCheckoutResponse(HttpSession session) {
         return session.getAttribute(CHECKOUT_RESPONSE);
-    }
-
-    public String getDiscountCode(HttpSession session) {
-        return (String) session.getAttribute(DISCOUNT_CODE);
     }
 
     public Boolean isDiscountApplied(HttpSession session) {

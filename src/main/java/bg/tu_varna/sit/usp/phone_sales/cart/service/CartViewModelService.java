@@ -4,11 +4,13 @@ import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 @Service
+@Slf4j
 public class CartViewModelService {
 
     private final CartSessionService cartSessionService;
@@ -21,13 +23,12 @@ public class CartViewModelService {
     }
 
     public void attachSessionAttributes(ModelAndView modelAndView, HttpSession session, User user) {
-        String discountCode = cartSessionService.getDiscountCode(session);
         boolean discountApplied = cartSessionService.isDiscountApplied(session);
         modelAndView.addObject("user", user);
         CheckoutResponse checkoutResponse = getCheckoutResponse(session, user);
         modelAndView.addObject("checkoutResponse", checkoutResponse);
         if (discountApplied) {
-            modelAndView.addObject("discountCode", discountCode);
+            log.info("Discount applied");
             modelAndView.addObject("discountApplied", true);
         }
     }
@@ -44,6 +45,7 @@ public class CartViewModelService {
     public void attachAndClearError(ModelAndView modelAndView, HttpSession session) {
         String error = (String) session.getAttribute("error");
         if (error != null) {
+            log.info("Invalid discount code");
             modelAndView.addObject("error", error);
             session.removeAttribute("error");
         }

@@ -83,7 +83,7 @@
                     <!-- Display discount message if discount is applied -->
                     <div th:if="${discountApplied}" class="summary-item">
                         <span>Applied Code:</span>
-                        <span><strong th:text="${discountCode}">CODE</strong></span>
+                        <span><strong th:text="${checkoutResponse.discountCode}">CODE</strong></span>
                         <form th:action="@{/cart/clear-discount}" method="post" class="d-inline">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                             <button type="submit" class="btn btn-link text-danger remove-item">
@@ -93,12 +93,11 @@
                     </div>
                     <form th:action="@{/cart/apply-discount}" method="post" class="discount-code mt-3">
                         <input type="text" class="form-control mb-2" name="discountCode"
-                               placeholder="Gift card or discount code"
-                               th:value="${discountCode}" />
+                               placeholder="Gift card or discount code"/>
                         <button type="submit" class="btn btn-outline-secondary w-100">Apply</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                         <div th:if="${discountApplied}" class="text-success mt-2">
-                            ✅ Discount "<strong th:text="${discountCode}">CODE</strong>" applied!
+                            ✅ Discount "<strong th:text="${checkoutResponse.discountCode}">CODE</strong>" applied!
                         </div>
                         <div th:if="${error}" class="text-danger mt-2">
                             ❌ <span th:text="${error}">Invalid code.</span>
