@@ -19,4 +19,6 @@ public class CheckoutResponse {
     private String priceDifference;
 
     private String discountPercent;
+
+    private String discountCode;
 }
