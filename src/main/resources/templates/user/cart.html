@@ -10,6 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/css/cart.css">
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: header}"></div>
@@ -26,7 +27,8 @@
                             <img th:src="@{${phone.images[0].imageUrl}}" alt="Product Image">
                         </div>
                         <div class="item-details">
-                            <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">Phone Name</h3>
+                            <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model}">
+                                Phone Name</h3>
                             <p class="text-muted">
                                 Color: <span th:text="${phone.dimensions.color}">Color</span>
                                 Storage: <span th:text="${phone.hardwareResponse.storage + 'GB'}">Storage</span>
@@ -76,32 +78,39 @@
                         <span>-</span>
                     </div>
                     <!-- Discount Item: Show only if the discountPrice is not null -->
-                    <div class="summary-item" th:if="${checkoutResponse != null and checkoutResponse.discountPrice != null}">
+                    <div class="summary-item">
                         <span>Discount</span>
-                        <span>-<span th:text="${checkoutResponse.priceDifference}">0.00</span> лв.</span>
+                        <div style="color: red" th:if="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}">
+                            <span th:text="-${checkoutResponse.priceDifference}"></span><span> лв.</span>
+                        </div>
+                        <div th:unless="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}">
+                            <span>-</span>
+                        </div>
                     </div>
                     <!-- Display discount message if discount is applied -->
                     <div th:if="${discountApplied}" class="summary-item">
                         <span>Applied Code:</span>
-                        <span><strong th:text="${checkoutResponse.discountCode}">CODE</strong></span>
-                        <form th:action="@{/cart/clear-discount}" method="post" class="d-inline">
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                            <button type="submit" class="btn btn-link text-danger remove-item">
-                                <i class="fas fa-times"></i> Remove
-                            </button>
-                        </form>
+                        <span class="promo-tag">
+                            <i class="fas fa-tag"></i>
+                            <strong th:text="${checkoutResponse.discountCode}">CODE</strong>
+                            <form th:action="@{/cart/clear-discount}" method="post" class="d-inline">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                                <button type="submit" class="btn btn-link remove-item">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </span>
                     </div>
-                    <form th:action="@{/cart/apply-discount}" method="post" class="discount-code mt-3">
-                        <input type="text" class="form-control mb-2" name="discountCode"
-                               placeholder="Gift card or discount code"/>
-                        <button type="submit" class="btn btn-outline-secondary w-100">Apply</button>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                        <div th:if="${discountApplied}" class="text-success mt-2">
-                            ✅ Discount "<strong th:text="${checkoutResponse.discountCode}">CODE</strong>" applied!
+                    <form th:action="@{/cart/apply-discount}" method="post">
+                        <div class="discount-code mt-3">
+                            <input type="text" class="form-control mb-2" name="discountCode"
+                                   placeholder="Gift card or discount code"/>
+                            <button type="submit" class="btn btn-outline-secondary w-100">Apply</button>
                         </div>
-                        <div th:if="${error}" class="text-danger mt-2">
-                            ❌ <span th:text="${error}">Invalid code.</span>
-                        </div>
+                            <div th:if="${error}" class="text-danger mt-1 small">
+                                ❌ <span th:text="${error}">Invalid code.</span>
+                            </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                     </form>
                     <!-- Show total after discount -->
                     <div class="summary-total">

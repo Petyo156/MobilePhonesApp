@@ -33,8 +33,9 @@ public class DiscountCodeService {
 
     public Boolean isValidCode(String discountCode) {
         Map<String, BigDecimal> allDiscountCodes = getAllDiscountCodes();
+        String lowerCaseDiscountCode = discountCode.toLowerCase();
         for (String key : allDiscountCodes.keySet()) {
-            if (discountCode.equals(key)) {
+            if (lowerCaseDiscountCode.equals(key.toLowerCase())) {
                 log.info("Discount code {} is valid", discountCode);
                 return true;
             }
@@ -69,8 +70,9 @@ public class DiscountCodeService {
 
     public BigDecimal getDiscountCodePercent(String discountCode) {
         Map<String, BigDecimal> all = getAllDiscountCodes();
-        for (String key : getAllDiscountCodes().keySet()) {
-            if (discountCode.equals(key)) {
+        String lowerCaseDiscountCode = discountCode.toLowerCase();
+        for (String key : all.keySet()) {
+            if (lowerCaseDiscountCode.equals(key.toLowerCase())) {
                 return all.get(key);
             }
         }
