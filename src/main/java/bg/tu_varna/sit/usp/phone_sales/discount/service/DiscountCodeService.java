@@ -1,11 +1,10 @@
 package bg.tu_varna.sit.usp.phone_sales.discount.service;
 
-import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.discount.model.DiscountCode;
 import bg.tu_varna.sit.usp.phone_sales.discount.repository.DiscountCodeRepository;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.DiscountCodeResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DiscountCodeResponse;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

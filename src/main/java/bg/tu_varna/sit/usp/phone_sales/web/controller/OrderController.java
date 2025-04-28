@@ -9,7 +9,7 @@ import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUse
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.OrderRequest;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DeliveryMethodResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.PaymentMethodResponse;
 import jakarta.servlet.http.HttpSession;

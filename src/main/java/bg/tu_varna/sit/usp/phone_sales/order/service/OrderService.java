@@ -6,7 +6,7 @@ import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.DeliveryMethod;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.PaymentMethod;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.OrderRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DeliveryMethodResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.PaymentMethodResponse;

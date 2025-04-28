@@ -2,7 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.cart.service;
 
 import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

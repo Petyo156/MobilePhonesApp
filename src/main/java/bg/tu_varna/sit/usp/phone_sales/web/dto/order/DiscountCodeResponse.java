@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.usp.phone_sales.web.dto;
+package bg.tu_varna.sit.usp.phone_sales.web.dto.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

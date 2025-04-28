@@ -11,7 +11,7 @@ import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUse
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
