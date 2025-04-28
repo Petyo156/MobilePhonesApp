@@ -25,12 +25,14 @@ public class OrderController {
     private final UserService userService;
     private final OrderService orderService;
     private final CartViewModelService cartViewModelService;
+    private final CartSessionService cartSessionService;
 
     @Autowired
-    public OrderController(UserService userService, OrderService orderService, CartViewModelService cartViewModelService) {
+    public OrderController(UserService userService, OrderService orderService, CartViewModelService cartViewModelService, CartSessionService cartSessionService) {
         this.userService = userService;
         this.orderService = orderService;
         this.cartViewModelService = cartViewModelService;
+        this.cartSessionService = cartSessionService;
     }
 
     @GetMapping
@@ -44,6 +46,7 @@ public class OrderController {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         cartViewModelService.attachSessionAttributes(modelAndView, session, user);
         cartViewModelService.attachAndClearError(modelAndView, session);
+
 
         modelAndView.addObject("orderRequest", new OrderRequest());
         return modelAndView;
@@ -65,6 +68,7 @@ public class OrderController {
             return modelAndView;
         }
         orderService.makeOrder(user, orderRequest, checkoutResponse);
+        cartSessionService.clearDiscountInfo(session);
         return new ModelAndView("redirect:/checkout/success");
     }
 
