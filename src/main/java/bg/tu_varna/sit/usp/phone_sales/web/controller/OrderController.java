@@ -10,6 +10,8 @@ import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.OrderRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DeliveryMethodResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.PaymentMethodResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/checkout")
@@ -47,8 +51,12 @@ public class OrderController {
         cartViewModelService.attachSessionAttributes(modelAndView, session, user);
         cartViewModelService.attachAndClearError(modelAndView, session);
 
+        List<DeliveryMethodResponse> deliveryMethodValues = orderService.getDeliveryMethodValues();
+        List<PaymentMethodResponse> paymentMethodValues = orderService.getPaymentMethodValues();
 
         modelAndView.addObject("orderRequest", new OrderRequest());
+        modelAndView.addObject("deliveryMethodValues", deliveryMethodValues);
+        modelAndView.addObject("paymentMethodValues", paymentMethodValues);
         return modelAndView;
     }
 
