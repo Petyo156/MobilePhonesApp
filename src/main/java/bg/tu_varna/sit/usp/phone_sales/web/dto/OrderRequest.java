@@ -2,8 +2,6 @@ package bg.tu_varna.sit.usp.phone_sales.web.dto;
 
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.DeliveryMethod;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.PaymentMethod;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
