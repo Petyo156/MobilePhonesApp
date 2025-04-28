@@ -45,7 +45,7 @@ public class CartViewModelService {
     public void attachAndClearError(ModelAndView modelAndView, HttpSession session) {
         String error = (String) session.getAttribute("error");
         if (error != null) {
-            log.info("Invalid discount code");
+            log.info("Adding invalid code message");
             modelAndView.addObject("error", error);
             session.removeAttribute("error");
         }
