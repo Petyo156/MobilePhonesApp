@@ -12,6 +12,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${@environment.getProperty('google.maps.api.key')} + '&libraries=places&language=bg'}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="../../static/css/checkout.css">
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: header}"></div>
@@ -28,7 +31,7 @@
                 <section class="shipping-method">
                     <h2>1. Shipping Method</h2>
                     <div class="shipping-options">
-                        <label class="shipping-option selected">
+                        <label class="shipping-option">
                             <input type="radio" th:field="*{deliveryMethod}" value="STANDARD" checked>
                             <span class="option-details">
                                 <span class="option-title">Econt Express</span>
@@ -56,19 +59,14 @@
                     </div>
                     <input type="text" placeholder="Company (optional)" class="full-width">
                     <div class="form-row">
-                        <input type="text" th:field="*{address}" placeholder="Address" required class="address-input">
+                        <input type="text" th:field="*{address}" placeholder="Въведете адрес" required
+                               class="address-input">
+                        <div id="address-validation" class="validation-message" style="display: none;"></div>
                     </div>
                     <div class="form-row">
                         <input type="tel" th:field="*{phoneNumber}" placeholder="Phone Number" required>
-                        <input list="cities" th:field="*{city}" placeholder="City" required>
-                        <datalist id="cities">
-                            <option value="Sofia"/>
-                            <option value="Plovdiv"/>
-                            <option value="Varna"/>
-                            <option value="Burgas"/>
-                            <option value="Ruse"/>
-                        </datalist>
-                        <input type="text" th:field="*{zipCode}" placeholder="Zip Code" required>
+                        <input type="text" th:field="*{city}" placeholder="Град" required id="city-input">
+                        <input type="text" th:field="*{zipCode}" placeholder="Пощенски код" required id="zip-input">
                     </div>
                 </section>
 
@@ -77,37 +75,31 @@
                     <h2>3. Payment Method</h2>
                     <div class="payment-options">
                         <label class="payment-option selected">
-                            <input type="radio" th:field="*{paymentMethod}" value="CARD" checked>
+                            <input type="radio" th:field="*{paymentMethod}" value="CARD" checked id="card-payment">
                             <span>Card</span>
                         </label>
                         <label class="payment-option">
-                            <input type="radio" th:field="*{paymentMethod}" value="CASH">
+                            <input type="radio" th:field="*{paymentMethod}" value="CASH" id="cash-payment">
                             <span>Cash</span>
                         </label>
                     </div>
 
-                    <!-- Card info (disabled until card is implemented) -->
-                    <div class="card-information">
-                        <input type="text" placeholder="1234 1234 1234 1234" class="card-number" disabled>
-                        <div class="card-icons">
-                            <img src="/images/visa.png" alt="Visa">
-                            <img src="/images/mastercard.png" alt="Mastercard">
-                            <img src="/images/amex.png" alt="Amex">
+                    <!-- Card info -->
+                    <div class="card-information" id="card-info">
+                        <div id="card-element" class="form-control"></div>
+                        <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                    </div>
+
+                    <!-- Cash info -->
+                    <div class="cash-information" id="cash-info">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Наложен платеж</strong>
+                            <p class="mb-0 mt-2">Ще платите на място при получаване на поръчката чрез куриерската
+                                компания.</p>
                         </div>
-                        <div class="card-details">
-                            <input type="text" placeholder="MM/YY" class="expiry" disabled>
-                            <input type="text" placeholder="CVC" class="cvc" disabled>
-                        </div>
-                        <label class="billing-checkbox">
-                            <input type="checkbox" checked disabled>
-                            <span>Billing address same as shipping</span>
-                        </label>
                     </div>
                 </section>
-                <div class="text-end mt-4" >
-                    <button type="submit"  class="checkout-btn">Place Order</button>
-                </div>
-            </form>
         </div>
 
         <!-- Summary Section -->
@@ -124,33 +116,226 @@
                 </div>
                 <div class="summary-item">
                     <span>Discount</span>
-                    <span th:if="${checkoutResponse.discountPercent != null}"
-                          th:text="${checkoutResponse.discountPercent + '%'}">-</span>
-                    <span th:unless="${checkoutResponse.discountPercent != null}">-</span>
+                    <div style="color: red"
+                         th:if="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}">
+                        <span th:text="-${checkoutResponse.priceDifference}"></span><span> лв.</span>
+                    </div>
+                    <div th:unless="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}">
+                        <span>-</span>
+                    </div>
                 </div>
 
                 <div th:if="${discountApplied}" class="alert alert-success mt-2">
-                    Discount applied: <span th:text="${checkoutResponse.discountPercent + '%'}"></span>
+                    Discount code applied: <span th:text="${checkoutResponse.discountCode}"></span>
                 </div>
-                <div th:if="${error != null && !error.isEmpty()}" class="alert alert-danger mt-2" th:text="${error}"></div>
+                <div th:if="${error != null && !error.isEmpty()}" class="alert alert-danger mt-2"
+                     th:text="${error}">
+                </div>
 
-                <!-- Total -->
-                <div class="summary-total">
-                    <span>Total</span>
-                    <span>
+            <!-- Total -->
+            <div class="summary-total">
+                <span>Total</span>
+                <span>
                         <span th:text="${checkoutResponse.discountPrice != null ? checkoutResponse.discountPrice : checkoutResponse.totalPrice}">0.00</span> лв.
                     </span>
-                </div>
-                <div class="text-end mt-4" >
-                    <button type="submit"  class="checkout-btn">Place Order</button>
-                </div>
-                <!-- Payment button (optional/Apple Pay mock) -->
-                <button type="button" class="apple-pay-button mt-2">
-                    <i class="fa-brands fa-2xl fa-apple-pay"></i>
-                </button>
+            </div>
+            <div class="text-end mt-4">
+                <button type="submit" class="checkout-btn">Place Order</button>
+            </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
+
+<script>
+    // Initialize Stripe
+    const stripe = Stripe('[[${@environment.getProperty('stripe.public.key')}]]');
+    const elements = stripe.elements();
+    const card = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        },
+        hidePostalCode: true
+    });
+    card.mount('#card-element');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const shippingOptions = document.querySelectorAll('.shipping-option');
+        shippingOptions.forEach(option => {
+            const radio = option.querySelector('input[type="radio"]');
+            radio.addEventListener('change', function () {
+                shippingOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+            if (radio.checked) {
+                option.classList.add('selected');
+            }
+        });
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        paymentOptions.forEach(option => {
+            const radio = option.querySelector('input[type="radio"]');
+            radio.addEventListener('change', function () {
+                paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+            if (radio.checked) {
+                option.classList.add('selected');
+            }
+        });
+
+        const cardPayment = document.getElementById('card-payment');
+        const cashPayment = document.getElementById('cash-payment');
+        const cardInfo = document.getElementById('card-info');
+        const cashInfo = document.getElementById('cash-info');
+
+        // Set initial state
+        cardInfo.style.display = 'block';
+        cashInfo.style.display = 'none';
+
+        function togglePaymentInfo() {
+            if (cardPayment.checked) {
+                cardInfo.style.display = 'block';
+                cashInfo.style.display = 'none';
+            } else {
+                cardInfo.style.display = 'none';
+                cashInfo.style.display = 'block';
+            }
+        }
+
+        cardPayment.addEventListener('change', togglePaymentInfo);
+        cashPayment.addEventListener('change', togglePaymentInfo);
+        
+        initAutocomplete();
+    });
+
+    card.addEventListener('change', function (event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    const form = document.querySelector('.checkout-form');
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        
+        // Submit the form directly without Stripe token creation
+        form.submit();
+    });
+
+    function initAutocomplete() {
+        const addressInput = document.querySelector('.address-input');
+        const cityInput = document.getElementById('city-input');
+        const zipInput = document.getElementById('zip-input');
+        const validationMessage = document.getElementById('address-validation');
+
+        if (!addressInput || !cityInput || !zipInput) {
+            console.error('Required elements not found');
+            return;
+        }
+
+        addressInput.setAttribute('lang', 'bg');
+        addressInput.setAttribute('autocomplete', 'off');
+        addressInput.setAttribute('spellcheck', 'false');
+
+        const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+            types: ['address'],
+            componentRestrictions: {country: "bg"},
+            fields: ["address_components", "geometry", "formatted_address", "name"],
+            language: 'bg',
+            region: 'bg'
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place.address_components) {
+                validationMessage.style.display = 'block';
+                validationMessage.textContent = 'Моля, изберете валиден български адрес';
+                return;
+            }
+
+            let country = '';
+            let city = '';
+            let postalCode = '';
+            let streetNumber = '';
+            let streetName = '';
+
+            for (const component of place.address_components) {
+                const types = component.types;
+
+                if (types.includes('country')) {
+                    country = component.short_name;
+                }
+                if (types.includes('locality') || types.includes('administrative_area_level_1')) {
+                    city = component.long_name;
+                }
+                if (types.includes('postal_code')) {
+                    postalCode = component.long_name;
+                }
+                if (types.includes('street_number')) {
+                    streetNumber = component.long_name;
+                }
+                if (types.includes('route')) {
+                    streetName = component.long_name;
+                }
+            }
+
+            if (country !== 'BG') {
+                validationMessage.style.display = 'block';
+                validationMessage.textContent = 'Моля, изберете адрес в България';
+                addressInput.value = '';
+                cityInput.value = '';
+                zipInput.value = '';
+                return;
+            }
+
+            if (!streetName || !streetNumber) {
+                validationMessage.style.display = 'block';
+                validationMessage.textContent = 'Моля, изберете пълен адрес с номер на улица';
+                addressInput.value = '';
+                cityInput.value = '';
+                zipInput.value = '';
+                return;
+            }
+
+            validationMessage.style.display = 'none';
+
+            const formattedAddress = `${streetName} ${streetNumber}`;
+            addressInput.value = formattedAddress;
+
+            if (city) {
+                cityInput.value = city;
+            }
+            if (postalCode) {
+                zipInput.value = postalCode;
+            }
+        });
+
+        addressInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        addressInput.addEventListener('input', () => {
+            validationMessage.style.display = 'none';
+        });
+    }
+</script>
 </body>
 </html>
