@@ -81,7 +81,7 @@
                     <div class="summary-item">
                         <span>Discount</span>
                         <div style="color: red" th:if="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}">
-                            <span th:text="-${checkoutResponse.priceDifference}"></span><span> лв.</span>
+                            <span>-<span th:text="${checkoutResponse.priceDifference}"></span> лв.</span>
                         </div>
                         <div th:unless="${checkoutResponse != null and checkoutResponse.discountPrice != checkoutResponse.totalPrice}">
                             <span>-</span>
