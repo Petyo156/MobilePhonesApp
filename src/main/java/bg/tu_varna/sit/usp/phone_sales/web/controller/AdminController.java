@@ -7,7 +7,7 @@ import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.DiscountCodeResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DiscountCodeResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitPhoneRequest;
 import jakarta.validation.Valid;

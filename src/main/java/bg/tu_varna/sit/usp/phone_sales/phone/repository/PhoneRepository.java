@@ -27,4 +27,34 @@ public interface PhoneRepository extends JpaRepository<Phone, UUID> {
     Optional<Phone> getPhoneBySlug(String slug);
 
     Optional<Phone> getPhoneBySlugAndIsVisibleTrue(String slug);
+
+    @Query("""
+    SELECT p FROM Phone p
+    WHERE p.isVisible = true
+      AND p.phoneModel.name = :name
+      AND p.phoneModel.brand.name = :brandName
+      AND p.releaseYear = :releaseYear
+      AND p.hardware.ram = :ram
+      AND p.hardware.storage = :storage
+    """)
+    List<Phone> findSimilarPhonesWithDifferentColor(@Param("name") String name,
+                                                    @Param("brandName") String brandName,
+                                                    @Param("releaseYear") Integer releaseYear,
+                                                    @Param("ram") Integer ram,
+                                                    @Param("storage") Integer storage);
+
+    @Query("""
+    SELECT p FROM Phone p
+    WHERE p.isVisible = true
+      AND p.phoneModel.name = :name
+      AND p.phoneModel.brand.name = :brandName
+      AND p.releaseYear = :releaseYear
+      AND p.hardware.ram = :ram
+      AND p.dimension.color = :color
+    """)
+    List<Phone> findSimilarPhonesWithDifferentStorage(@Param("name") String name,
+                                                    @Param("brandName") String brandName,
+                                                    @Param("releaseYear") Integer releaseYear,
+                                                    @Param("ram") Integer ram,
+                                                    @Param("color") String color);
 }

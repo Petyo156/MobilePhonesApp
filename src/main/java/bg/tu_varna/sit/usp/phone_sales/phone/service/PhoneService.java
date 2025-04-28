@@ -205,9 +205,58 @@ public class PhoneService {
         return price.subtract(discountedAmount);
     }
 
+    public List<DifferentColorPhoneResponse> getPhonesWithDifferentColor(String slug) {
+        Phone phone = getVisiblePhoneBySlug(slug);
+        PhoneModel model = phone.getPhoneModel();
+        Hardware hardware = phone.getHardware();
+
+        log.info("Fetching phones with different colors");
+        List<Phone> similarPhonesWithDifferentColor = phoneRepository.findSimilarPhonesWithDifferentColor
+                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), hardware.getStorage());
+
+        List<DifferentColorPhoneResponse> responses = new ArrayList<>();
+        for(Phone similarPhone : similarPhonesWithDifferentColor) {
+            DifferentColorPhoneResponse response = initializeDifferentColorPhoneResponse(similarPhone);
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    public List<DifferentStoragePhoneResponse> getPhonesWithDifferentStorage(String slug) {
+        Phone phone = getVisiblePhoneBySlug(slug);
+        PhoneModel model = phone.getPhoneModel();
+        Hardware hardware = phone.getHardware();
+        Dimension dimension = phone.getDimension();
+
+        log.info("Fetching phones with different storage");
+        List<Phone> similarPhonesWithDifferentStorage = phoneRepository.findSimilarPhonesWithDifferentStorage
+                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), dimension.getColor());
+
+        List<DifferentStoragePhoneResponse> responses = new ArrayList<>();
+        for(Phone similarPhone : similarPhonesWithDifferentStorage) {
+            DifferentStoragePhoneResponse response = initializeDifferentStoragePhoneResponse(similarPhone);
+            responses.add(response);
+        }
+        return responses;
+    }
+
     private String getDiscountPrice(Phone phone) {
         BigDecimal finalPrice = calculateDiscountPrice(phone);
         return decimalFormat.format(finalPrice.setScale(2, RoundingMode.HALF_UP));
+    }
+
+    private DifferentColorPhoneResponse initializeDifferentColorPhoneResponse(Phone similarPhone) {
+        return DifferentColorPhoneResponse.builder()
+                .imageUrl(similarPhone.getImages().get(0).getImageUrl())
+                .color(similarPhone.getDimension().getColor())
+                .build();
+    }
+
+    private DifferentStoragePhoneResponse initializeDifferentStoragePhoneResponse(Phone similarPhone) {
+        return DifferentStoragePhoneResponse.builder()
+                .imageUrl(similarPhone.getImages().get(0).getImageUrl())
+                .storage(similarPhone.getHardware().getStorage().toString())
+                .build();
     }
 
     private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<ImageResponse> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
