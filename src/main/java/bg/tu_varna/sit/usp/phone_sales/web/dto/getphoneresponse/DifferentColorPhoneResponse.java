@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DifferentColorPhoneResponse {
+    private String slug;
     private String imageUrl;
     private String color;
 }

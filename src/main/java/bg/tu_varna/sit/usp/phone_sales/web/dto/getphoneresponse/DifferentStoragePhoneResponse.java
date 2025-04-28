@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DifferentStoragePhoneResponse {
+    private String slug;
     private String imageUrl;
     private String storage;
 }

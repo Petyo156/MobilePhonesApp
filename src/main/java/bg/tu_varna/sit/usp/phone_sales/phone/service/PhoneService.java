@@ -247,6 +247,7 @@ public class PhoneService {
 
     private DifferentColorPhoneResponse initializeDifferentColorPhoneResponse(Phone similarPhone) {
         return DifferentColorPhoneResponse.builder()
+                .slug(similarPhone.getSlug())
                 .imageUrl(similarPhone.getImages().get(0).getImageUrl())
                 .color(similarPhone.getDimension().getColor())
                 .build();
@@ -254,6 +255,7 @@ public class PhoneService {
 
     private DifferentStoragePhoneResponse initializeDifferentStoragePhoneResponse(Phone similarPhone) {
         return DifferentStoragePhoneResponse.builder()
+                .slug(similarPhone.getSlug())
                 .imageUrl(similarPhone.getImages().get(0).getImageUrl())
                 .storage(similarPhone.getHardware().getStorage().toString())
                 .build();
