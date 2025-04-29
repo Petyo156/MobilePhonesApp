@@ -32,21 +32,24 @@
                     <h2>1. Shipping Method</h2>
                     <div class="shipping-options">
                         <label class="shipping-option">
-                            <input type="radio" th:field="*{deliveryMethod}" value="STANDARD" checked>
+                            <input type="radio" th:field="*{deliveryMethod}" value="STANDARD" name="deliveryMethod" required>
                             <span class="option-details">
                                 <span class="option-title">Econt Express</span>
-                                <span class="option-subtitle">1 business day</span>
+                                <span class="option-subtitle">1-2 работни дни</span>
                             </span>
-                            <span class="price">Free</span>
+                           <span><span class="price" th:text="${deliveryMethodValues != null and deliveryMethodValues[0] != null ? (deliveryMethodValues[0].price == '0.00' ? 'Free' : deliveryMethodValues[0].price) : 'Free'}">Free</span> лв.</span>
                         </label>
                         <label class="shipping-option">
-                            <input type="radio" th:field="*{deliveryMethod}" value="PICKUP">
+                            <input type="radio" th:field="*{deliveryMethod}" value="PICKUP" name="deliveryMethod">
                             <span class="option-details">
-                                <span class="option-title">Pickup</span>
-                                <span class="option-subtitle">Same day from warehouse</span>
+                                <span class="option-title">Вземане от склад</span>
+                                <span class="option-subtitle">Вземане от нашия склад в същия ден</span>
                             </span>
-                            <span class="price">Free</span>
+                            <span class="price" th:text="${deliveryMethodValues != null and deliveryMethodValues[1] != null ? (deliveryMethodValues[1].price == '0.00' ? 'Free' : deliveryMethodValues[1].price) : 'Free'}">Free</span>
                         </label>
+                        <div class="validation-message" id="shipping-validation" style="display: none; color: #dc3545; margin-top: 5px;">
+                            Моля, изберете метод на доставка
+                        </div>
                     </div>
                 </section>
 
@@ -54,10 +57,10 @@
                 <section class="shipping-address">
                     <h2>2. Shipping Address</h2>
                     <div class="form-row">
-                        <input type="text" th:field="*{firstName}" placeholder="First Name" required>
-                        <input type="text" th:field="*{lastName}" placeholder="Last Name" required>
+                        <input type="text" th:field="*{firstName}" placeholder="Име" required>
+                        <input type="text" th:field="*{lastName}" placeholder="Фамилия" required>
                     </div>
-                    <input type="text" placeholder="Company (optional)" class="full-width">
+                    <input type="text" placeholder="Булстат ЕИК (незадължително)" class="full-width">
                     <div class="form-row">
                         <input type="text" th:field="*{address}" placeholder="Въведете адрес" required
                                class="address-input">
@@ -74,29 +77,158 @@
                 <section class="payment-method">
                     <h2>3. Payment Method</h2>
                     <div class="payment-options">
-                        <label class="payment-option selected">
-                            <input type="radio" th:field="*{paymentMethod}" value="CARD" checked id="card-payment">
-                            <span>Card</span>
-                        </label>
+                        <div class="payment-option-container">
                         <label class="payment-option">
-                            <input type="radio" th:field="*{paymentMethod}" value="CASH" id="cash-payment">
-                            <span>Cash</span>
+                                <input type="radio" th:field="*{paymentMethod}" value="CARD" name="paymentMethod" required id="card-payment">
+                                <span class="option-details">
+                                    <span class="option-title">Плащане с карта</span>
+                                    <span class="option-subtitle">Плати сигурно с банкова карта</span>
+                                </span>
                         </label>
+                            <!-- Card info -->
+                            <div class="payment-details" id="card-info">
+                                <div class="card-section">
+                                    <div class="card-header">
+                                        <div class="card-icons">
+                                            <i class="fab fa-cc-visa"></i>
+                                            <i class="fab fa-cc-mastercard"></i>
+                                            <i class="fab fa-cc-amex"></i>
+                                        </div>
+                                        <span class="secure-badge">
+                                            <i class="fas fa-lock"></i> Secure payment
+                                        </span>
                     </div>
-
-                    <!-- Card info -->
-                    <div class="card-information" id="card-info">
                         <div id="card-element" class="form-control"></div>
                         <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                                    
+                                    <div class="card-additional-info">
+                                        <div class="form-row">
+                                            <div class="form-group full-width">
+                                                <label>Име на картодържателя</label>
+                                                <input type="text" placeholder="As shown on card" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="save-card-checkbox">
+                                            <input type="checkbox" id="save-card">
+                                            <label for="save-card">Запази картата за бъдещи поръчки</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
 
+                        <div class="payment-option-container">
+                            <label class="payment-option">
+                                <input type="radio" th:field="*{paymentMethod}" value="CASH" name="paymentMethod" id="cash-payment">
+                                <span class="option-details">
+                                    <span class="option-title">Наложен платеж</span>
+                                    <span class="option-subtitle">Плати при получаване на поръчката</span>
+                                </span>
+                            </label>
                     <!-- Cash info -->
-                    <div class="cash-information" id="cash-info">
+                            <div class="payment-details" id="cash-info">
+                                <div class="cash-section">
+                                    <div class="cash-header">
+                                        <div class="cash-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+                                        <span class="delivery-badge">
+                                            <i class="fas fa-truck"></i> Econt express
+                                        </span>
+                                    </div>
+                                    <div class="cash-content">
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
+                                            <div class="info-header">
+                                                <i class="fas fa-info-circle"></i>
                             <strong>Наложен платеж</strong>
-                            <p class="mb-0 mt-2">Ще платите на място при получаване на поръчката чрез куриерската
-                                компания.</p>
+                                            </div>
+                                            <div class="info-details">
+                                                <p>Ще платите на място при получаване на поръчката.</p>
+                                                <ul class="benefits-list">
+                                                    <li><i class="fas fa-check"></i> Плащате само при получаване</li>
+                                                    <li><i class="fas fa-check"></i> Преглед преди плащане</li>
+                                                    <li><i class="fas fa-check"></i> Без допълнителни такси</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-option-container">
+                            <label class="payment-option">
+                                <input type="radio" th:field="*{paymentMethod}" value="FINANCE" name="paymentMethod" id="installment-payment">
+                                <span class="option-details">
+                                    <span class="option-title">Вземи на изплащане</span>
+                                    <span class="option-subtitle">Плати на равни месечни вноски</span>
+                                </span>
+                            </label>
+                            <!-- Installment info -->
+                            <div class="payment-details" id="installment-info">
+                                <div class="installment-section">
+                                    <div class="installment-header">
+                                        <div class="installment-logo">
+                                            <img src="/images/aitaiba.png" alt="ITB Bank" class="bank-logo">
+                                        </div>
+                                        <span class="finance-badge">
+                                            <i class="fas fa-percentage"></i> ГПР от 7.9%
+                                        </span>
+                                    </div>
+                                    <div class="installment-content">
+                                        <div class="alert alert-info">
+                                            <div class="info-header">
+                                                <i class="fas fa-info-circle"></i>
+                                                <strong>Вземи на изплащане</strong>
+                                            </div>
+                                            <div class="info-details">
+                                                <p>Изберете удобен план за плащане на равни месечни вноски.</p>
+                                                <div class="installment-calculator">
+                                                    <div class="form-group">
+                                                        <label for="downPayment">Първоначална вноска</label>
+                                                        <input type="number" id="downPayment" class="form-control" placeholder="0.00 лв.">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Срок на изплащане</label>
+                                                        <div class="leasing-options-panel">
+                                                            <div class="leasing-options">
+                                                                <strong class="range-tooltip" id="paymentMonths">6 вноски</strong>
+                                                                <input type="range" id="installmentPeriod" min="6" max="36" step="6" value="6">
+                                                                <div class="labels">
+                                                                    <span>6 вноски</span>
+                                                                    <span>36 вноски</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="credit-summary">
+                                                                <p class="m-0">Годишен лихвен процент: <strong id="interestValue">6.9%</strong></p>
+                                                                <p class="m-0">Годишен процент на разходите: <strong id="aprValue">7.9%</strong></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="installment-summary">
+                                                        <div class="monthly-amount">
+                                                            <span>Месечна вноска:</span>
+                                                            <strong id="monthlyInstallment">0.00 лв.</strong>
+                                                        </div>
+                                                        <div class="total-amount">
+                                                            <span>Обща сума:</span>
+                                                            <strong id="totalAmount">0.00 лв.</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <ul class="benefits-list">
+                                                    <li><i class="fas fa-check"></i> Бързо онлайн одобрение</li>
+                                                    <li><i class="fas fa-check"></i> Без скрити такси</li>
+                                                    <li><i class="fas fa-check"></i> Фиксирани месечни вноски</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="validation-message" id="payment-validation" style="display: none; color: #dc3545; margin-top: 5px;">
+                            Моля, изберете метод на плащане
                         </div>
                     </div>
                 </section>
@@ -112,7 +244,12 @@
                 </div>
                 <div class="summary-item">
                     <span>Shipping</span>
-                    <span>Free</span>
+                    <div id="shipping-price-display">
+                        <span th:if="${deliveryMethodValues != null and deliveryMethodValues[0] != null and deliveryMethodValues[0].price == '0.00'}">Free</span>
+                        <span th:unless="${deliveryMethodValues != null and deliveryMethodValues[0] != null and deliveryMethodValues[0].price == '0.00'}">
+                            <span th:text="${deliveryMethodValues != null and deliveryMethodValues[0] != null ? deliveryMethodValues[0].price : '0.00'}"></span> лв.
+                        </span>
+                    </div>
                 </div>
                 <div class="summary-item">
                     <span>Discount</span>
@@ -136,8 +273,8 @@
             <div class="summary-total">
                 <span>Total</span>
                 <span>
-                        <span th:text="${checkoutResponse.discountPrice != null ? checkoutResponse.discountPrice : checkoutResponse.totalPrice}">0.00</span> лв.
-                    </span>
+                    <span id="total-price" th:text="${checkoutResponse.discountPrice != null ? checkoutResponse.discountPrice : checkoutResponse.totalPrice}">0.00</span> лв.
+                </span>
             </div>
             <div class="text-end mt-4">
                 <button type="submit" class="checkout-btn">Place Order</button>
@@ -172,51 +309,147 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const shippingOptions = document.querySelectorAll('.shipping-option');
+        const totalPriceElement = document.getElementById('total-price');
+        const shippingPriceDisplay = document.getElementById('shipping-price-display');
+        const basePrice = parseFloat('[[${checkoutResponse.discountPrice != null ? checkoutResponse.discountPrice : checkoutResponse.totalPrice}]]'.replace(',', '.'));
+
         shippingOptions.forEach(option => {
             const radio = option.querySelector('input[type="radio"]');
+            const priceElement = option.querySelector('.price');
+            
             radio.addEventListener('change', function () {
                 shippingOptions.forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
+
+                // Get the selected shipping price
+                let shippingPrice = 0;
+                if (priceElement.textContent !== 'Free') {
+                    shippingPrice = parseFloat(priceElement.textContent.replace(',', '.'));
+                }
+
+                // Update shipping price display
+                if (shippingPrice === 0) {
+                    shippingPriceDisplay.innerHTML = '<span>Free</span>';
+                } else {
+                    shippingPriceDisplay.innerHTML = `<span>${shippingPrice.toFixed(2)} лв.</span>`;
+                }
+
+                // Calculate and update total price
+                const newTotal = basePrice + shippingPrice;
+                totalPriceElement.textContent = newTotal.toFixed(2);
             });
+
             if (radio.checked) {
                 option.classList.add('selected');
+                // Initialize shipping price display
+                let shippingPrice = 0;
+                if (priceElement.textContent !== 'Free') {
+                    shippingPrice = parseFloat(priceElement.textContent.replace(',', '.'));
+                }
+                
+                if (shippingPrice === 0) {
+                    shippingPriceDisplay.innerHTML = '<span>Free</span>';
+                } else {
+                    shippingPriceDisplay.innerHTML = `<span>${shippingPrice.toFixed(2)} лв.</span>`;
+                }
+
+                const initialTotal = basePrice + shippingPrice;
+                totalPriceElement.textContent = initialTotal.toFixed(2);
+            } else {
+                shippingPriceDisplay.innerHTML = '<span>-</span>';
             }
         });
+
         const paymentOptions = document.querySelectorAll('.payment-option');
+        const cardInfo = document.getElementById('card-info');
+        const cashInfo = document.getElementById('cash-info');
+        const installmentInfo = document.getElementById('installment-info');
+
         paymentOptions.forEach(option => {
             const radio = option.querySelector('input[type="radio"]');
+            
             radio.addEventListener('change', function () {
                 paymentOptions.forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
+
+                // Show/hide payment details
+                if (radio.id === 'card-payment') {
+                    cardInfo.classList.add('active');
+                    cashInfo.classList.remove('active');
+                    installmentInfo.classList.remove('active');
+                    financeInfo.classList.remove('active');
+                } else if (radio.id === 'cash-payment') {
+                    cardInfo.classList.remove('active');
+                    cashInfo.classList.add('active');
+                    installmentInfo.classList.remove('active');
+                    financeInfo.classList.remove('active');
+                } else if (radio.id === 'installment-payment') {
+                    cardInfo.classList.remove('active');
+                    cashInfo.classList.remove('active');
+                    installmentInfo.classList.add('active');
+                    financeInfo.classList.remove('active');
+                }
             });
+
             if (radio.checked) {
                 option.classList.add('selected');
+                if (radio.id === 'card-payment') {
+                    cardInfo.classList.add('active');
+                } else if (radio.id === 'cash-payment') {
+                    cashInfo.classList.add('active');
+                } else if (radio.id === 'installment-payment') {
+                    installmentInfo.classList.add('active');
+                }
             }
         });
 
-        const cardPayment = document.getElementById('card-payment');
-        const cashPayment = document.getElementById('cash-payment');
-        const cardInfo = document.getElementById('card-info');
-        const cashInfo = document.getElementById('cash-info');
+        initAutocomplete();
 
-        // Set initial state
-        cardInfo.style.display = 'block';
-        cashInfo.style.display = 'none';
+        const downPaymentInput = document.getElementById('downPayment');
+        const installmentPeriod = document.getElementById('installmentPeriod');
+        const monthlyInstallment = document.getElementById('monthlyInstallment');
+        const totalAmount = document.getElementById('totalAmount');
 
-        function togglePaymentInfo() {
-            if (cardPayment.checked) {
-                cardInfo.style.display = 'block';
-                cashInfo.style.display = 'none';
-            } else {
-                cardInfo.style.display = 'none';
-                cashInfo.style.display = 'block';
+        const summaryTotal = document.querySelector('.summary-total span:last-child').textContent;
+        const totalPrice = parseFloat(summaryTotal.replace(/[^0-9.]/g, ''));
+
+        const periods = [
+            { months: 6, interest: 6.9, apr: 7.9 },
+            { months: 12, interest: 7.9, apr: 8.9 },
+            { months: 24, interest: 8.9, apr: 9.9 },
+            { months: 36, interest: 10.9, apr: 11.9 }
+        ];
+
+        function calculateInstallment() {
+            const downPayment = parseFloat(downPaymentInput.value) || 0;
+            const months = parseInt(installmentPeriod.value);
+            const period = periods.find(p => p.months === months);
+            
+            if (downPayment > totalPrice) {
+                downPaymentInput.classList.add('is-invalid');
+                monthlyInstallment.textContent = '0.00 лв.';
+                totalAmount.textContent = '0.00 лв.';
+                return;
             }
+            
+            downPaymentInput.classList.remove('is-invalid');
+            const remainingAmount = totalPrice - downPayment;
+            const interestRate = period.interest / 100;
+            const totalWithInterest = remainingAmount * (1 + interestRate);
+            const monthlyPayment = totalWithInterest / months;
+
+            document.getElementById('paymentMonths').textContent = `${months} вноски`;
+            document.getElementById('interestValue').textContent = `${period.interest}%`;
+            document.getElementById('aprValue').textContent = `${period.apr}%`;
+
+            monthlyInstallment.textContent = monthlyPayment.toFixed(2) + ' лв.';
+            totalAmount.textContent = totalWithInterest.toFixed(2) + ' лв.';
         }
 
-        cardPayment.addEventListener('change', togglePaymentInfo);
-        cashPayment.addEventListener('change', togglePaymentInfo);
-        
-        initAutocomplete();
+        downPaymentInput.addEventListener('input', calculateInstallment);
+        installmentPeriod.addEventListener('input', calculateInstallment);
+
+        calculateInstallment();
     });
 
     card.addEventListener('change', function (event) {
@@ -232,9 +465,29 @@
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        const selectedShipping = document.querySelector('input[name="deliveryMethod"]:checked');
+        const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+        const shippingValidation = document.getElementById('shipping-validation');
+        const paymentValidation = document.getElementById('payment-validation');
         
-        // Submit the form directly without Stripe token creation
+        shippingValidation.style.display = 'none';
+        paymentValidation.style.display = 'none';
+        
+        let isValid = true;
+        if (!selectedShipping) {
+            shippingValidation.style.display = 'block';
+            isValid = false;
+        }
+        if (!selectedPayment) {
+            paymentValidation.style.display = 'block';
+            isValid = false;
+        }
+        if (!isValid) {
+            return;
+        }
+
+        const paymentMethod = selectedPayment.value;
+        
         form.submit();
     });
 

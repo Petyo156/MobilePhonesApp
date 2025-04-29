@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum PaymentMethod {
     CASH(PaymentOptions.PAYMENT_METHOD_CASH_DESCRIPTION),
-    CARD(PaymentOptions.PAYMENT_METHOD_CARD_DESCRIPTION);
+    CARD(PaymentOptions.PAYMENT_METHOD_CARD_DESCRIPTION),
+    FINANCE(PaymentOptions.PAYMENT_METHOD_FINANCE_DESCRIPTION);
 
     private final String description;
 }
