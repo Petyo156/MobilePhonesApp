@@ -42,6 +42,6 @@ public class Sale {
     @ManyToOne
     private DiscountCode discountCode;
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleItem> saleItems = new ArrayList<>();
 }

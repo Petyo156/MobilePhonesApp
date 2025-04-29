@@ -37,6 +37,9 @@ public class User {
     @Column
     private String address;
 
+    @Column
+    private String city;
+
     @Column(unique = true)
     private String phoneNumber;
 
@@ -47,13 +50,8 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    //nobodobaveni
-
     @OneToOne(mappedBy = "user", optional = false, cascade = CascadeType.ALL)
     private Cart cart;
-
-    @ManyToOne
-    private City city;
 
     @OneToMany(mappedBy = "user")
     private List<Sale> sales = new ArrayList<>();
