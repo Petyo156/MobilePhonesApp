@@ -5,7 +5,6 @@ import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
-import bg.tu_varna.sit.usp.phone_sales.user.model.City;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.model.UserRole;
 import bg.tu_varna.sit.usp.phone_sales.user.repository.UserRepository;
@@ -79,14 +78,28 @@ public class UserService implements UserDetailsService {
         return userRepository.count() > 0;
     }
 
-    public void updateUserAddressPreference(String address, City city, User user) {
-        if (user.getAddress().equals(address) && user.getCity().equals(city)) {
-            log.info("User address and city have not changed since last order");
+    public void updateUserPersonalInformationPreference(String address, String city, String phoneNumber, User user) {
+        boolean isNew = user.getAddress() == null || user.getCity() == null || user.getPhoneNumber() == null;
+        boolean isUnchanged = address.equals(user.getAddress()) &&
+                city.equals(user.getCity()) &&
+                phoneNumber.equals(user.getPhoneNumber());
+
+        if (!isNew && isUnchanged) {
+            log.info("User address, city, and phone have not changed since last order");
             return;
         }
+
         user.setAddress(address);
         user.setCity(city);
-        log.info("Updating user address and city preference");
+        user.setPhoneNumber(phoneNumber);
+        log.info("Updating user address, city, and phone number preference");
+        userRepository.save(user);
+    }
+
+    public void updateUserFirstAndLastNamePreference(String firstName, String lastName, User user) {
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        log.info("Updating user first and last name preference");
         userRepository.save(user);
     }
 
@@ -159,4 +172,6 @@ public class UserService implements UserDetailsService {
                 .role(UserRole.USER)
                 .build();
     }
+
+
 }
