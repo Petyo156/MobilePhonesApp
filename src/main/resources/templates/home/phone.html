@@ -78,12 +78,19 @@
                         <span class="price" th:text="${phoneResponse.price + ' лв.'}"></span>
                     </div>
                 </div>
-                <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="submit" class="add-to-cart-btn">
-                        <i class="fas fa-shopping-cart"></i>Add to Cart
-                    </button>
-                </form>
+                <div th:if="${user != null}">
+                    <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="add-to-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>Add to Cart
+                        </button>
+                    </form>
+                </div>
+                <div th:if="${user == null}">
+                    <a th:href="@{/login}" class="add-to-cart-btn">
+                        <i class="fas fa-sign-in-alt"></i>Add to Cart
+                    </a>
+                </div>
             </div>
 
             <div class="selection-container">
