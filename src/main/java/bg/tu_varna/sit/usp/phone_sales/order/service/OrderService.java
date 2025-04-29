@@ -51,7 +51,11 @@ public class OrderService {
     public void makeOrder(User user, OrderRequest orderRequest, CheckoutResponse checkoutResponse) {
         SaleDetails saleDetails = saleDetailsService.initializeSaleDetailsForUser(orderRequest, user);
 
-        BigDecimal totalPrice = getTotalPriceForOrder(checkoutResponse.getTotalPrice(), orderRequest.getDeliveryMethod());
+        String priceToUse = checkoutResponse.getDiscountPrice() != null ? 
+                checkoutResponse.getDiscountPrice() : 
+                checkoutResponse.getTotalPrice();
+                
+        BigDecimal totalPrice = getTotalPriceForOrder(priceToUse, orderRequest.getDeliveryMethod());
         Sale sale = initializeSale(user, checkoutResponse, saleDetails, totalPrice);
         orderRepository.save(sale);
 
