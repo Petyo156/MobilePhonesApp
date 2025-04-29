@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -88,6 +85,15 @@ public class DiscountCodeService {
     public void deleteCodeByName(String name) {
         discountCodeRepository.deleteDiscountCodeByName(name);
         log.info("Code deleted successfully");
+    }
+
+    public DiscountCode getDiscountCodeForSaleCreation(String discountCode) {
+        Optional<DiscountCode> discountCodeOptional = discountCodeRepository.findByName(discountCode);
+        if(discountCodeOptional.isEmpty()){
+            log.info("No discount code usage");
+            return null;
+        }
+        return discountCodeOptional.get();
     }
 
     public void addNewCode(String name, String discountPercent) {

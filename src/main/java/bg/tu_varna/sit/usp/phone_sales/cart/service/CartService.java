@@ -92,14 +92,6 @@ public class CartService {
         return discountCodeService.calculateDiscountPrice(totalPrice, discountCodePercent);
     }
 
-    private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
-        return CartResponse.builder()
-                .phones(phoneResponses)
-                .totalPrice(decimalFormat.format(totalPrice))
-                .summary(summary)
-                .build();
-    }
-
     public void incrementPhoneQuantityInCart(User user, String slug) {
         cartItemService.incrementItemQuantity(user, slug);
     }
@@ -110,5 +102,13 @@ public class CartService {
 
     public void removePhoneFromCart(User user, String slug) {
         cartItemService.removeFromCart(user, slug);
+    }
+
+    private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
+        return CartResponse.builder()
+                .phones(phoneResponses)
+                .totalPrice(decimalFormat.format(totalPrice))
+                .summary(summary)
+                .build();
     }
 }
