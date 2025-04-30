@@ -18,7 +18,7 @@ public interface PhoneRepository extends JpaRepository<Phone, UUID> {
             "OR LOWER(p.phoneModel.brand.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     List<Phone> searchVisiblePhonesByModelOrBrand(@Param("keyword") String keyword);
 
-    List<Phone> findTop5ByIsVisibleTrueOrderByCreatedAtDesc();
+    List<Phone> findTop4ByIsVisibleTrueOrderByCreatedAtDesc();
 
     List<Phone> findAllByIsVisibleTrue();
 

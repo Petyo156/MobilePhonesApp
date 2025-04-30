@@ -91,7 +91,7 @@ public class PhoneService {
     }
 
     public List<GetPhoneResponse> getMostRecentPhones() {
-        List<Phone> phones = phoneRepository.findTop5ByIsVisibleTrueOrderByCreatedAtDesc();
+        List<Phone> phones = phoneRepository.findTop4ByIsVisibleTrueOrderByCreatedAtDesc();
 
         return initializeGetPhoneListResponse(phones);
     }
