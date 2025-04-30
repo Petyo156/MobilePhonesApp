@@ -13,4 +13,5 @@ public class DifferentColorPhoneResponse {
     private String slug;
     private String imageUrl;
     private String color;
+    private String price;
 }
