@@ -396,7 +396,7 @@ input[type="tel"]::placeholder {
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: sticky;
-    top: 10rem;
+    top: 6rem;
 }
 
 .summary-row {
