@@ -14,8 +14,6 @@
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
 }
 
 #carouselExampleIndicators {
@@ -184,24 +182,11 @@ h1 {
 }
 
 .price {
-    display: inline-block;
+    display: block;
     color: #ff0000;
     font-size: 1.7rem;
     font-weight: bold;
     line-height: 1.2;
-    margin-right: 0.5rem;
-}
-
-.discount-percent {
-    display: inline-block;
-    background: #ff0000;
-    color: white;
-    padding: 0.15rem 0.4rem;
-    border-radius: 3px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    vertical-align: middle;
-    margin-bottom: 10px;
 }
 
 .price sup {
@@ -223,7 +208,6 @@ h1 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    text-decoration: none;
 }
 
 .add-to-cart-btn:hover {
@@ -231,7 +215,6 @@ h1 {
     color: var(--light);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-decoration: none;
 }
 
 .add-to-cart-btn i {
@@ -446,48 +429,22 @@ h1 {
     filter: invert(40%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(80%) contrast(95%);
 }
 
-.preview-container {
-    position: sticky;
-    top: 5rem;
-    height: fit-content;
-    margin-bottom: 2rem;
-    transition: all 0.3s ease;
-}
-
 .view-toggle-container {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 10;
     display: flex;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 0.5rem;
-    border-radius: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-}
-
-.preview-container:hover .view-toggle-container {
-    opacity: 1;
-    transform: translateY(0);
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 .view-toggle-btn {
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: transparent;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    background: white;
     color: var(--accent);
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .view-toggle-btn.active {
