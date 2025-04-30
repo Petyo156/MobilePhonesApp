@@ -19,52 +19,54 @@
 <div class="container phone-container">
     <div class="row">
         <div class="col-md-6">
-            <div class="view-toggle-container">
-                <button class="view-toggle-btn active" data-view="carousel">
-                    <i class="fas fa-images"></i> Images
-                </button>
-                <button class="view-toggle-btn" data-view="3d">
-                    <i class="fas fa-cube"></i> 3D Model
-                </button>
-            </div>
-
-            <div class="carousel-container active">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button th:each="image, stat : ${phoneResponse.images}"
-                                type="button"
-                                data-bs-target="#carouselExampleIndicators"
-                                th:data-bs-slide-to="${image.imageIndex}"
-                                th:class="${image.imageIndex == 0} ? 'active' : ''"
-                                th:aria-label="'Slide ' + ${stat.count}">
-                        </button>
-                    </div>
-                    <div class="carousel-inner">
-                        <div th:each="image, stat : ${phoneResponse.images}"
-                             th:class="${image.imageIndex == 0} ? 'carousel-item active' : 'carousel-item'">
-                            <img th:src="${image.imageUrl}"
-                                 class="d-block w-100 phone-image"
-                                 th:alt="'Phone Image ' + ${stat.count}"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#imageModal"
-                                 style="cursor: pointer;">
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+            <div class="preview-container">
+                <div class="view-toggle-container" th:if="${modelUrl != null && !modelUrl.isEmpty()}">
+                    <button class="view-toggle-btn" data-view="carousel" th:classappend="${modelUrl == null || modelUrl.isEmpty()} ? 'active' : ''">
+                        <i class="fas fa-images"></i>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                    <button class="view-toggle-btn" data-view="3d" th:classappend="${modelUrl != null && !modelUrl.isEmpty()} ? 'active' : ''">
+                        <i class="fas fa-cube"></i>
                     </button>
                 </div>
-            </div>
 
-            <div class="model-container">
-                <iframe width="100%" height="100%" th:src="${modelUrl}" frameborder="10" allowfullscreen></iframe>
+                <div class="carousel-container" th:classappend="${modelUrl == null || modelUrl.isEmpty()} ? 'active' : ''">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button th:each="image, stat : ${phoneResponse.images}"
+                                    type="button"
+                                    data-bs-target="#carouselExampleIndicators"
+                                    th:data-bs-slide-to="${image.imageIndex}"
+                                    th:class="${image.imageIndex == 0} ? 'active' : ''"
+                                    th:aria-label="'Slide ' + ${stat.count}">
+                            </button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div th:each="image, stat : ${phoneResponse.images}"
+                                 th:class="${image.imageIndex == 0} ? 'carousel-item active' : 'carousel-item'">
+                                <img th:src="${image.imageUrl}"
+                                     class="d-block w-100 phone-image"
+                                     th:alt="'Phone Image ' + ${stat.count}"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#imageModal"
+                                     style="cursor: pointer;">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="model-container" th:classappend="${modelUrl != null && !modelUrl.isEmpty()} ? 'active' : ''">
+                    <iframe width="100%" height="100%" th:src="${modelUrl}" frameborder="10" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
@@ -83,6 +85,7 @@
                     <div th:if="${phoneResponse.discountPrice != phoneResponse.price}">
                         <span class="discounted-price" th:text="${phoneResponse.price + ' лв.'}"></span>
                         <span class="price" th:text="${phoneResponse.discountPrice + ' лв.'}"></span>
+                        <span class="discount-percent" th:text="'-'+${phoneResponse.discountPercent + '%'}"></span>
                     </div>
                     <div th:unless="${phoneResponse.discountPrice != phoneResponse.price}">
                         <span class="price" th:text="${phoneResponse.price + ' лв.'}"></span>
