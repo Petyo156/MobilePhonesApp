@@ -250,6 +250,7 @@ public class PhoneService {
                 .slug(similarPhone.getSlug())
                 .imageUrl(similarPhone.getImages().get(0).getImageUrl())
                 .color(similarPhone.getDimension().getColor())
+                .price(getDiscountPrice(similarPhone))
                 .build();
     }
 
