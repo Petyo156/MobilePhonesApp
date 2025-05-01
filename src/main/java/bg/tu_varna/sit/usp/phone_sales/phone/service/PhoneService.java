@@ -194,7 +194,23 @@ public class PhoneService {
         Integer releaseYear = phone.getReleaseYear();
         String slug = phone.getSlug();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, slug, images, price, discountPrice, discountPercent, quantity, modelUrl, releaseYear);
+        return GetPhoneResponse.builder()
+                .slug(slug)
+                .brandAndModelResponse(brandAndModel)
+                .cameraResponse(camera)
+                .hardwareResponse(hardware)
+                .operatingSystemResponse(operatingSystem)
+                .dimensions(dimensions)
+                .images(images)
+                .price(price)
+                .quantity(quantity)
+                .discountPercent(discountPercent)
+                .discountPrice(discountPrice)
+                .releaseYear(releaseYear)
+                .modelUrl(modelUrl)
+                .createdAt(phone.getCreatedAt())
+                .isVisible(phone.getIsVisible())
+                .build();
     }
 
     public BigDecimal calculateDiscountPrice(Phone phone) {
@@ -259,24 +275,6 @@ public class PhoneService {
                 .slug(similarPhone.getSlug())
                 .imageUrl(similarPhone.getImages().get(0).getImageUrl())
                 .storage(similarPhone.getHardware().getStorage().toString())
-                .build();
-    }
-
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<ImageResponse> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
-        return GetPhoneResponse.builder()
-                .slug(slug)
-                .brandAndModelResponse(brandAndModel)
-                .cameraResponse(camera)
-                .hardwareResponse(hardware)
-                .operatingSystemResponse(operatingSystem)
-                .dimensions(dimensions)
-                .images(images)
-                .price(price)
-                .quantity(quantity)
-                .discountPercent(discountPercent)
-                .discountPrice(discountPrice)
-                .releaseYear(releaseYear)
-                .modelUrl(modelUrl)
                 .build();
     }
 
@@ -362,5 +360,11 @@ public class PhoneService {
         return builtPhone.toBuilder()
                 .slug(slug)
                 .build();
+    }
+
+    public List<GetPhoneResponse> getAllPhones() {
+        List<Phone> phones = phoneRepository.findAll();
+        log.info("Get all phones for admin list");
+        return initializeGetPhoneListResponse(phones);
     }
 }
