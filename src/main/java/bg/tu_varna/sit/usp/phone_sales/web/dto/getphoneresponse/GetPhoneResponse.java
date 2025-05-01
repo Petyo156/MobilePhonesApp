@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -37,4 +38,8 @@ public class GetPhoneResponse {
     private String modelUrl;
 
     private List<ImageResponse> images;
+
+    private LocalDateTime createdAt;
+
+    private Boolean isVisible;
 }

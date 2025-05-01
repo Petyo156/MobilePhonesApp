@@ -138,4 +138,20 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
+    @GetMapping("/phones")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getAdminPhoneList() {
+        ModelAndView modelAndView = new ModelAndView("admin/phone-list");
+        List<GetPhoneResponse> phones = phoneService.getAllPhones();
+        modelAndView.addObject("phones", phones);
+        return modelAndView;
+    }
+
+    @PostMapping("/phone/{slug}/visibility")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseBody
+    public void updatePhoneVisibility(@PathVariable String slug) {
+        phoneService.updateVisibility(slug);
+    }
+
 }
