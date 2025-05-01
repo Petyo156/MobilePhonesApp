@@ -34,7 +34,11 @@ public class Sale {
     private BigDecimal totalPrice;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SaleStatus saleStatus;
+
+    @Column(nullable = false)
+    private String orderNumber;
 
     @OneToOne(optional = false)
     private SaleDetails saleDetails;

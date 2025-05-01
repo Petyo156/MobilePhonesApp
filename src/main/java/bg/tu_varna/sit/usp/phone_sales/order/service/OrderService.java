@@ -36,30 +36,34 @@ public class OrderService {
     private final SaleDetailsService saleDetailsService;
     private final SaleItemService saleItemService;
     private final OrderRepository orderRepository;
+    private final SaleCounterService saleCounterService;
 
     @Autowired
-    public OrderService(CartService cartService, DiscountCodeService discountCodeService, DecimalFormat decimalFormat, SaleDetailsService saleDetailsService, SaleItemService saleItemService, OrderRepository orderRepository) {
+    public OrderService(CartService cartService, DiscountCodeService discountCodeService, DecimalFormat decimalFormat, SaleDetailsService saleDetailsService, SaleItemService saleItemService, OrderRepository orderRepository, SaleCounterService saleCounterService) {
         this.cartService = cartService;
         this.discountCodeService = discountCodeService;
         this.decimalFormat = decimalFormat;
         this.saleDetailsService = saleDetailsService;
         this.saleItemService = saleItemService;
         this.orderRepository = orderRepository;
+        this.saleCounterService = saleCounterService;
     }
 
     @Transactional
-    public void makeOrder(User user, OrderRequest orderRequest, CheckoutResponse checkoutResponse) {
+    public String makeOrder(User user, OrderRequest orderRequest, CheckoutResponse checkoutResponse) {
         SaleDetails saleDetails = saleDetailsService.initializeSaleDetailsForUser(orderRequest, user);
 
         String priceToUse = checkoutResponse.getDiscountPrice() != null ? 
                 checkoutResponse.getDiscountPrice() : 
                 checkoutResponse.getTotalPrice();
-                
+
+        String formattedOrderNumber = saleCounterService.getFormattedOrderNumber();
         BigDecimal totalPrice = getTotalPriceForOrder(priceToUse, orderRequest.getDeliveryMethod());
-        Sale sale = initializeSale(user, checkoutResponse, saleDetails, totalPrice);
+        Sale sale = initializeSale(user, checkoutResponse, saleDetails, totalPrice, formattedOrderNumber);
         orderRepository.save(sale);
 
         saleItemService.createSaleItemsForNewSale(sale, user);
+        return formattedOrderNumber;
     }
 
     public CheckoutResponse getCheckoutResponse(User user) {
@@ -131,7 +135,7 @@ public class OrderService {
         return basePrice.add(deliveryMethod.getPrice());
     }
 
-    private Sale initializeSale(User user, CheckoutResponse checkoutResponse, SaleDetails saleDetails, BigDecimal totalPrice) {
+    private Sale initializeSale(User user, CheckoutResponse checkoutResponse, SaleDetails saleDetails, BigDecimal totalPrice, String formattedOrderNumber) {
         return Sale.builder()
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)
@@ -139,6 +143,7 @@ public class OrderService {
                 .discountCode(discountCodeService.getDiscountCodeForSaleCreation(checkoutResponse.getDiscountCode()))
                 .user(user)
                 .saleDetails(saleDetails)
+                .orderNumber(formattedOrderNumber)
                 .build();
     }
 }

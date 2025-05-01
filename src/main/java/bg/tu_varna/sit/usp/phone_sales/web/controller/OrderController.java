@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -66,7 +67,8 @@ public class OrderController {
     public ModelAndView checkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
                                  @Valid @ModelAttribute OrderRequest orderRequest,
                                  BindingResult bindingResult,
-                                 HttpSession session) {
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         CheckoutResponse checkoutResponse = cartViewModelService.getCheckoutResponse(session, user);
         ModelAndView modelAndView = new ModelAndView("user/checkout");
@@ -75,17 +77,20 @@ public class OrderController {
             modelAndView.addObject("checkoutResponse", checkoutResponse);
             return modelAndView;
         }
-        orderService.makeOrder(user, orderRequest, checkoutResponse);
+        String orderNumber = orderService.makeOrder(user, orderRequest, checkoutResponse);
+        redirectAttributes.addAttribute("orderNumber", orderNumber);
         cartSessionService.clearDiscountInfo(session);
         return new ModelAndView("redirect:/checkout/success");
     }
 
     @GetMapping("/success")
     @RequireAuthenticatedUser
-    public ModelAndView getSuccessfulCheckoutPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getSuccessfulCheckoutPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                                  @RequestParam("orderNumber") String orderNumber) {//will throw Bad Request in case order number is not present
         ModelAndView modelAndView = new ModelAndView("user/successful-checkout");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
+        modelAndView.addObject("orderNumber", orderNumber);
         modelAndView.addObject("user", user);
 
         return modelAndView;

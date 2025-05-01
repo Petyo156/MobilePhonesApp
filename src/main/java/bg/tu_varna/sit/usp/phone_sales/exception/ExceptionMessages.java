@@ -15,4 +15,5 @@ public class ExceptionMessages {
     public static final String INVALID_DISCOUNT_PERCENT = "Invalid discount percent value.";
     public static final String INVALID_DISCOUNT_CODE = "Invalid discount code.";
     public static final String INVALID_DISCOUNT_CODE_PERCENT_INPUT = "Invalid discount code percent input.";
+    public static final String INVALID_COUNTER_ID = "Counter not initialized";
 }
