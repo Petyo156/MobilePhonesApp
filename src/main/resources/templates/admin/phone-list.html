@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone List - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/phone-list.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script th:src="@{/js/admin/phone-list.js}" defer></script>
+</head>
+<body>
+    <div class="admin-header">
+        <a href="/" class="back-link">← Back to Main Page</a>
+        <h1>Phone List</h1>
+    </div>
+
+    <div class="table-container">
+        <table class="phone-table">
+            <thead>
+                <tr>
+                    <th data-sort="name">Phone Name <span class="sort-icon">↓</span></th>
+                    <th data-sort="model">Model <span class="sort-icon"></span></th>
+                    <th data-sort="storage">Storage <span class="sort-icon"></span></th>
+                    <th data-sort="ram">RAM <span class="sort-icon"></span></th>
+                    <th data-sort="color">Color <span class="sort-icon"></span></th>
+                    <th data-sort="price">Price <span class="sort-icon"></span></th>
+                    <th data-sort="stock">Stock <span class="sort-icon"></span></th>
+                    <th data-sort="discount">Discount <span class="sort-icon"></span></th>
+                    <th data-sort="date">Date Added <span class="sort-icon"></span></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="phone : ${phones}">
+                    <td th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : ''}"></td>
+                    <td th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.model : ''}"></td>
+                    <td th:text="${phone.hardwareResponse != null ? phone.hardwareResponse.storage + 'GB' : ''}"></td>
+                    <td th:text="${phone.hardwareResponse != null ? phone.hardwareResponse.ram + 'GB' : ''}"></td>
+                    <td th:text="${phone.dimensions != null ? phone.dimensions.color : ''}"></td>
+                    <td th:text="${phone.price != null ? phone.price : ''}"></td>
+                    <td th:text="${phone.quantity != null ? phone.quantity : ''}"></td>
+                    <td th:text="${phone.discountPercent != null ? phone.discountPercent + '%' : '0%'}"></td>
+                    <td th:text="${phone.createdAt != null ? #temporals.format(phone.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></td>
+                    <td class="actions">
+                        <a th:href="@{/phone/{slug}(slug=${phone.slug})}" class="action-link view">View</a>
+                        <a th:href="@{/phone/{slug}/add-similar(slug=${phone.slug})}" class="action-link add-similar">Add Similar</a>
+                        <button th:data-slug="${phone.slug}"
+                                th:class="${phone.isVisible != null and phone.isVisible ? 'action-button hide' : 'action-button show'}">
+                            <span th:text="${phone.isVisible != null and phone.isVisible ? 'Hide' : 'Show'}"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> 
