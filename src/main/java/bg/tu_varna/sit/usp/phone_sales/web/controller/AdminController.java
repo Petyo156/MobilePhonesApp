@@ -97,9 +97,11 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getCodesPage() {
         ModelAndView modelAndView = new ModelAndView("admin/add-code");
-        List<DiscountCodeResponse> discountCodes = discountCodeService.getAllDiscountCodesResponse();
+        List<DiscountCodeResponse> activeDiscountCodes = discountCodeService.getDiscountCodeResponses(true);
+        List<DiscountCodeResponse> inactiveDiscountCodes = discountCodeService.getDiscountCodeResponses(false);
 
-        modelAndView.addObject("discountCodes", discountCodes);
+        modelAndView.addObject("activeDiscountCodes", activeDiscountCodes);
+        modelAndView.addObject("inactiveDiscountCodes", inactiveDiscountCodes);
 
         return modelAndView;
     }
@@ -112,10 +114,10 @@ public class AdminController {
         return "redirect:/admin/codes";
     }
 
-    @PostMapping("/codes/deletion/{name}")
+    @PostMapping("/codes/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteCode(@PathVariable String name) {
-        discountCodeService.deleteCodeByName(name);
+    public String updateCodeStatus(@PathVariable String name) {
+        discountCodeService.updateStatusByName(name);
 
         return "redirect:/admin/codes";
     }
