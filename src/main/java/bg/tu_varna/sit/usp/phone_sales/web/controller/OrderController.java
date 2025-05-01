@@ -9,6 +9,7 @@ import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUse
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.OrderRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.PersonalInformationResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DeliveryMethodResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.PaymentMethodResponse;
@@ -51,13 +52,15 @@ public class OrderController {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         cartViewModelService.attachSessionAttributes(modelAndView, session, user);
         cartViewModelService.attachAndClearError(modelAndView, session);
-
+        PersonalInformationResponse personalInformationResponse = userService.getPersonalInformationResponse(user);
         List<DeliveryMethodResponse> deliveryMethodValues = orderService.getDeliveryMethodValues();
         List<PaymentMethodResponse> paymentMethodValues = orderService.getPaymentMethodValues();
 
         modelAndView.addObject("orderRequest", new OrderRequest());
         modelAndView.addObject("deliveryMethodValues", deliveryMethodValues);
         modelAndView.addObject("paymentMethodValues", paymentMethodValues);
+        modelAndView.addObject("personalInformationResponse", personalInformationResponse);
+
         return modelAndView;
     }
 

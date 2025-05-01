@@ -56,20 +56,38 @@
                 <!-- Address -->
                 <section class="shipping-address">
                     <h2>2. Shipping Address</h2>
+
                     <div class="form-row">
-                        <input type="text" th:field="*{firstName}" placeholder="Име" required>
-                        <input type="text" th:field="*{lastName}" placeholder="Фамилия" required>
+                        <input type="text" name="firstName"
+                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.firstName} : ''"
+                               placeholder="Име" required>
+
+                        <input type="text" name="lastName"
+                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.lastName} : ''"
+                               placeholder="Фамилия" required>
                     </div>
+
                     <input type="text" placeholder="Булстат ЕИК (незадължително)" class="full-width">
+
                     <div class="form-row">
-                        <input type="text" th:field="*{address}" placeholder="Въведете адрес" required
-                               class="address-input">
+                        <input type="text" name="address"
+                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.address} : ''"
+                               placeholder="Въведете адрес" required class="address-input">
                         <div id="address-validation" class="validation-message" style="display: none;"></div>
                     </div>
+
                     <div class="form-row">
-                        <input type="tel" th:field="*{phoneNumber}" placeholder="Phone Number" required>
-                        <input type="text" th:field="*{city}" placeholder="Град" required id="city-input">
-                        <input type="text" th:field="*{zipCode}" placeholder="Пощенски код" required id="zip-input">
+                        <input type="tel" name="phoneNumber"
+                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.phoneNumber} : ''"
+                               placeholder="Phone Number" required>
+
+                        <input type="text" name="city"
+                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.city} : ''"
+                               placeholder="Град" required id="city-input">
+
+                        <input type="text" name="zipCode"
+                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.zipCode} : ''"
+                               placeholder="Пощенски код" required id="zip-input">
                     </div>
                 </section>
 
