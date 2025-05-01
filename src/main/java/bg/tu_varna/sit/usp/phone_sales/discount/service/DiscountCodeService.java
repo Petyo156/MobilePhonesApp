@@ -5,7 +5,6 @@ import bg.tu_varna.sit.usp.phone_sales.discount.repository.DiscountCodeRepositor
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DiscountCodeResponse;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,7 +28,7 @@ public class DiscountCodeService {
     }
 
     public Boolean isValidCode(String discountCode) {
-        Map<String, BigDecimal> allDiscountCodes = getAllDiscountCodes();
+        Map<String, BigDecimal> allDiscountCodes = getDiscountCodesByStatus(true);
         String lowerCaseDiscountCode = discountCode.toLowerCase();
         for (String key : allDiscountCodes.keySet()) {
             if (lowerCaseDiscountCode.equals(key.toLowerCase())) {
@@ -40,32 +40,27 @@ public class DiscountCodeService {
         return false;
     }
 
-    public Map<String, BigDecimal> getAllDiscountCodes() {
-        List<DiscountCode> all = discountCodeRepository.findAll();
-        Map<String, BigDecimal> discountCodes = new HashMap<>();
-        for (DiscountCode discountCode : all) {
-            discountCodes.put(discountCode.getName(), discountCode.getDiscount());
-        }
-        return discountCodes;
+    public List<DiscountCodeResponse> getDiscountCodeResponses(boolean isActive) {
+        log.info("Retrieving discount code responses by status {}", isActive);
+        return getDiscountCodesByStatus(isActive).entrySet().stream()
+                .map(entry -> DiscountCodeResponse.builder()
+                        .discountCode(entry.getKey())
+                        .discountPercent(decimalFormat.format(entry.getValue()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
-    public List<DiscountCodeResponse> getAllDiscountCodesResponse() {
-        Map<String, BigDecimal> allDiscountCodes = getAllDiscountCodes();
-        List<DiscountCodeResponse> discountCodes = new ArrayList<>();
-        for (Map.Entry<String, BigDecimal> entry : allDiscountCodes.entrySet()) {
-            DiscountCodeResponse response = DiscountCodeResponse.builder()
-                    .discountCode(entry.getKey())
-                    .discountPercent(decimalFormat.format(entry.getValue()))
-                    .build();
+    public Map<String, BigDecimal> getDiscountCodesByStatus(boolean isActive) {
+        List<DiscountCode> discountCodes = isActive
+                ? discountCodeRepository.findAllByIsActiveTrue()
+                : discountCodeRepository.findAllByIsActiveFalse();
 
-            discountCodes.add(response);
-        }
-        log.info("Retrieved all code responses");
-        return discountCodes;
+        return discountCodes.stream()
+                .collect(Collectors.toMap(DiscountCode::getName, DiscountCode::getDiscount));
     }
 
     public BigDecimal getDiscountCodePercent(String discountCode) {
-        Map<String, BigDecimal> all = getAllDiscountCodes();
+        Map<String, BigDecimal> all = getDiscountCodesByStatus(true);
         String lowerCaseDiscountCode = discountCode.toLowerCase();
         for (String key : all.keySet()) {
             if (lowerCaseDiscountCode.equals(key.toLowerCase())) {
@@ -81,15 +76,21 @@ public class DiscountCodeService {
         return totalPrice.subtract(discountAmount).setScale(2, RoundingMode.HALF_UP);
     }
 
-    @Transactional
-    public void deleteCodeByName(String name) {
-        discountCodeRepository.deleteDiscountCodeByName(name);
-        log.info("Code deleted successfully");
+    public void updateStatusByName(String name) {
+        DiscountCode discountCode = findByName(name);
+        discountCode.setIsActive(!discountCode.getIsActive());
+        discountCodeRepository.save(discountCode);
+        log.info("Code status updated successfully");
+    }
+
+    public DiscountCode findByName(String name) {
+        return discountCodeRepository.findByName(name)
+                .orElseThrow(() -> new DomainException(ExceptionMessages.INVALID_DISCOUNT_CODE));
     }
 
     public DiscountCode getDiscountCodeForSaleCreation(String discountCode) {
         Optional<DiscountCode> discountCodeOptional = discountCodeRepository.findByName(discountCode);
-        if(discountCodeOptional.isEmpty()){
+        if (discountCodeOptional.isEmpty()) {
             log.info("No discount code usage");
             return null;
         }
@@ -114,6 +115,7 @@ public class DiscountCodeService {
         return DiscountCode.builder()
                 .name(name)
                 .discount(percent)
+                .isActive(true)
                 .build();
     }
 }
