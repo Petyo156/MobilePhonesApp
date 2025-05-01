@@ -80,6 +80,7 @@ public class UserService implements UserDetailsService {
 
     public void updateUserPersonalInformationPreference(String address, String city, String phoneNumber, User user) {
         boolean isNew = user.getAddress() == null || user.getCity() == null || user.getPhoneNumber() == null;
+
         boolean isUnchanged = address.equals(user.getAddress()) &&
                 city.equals(user.getCity()) &&
                 phoneNumber.equals(user.getPhoneNumber());
@@ -87,6 +88,10 @@ public class UserService implements UserDetailsService {
         if (!isNew && isUnchanged) {
             log.info("User address, city, and phone have not changed since last order");
             return;
+        }
+
+        if(userRepository.findByPhoneNumber(user.getPhoneNumber()).isPresent()) {
+            throw new DomainException(ExceptionMessages.USER_WITH_THIS_PHONE_NUMBER_ALREADY_EXISTS);
         }
 
         user.setAddress(address);
