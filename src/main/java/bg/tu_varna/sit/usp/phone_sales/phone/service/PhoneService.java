@@ -26,10 +26,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST;
 
@@ -91,9 +88,22 @@ public class PhoneService {
     }
 
     public List<GetPhoneResponse> getMostRecentPhones() {
-        List<Phone> phones = phoneRepository.findTop4ByIsVisibleTrueOrderByCreatedAtDesc();
+        List<Phone> phones = phoneRepository.findTop20ByIsVisibleTrueOrderByCreatedAtDesc();
+        Set<String> uniqueConfigs = new HashSet<>();
+        List<Phone> result = new ArrayList<>();
 
-        return initializeGetPhoneListResponse(phones);
+        for (Phone phone : phones) {
+            String key = phone.getPhoneModel().getName() + "-" +
+                    phone.getPhoneModel().getBrand().getName() + "-" +
+                    phone.getHardware().getRam();
+
+            if (uniqueConfigs.add(key)) {
+                result.add(phone);
+            }
+
+            if (result.size() == 4) break;
+        }
+        return initializeGetPhoneListResponse(result);
     }
 
     public List<GetPhoneResponse> getAllVisiblePhones() {
