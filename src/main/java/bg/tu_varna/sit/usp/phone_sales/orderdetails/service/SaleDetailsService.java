@@ -20,7 +20,7 @@ public class SaleDetailsService {
     }
 
     public SaleDetails initializeSaleDetailsForUser(OrderRequest orderRequest, User user) {
-        userService.updateUserPersonalInformationPreference(orderRequest.getAddress(), orderRequest.getCity(), orderRequest.getPhoneNumber(), user);
+        userService.updateUserPersonalInformationPreference(orderRequest.getZipCode(), orderRequest.getAddress(), orderRequest.getCity(), orderRequest.getPhoneNumber(), user);
         userService.updateUserFirstAndLastNamePreference(orderRequest.getFirstName(), orderRequest.getLastName(), user);
 
         SaleDetails saleDetails = initializeSaleDetails(orderRequest);

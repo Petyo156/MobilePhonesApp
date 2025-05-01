@@ -9,6 +9,7 @@ import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.model.UserRole;
 import bg.tu_varna.sit.usp.phone_sales.user.repository.UserRepository;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ChangePasswordRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.PersonalInformationResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -78,25 +80,29 @@ public class UserService implements UserDetailsService {
         return userRepository.count() > 0;
     }
 
-    public void updateUserPersonalInformationPreference(String address, String city, String phoneNumber, User user) {
+    public void updateUserPersonalInformationPreference(String zipCode, String address, String city, String phoneNumber, User user) {
         boolean isNew = user.getAddress() == null || user.getCity() == null || user.getPhoneNumber() == null;
 
-        boolean isUnchanged = address.equals(user.getAddress()) &&
-                city.equals(user.getCity()) &&
-                phoneNumber.equals(user.getPhoneNumber());
+        boolean isUnchanged = Objects.equals(address, user.getAddress()) &&
+                Objects.equals(city, user.getCity()) &&
+                Objects.equals(phoneNumber, user.getPhoneNumber()) &&
+                Objects.equals(zipCode, user.getZipCode());
+
 
         if (!isNew && isUnchanged) {
             log.info("User address, city, and phone have not changed since last order");
             return;
         }
 
-        if(userRepository.findByPhoneNumber(user.getPhoneNumber()).isPresent()) {
+        if (userRepository.findByPhoneNumber(phoneNumber).isPresent() && !Objects.equals(phoneNumber, user.getPhoneNumber())) {
             throw new DomainException(ExceptionMessages.USER_WITH_THIS_PHONE_NUMBER_ALREADY_EXISTS);
         }
 
         user.setAddress(address);
         user.setCity(city);
         user.setPhoneNumber(phoneNumber);
+        user.setZipCode(zipCode);
+
         log.info("Updating user address, city, and phone number preference");
         userRepository.save(user);
     }
@@ -126,6 +132,31 @@ public class UserService implements UserDetailsService {
         log.info("Inserting admin user");
 
         userRepository.save(admin);
+    }
+
+    public PersonalInformationResponse getPersonalInformationResponse(User user) {
+        return initializePersonalInformationResponse(user);
+    }
+
+    @Transactional
+    public User setupUser(RegisterRequest registerRequest) {
+        User user = userRepository.save(initializeUser(registerRequest));
+
+        Cart cart = cartService.initializeCartForUser(user);
+        user.setCart(cart);
+
+        return userRepository.save(user);
+    }
+
+    private PersonalInformationResponse initializePersonalInformationResponse(User user) {
+        return PersonalInformationResponse.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .city(user.getCity())
+                .zipCode(user.getZipCode())
+                .build();
     }
 
     private User initializeAdmin() {
@@ -159,16 +190,6 @@ public class UserService implements UserDetailsService {
         log.info("Email is valid");
     }
 
-    @Transactional
-    public User setupUser(RegisterRequest registerRequest) {
-        User user = userRepository.save(initializeUser(registerRequest));
-
-        Cart cart = cartService.initializeCartForUser(user);
-        user.setCart(cart);
-
-        return userRepository.save(user);
-    }
-
     private User initializeUser(RegisterRequest registerRequest) {
         return User.builder()
                 .email(registerRequest.getEmail())
@@ -177,6 +198,4 @@ public class UserService implements UserDetailsService {
                 .role(UserRole.USER)
                 .build();
     }
-
-
 }

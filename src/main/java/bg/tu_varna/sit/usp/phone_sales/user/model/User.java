@@ -40,6 +40,9 @@ public class User {
     @Column
     private String city;
 
+    @Column
+    private String zipCode;
+
     @Column(unique = true)
     private String phoneNumber;
 
