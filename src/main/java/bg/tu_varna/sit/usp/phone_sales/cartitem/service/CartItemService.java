@@ -54,6 +54,13 @@ public class CartItemService {
         }
     }
 
+    public void clearCart(User user) {
+        for (CartItem cartItem : user.getCart().getCartItems()) {
+            deleteItem(cartItem);
+        }
+        log.info("Cleared cart successfully");
+    }
+
     public void removeFromCart(User user, String slug) {
         CartItem item = getCartItem(user, slug);
         deleteItem(item);

@@ -2,6 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.order.service;
 
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
+import bg.tu_varna.sit.usp.phone_sales.cartitem.service.CartItemService;
 import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import bg.tu_varna.sit.usp.phone_sales.order.model.SaleStatus;
@@ -37,9 +38,10 @@ public class OrderService {
     private final SaleItemService saleItemService;
     private final OrderRepository orderRepository;
     private final SaleCounterService saleCounterService;
+    private final CartItemService cartItemService;
 
     @Autowired
-    public OrderService(CartService cartService, DiscountCodeService discountCodeService, DecimalFormat decimalFormat, SaleDetailsService saleDetailsService, SaleItemService saleItemService, OrderRepository orderRepository, SaleCounterService saleCounterService) {
+    public OrderService(CartService cartService, DiscountCodeService discountCodeService, DecimalFormat decimalFormat, SaleDetailsService saleDetailsService, SaleItemService saleItemService, OrderRepository orderRepository, SaleCounterService saleCounterService, CartItemService cartItemService) {
         this.cartService = cartService;
         this.discountCodeService = discountCodeService;
         this.decimalFormat = decimalFormat;
@@ -47,6 +49,7 @@ public class OrderService {
         this.saleItemService = saleItemService;
         this.orderRepository = orderRepository;
         this.saleCounterService = saleCounterService;
+        this.cartItemService = cartItemService;
     }
 
     @Transactional
@@ -63,6 +66,7 @@ public class OrderService {
         orderRepository.save(sale);
 
         saleItemService.createSaleItemsForNewSale(sale, user);
+        cartItemService.clearCart(user);
         return formattedOrderNumber;
     }
 
