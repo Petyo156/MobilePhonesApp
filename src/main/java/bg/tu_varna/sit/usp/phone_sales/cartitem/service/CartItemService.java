@@ -32,16 +32,27 @@ public class CartItemService {
         log.info("Added new cart item: {} {}", phone.getPhoneModel().getBrand().getName(), phone.getPhoneModel().getName());
     }
 
-    public void incrementItemQuantity(User user, String slug) {
+    public boolean incrementItemQuantity(User user, String slug) {
         CartItem item = getCartItem(user, slug);
-        if (item.getQuantity() < 10) {
-            item.setQuantity(item.getQuantity() + 1);
+        int cartQuantity = item.getQuantity();
+        int stockQuantity = item.getPhone().getQuantity();
+
+        if (cartQuantity + 1 > stockQuantity) {
+            log.info("Cannot increment item quantity - not enough stock");
+            return false;
+        }
+
+        if (cartQuantity < 10) {
+            item.setQuantity(cartQuantity + 1);
             cartItemRepository.save(item);
             log.info("Incremented item quantity successfully");
-            return;
+            return true;
         }
+
         log.info("Cannot increment item quantity - it's already 10");
+        return false;
     }
+
 
     public void decrementItemQuantity(User user, String slug) {
         CartItem item = getCartItem(user, slug);
@@ -87,8 +98,8 @@ public class CartItemService {
     }
 
     private Boolean checkItemExistsInCart(Phone phone, Cart cart) {
-        for(CartItem cartItem : cart.getCartItems()) {
-            if(cartItem.getPhone().getSlug().equals(phone.getSlug())) {
+        for (CartItem cartItem : cart.getCartItems()) {
+            if (cartItem.getPhone().getSlug().equals(phone.getSlug())) {
                 return true;
             }
         }

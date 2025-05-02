@@ -4,6 +4,7 @@ import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.repository.SaleItemRepository;
+import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,19 @@ import java.util.List;
 @Slf4j
 public class SaleItemService {
     private final SaleItemRepository saleItemRepository;
+    private final PhoneService phoneService;
 
     @Autowired
-    public SaleItemService(SaleItemRepository saleItemRepository) {
+    public SaleItemService(SaleItemRepository saleItemRepository, PhoneService phoneService) {
         this.saleItemRepository = saleItemRepository;
+        this.phoneService = phoneService;
     }
 
     public void createSaleItemsForNewSale(Sale sale, User user) {
         List<CartItem> cartItems = user.getCart().getCartItems();
         for (CartItem cartItem : cartItems) {
             SaleItem saleItem = initializeSaleItem(sale, cartItem);
+            phoneService.reducePhoneQuantityAfterPurchase(cartItem.getPhone(), cartItem.getQuantity());
             saleItemRepository.save(saleItem);
         }
         log.info("Initialized sale items based on user's cart");

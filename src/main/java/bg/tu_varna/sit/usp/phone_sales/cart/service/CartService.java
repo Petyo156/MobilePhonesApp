@@ -92,8 +92,8 @@ public class CartService {
         return discountCodeService.calculateDiscountPrice(totalPrice, discountCodePercent);
     }
 
-    public void incrementPhoneQuantityInCart(User user, String slug) {
-        cartItemService.incrementItemQuantity(user, slug);
+    public boolean incrementPhoneQuantityInCart(User user, String slug) {
+        return cartItemService.incrementItemQuantity(user, slug);
     }
 
     public void decrementPhoneQuantityInCart(User user, String slug) {
