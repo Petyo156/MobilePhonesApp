@@ -7,6 +7,7 @@ import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,10 @@ public class CartItemService {
     }
 
     public void addItemToCart(Phone phone, Cart cart) {
+        if(!phone.getIsVisible()){
+            log.info("Cannot be added to cart, item is not visible");
+            return;
+        }
         Boolean itemExistsInCart = checkItemExistsInCart(phone, cart);
         if (itemExistsInCart) {
             incrementItemQuantity(cart.getUser(), phone.getSlug());
@@ -71,6 +76,7 @@ public class CartItemService {
         log.info("Cleared cart successfully");
     }
 
+    @Transactional
     public void removeFromCart(User user, String slug) {
         CartItem item = getCartItem(user, slug);
         deleteItem(item);
@@ -85,6 +91,7 @@ public class CartItemService {
 
     private void deleteItem(CartItem item) {
         cartItemRepository.delete(item);
+        cartItemRepository.flush();
         log.info("Deleted cart item");
     }
 

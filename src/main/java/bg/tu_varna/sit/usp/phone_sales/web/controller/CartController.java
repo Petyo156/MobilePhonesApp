@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
+import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.EnsureValidCartItems;
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartSessionService;
@@ -42,6 +43,7 @@ public class CartController {
 
     @GetMapping
     @RequireAuthenticatedUser
+    @EnsureValidCartItems
     public ModelAndView getCartPage(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             HttpSession session) {
