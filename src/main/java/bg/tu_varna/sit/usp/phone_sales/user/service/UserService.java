@@ -108,6 +108,14 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUserFirstAndLastNamePreference(String firstName, String lastName, User user) {
+        boolean isNew = user.getFirstName() == null || user.getLastName() == null;
+        boolean isUnchanged = Objects.equals(firstName, user.getFirstName()) &&
+                Objects.equals(lastName, user.getLastName());
+        if (!isNew && isUnchanged) {
+            log.info("User first and last name have not changed since last order");
+            return;
+        }
+
         user.setFirstName(firstName);
         user.setLastName(lastName);
         log.info("Updating user first and last name preference");
