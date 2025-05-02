@@ -1,4 +1,3 @@
-/* ======== General Reset & Layout ======== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f7fa;
@@ -41,10 +40,18 @@ body {
     background-color: #5a6268;
 }
 
-/* ======== Table Container ======== */
+/* ======== Section Titles ======== */
+.section-title {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
 .table-container {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0 auto 40px;
     background-color: #fff;
     padding: 30px;
     border-radius: 12px;
@@ -52,7 +59,11 @@ body {
     overflow-x: auto;
 }
 
-/* ======== Table Styling ======== */
+.table-container.hidden-phones {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
 .phone-table {
     width: 100%;
     border-collapse: collapse;
@@ -86,7 +97,6 @@ body {
     background-color: #f8f9fa;
 }
 
-/* ======== Sort Icons ======== */
 .sort-icon {
     display: inline-block;
     margin-left: 5px;
@@ -99,7 +109,6 @@ th[data-sort].asc .sort-icon {
     transform: rotate(180deg);
 }
 
-/* ======== Action Buttons ======== */
 .actions {
     display: flex;
     gap: 8px;
@@ -162,7 +171,20 @@ th[data-sort].asc .sort-icon {
     background-color: #f39c12;
 }
 
-/* ======== Responsive Design ======== */
+.action-button.edit {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.action-button.edit:hover {
+    background-color: #45a049;
+}
+
 @media (max-width: 768px) {
     .admin-header {
         flex-direction: column;
@@ -197,4 +219,88 @@ th[data-sort].asc .sort-icon {
         width: 100%;
         text-align: center;
     }
-} 
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+.phone-table tbody tr {
+    cursor: pointer;
+}
+
+.phone-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.phone-table .actions {
+    cursor: default;
+}
+
+.phone-table .actions * {
+    pointer-events: auto;
+}

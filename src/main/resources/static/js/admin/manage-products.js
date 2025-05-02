@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const table = document.querySelector('.phone-table');
-    const headers = table.querySelectorAll('th[data-sort]');
+    const tables = document.querySelectorAll('.phone-table');
+    const headers = tables[0].querySelectorAll('th[data-sort]');
     let currentSort = {
         column: 'date',
         direction: 'desc'
@@ -20,17 +20,72 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const visibilityButtons = document.querySelectorAll('.action-button');
-    visibilityButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const slug = this.getAttribute('data-slug');
-            updateVisibility(slug);
+    sortTable('date', 'desc');
+    updateSortIcons(document.querySelector('th[data-sort="date"]'));
+
+    const modal = document.getElementById('editPhoneModal');
+    const closeBtn = document.querySelector('.close');
+    const editForm = document.getElementById('editPhoneForm');
+    let currentPhoneSlug = '';
+
+    const editButtons = document.querySelectorAll('.action-button.edit');
+    alert('Found ' + editButtons.length + ' edit buttons');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            alert('Edit button clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const row = this.closest('tr');
+            const cells = row.cells;
+            currentPhoneSlug = this.getAttribute('data-slug');
+
+            document.getElementById('brand').value = cells[0].textContent.split(' ')[0];
+            document.getElementById('model').value = cells[1].textContent;
+            document.getElementById('storage').value = cells[2].textContent.replace('GB', '');
+            document.getElementById('ram').value = cells[3].textContent.replace('GB', '');
+            document.getElementById('color').value = cells[4].textContent;
+            document.getElementById('price').value = cells[5].textContent.replace(/[^0-9.]/g, '');
+            document.getElementById('quantity').value = cells[6].textContent;
+            document.getElementById('discount').value = cells[7].textContent.replace('%', '');
+
+            modal.style.display = 'block';
         });
     });
 
-    // Initial sort by date
-    sortTable('date', 'desc');
-    updateSortIcons(document.querySelector('th[data-sort="date"]'));
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    editForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        formData.append('slug', currentPhoneSlug);
+
+        fetch(`/admin/products/${currentPhoneSlug}/edit`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Error updating phone');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating phone');
+        });
+    });
 });
 
 function sortTable(column, direction) {
@@ -89,22 +144,3 @@ function updateSortIcons(clickedHeader) {
         }
     });
 }
-
-function updateVisibility(slug) {
-    fetch(`/admin/phone/${slug}/visibility`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        window.location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to update visibility. Please try again.');
-    });
-} 
