@@ -48,9 +48,8 @@ public class CartItemService {
             log.info("Incremented item quantity successfully");
             return true;
         }
-
         log.info("Cannot increment item quantity - it's already 10");
-        return false;
+        return true;
     }
 
 

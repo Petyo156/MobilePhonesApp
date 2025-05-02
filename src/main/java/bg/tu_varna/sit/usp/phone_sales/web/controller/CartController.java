@@ -93,8 +93,8 @@ public class CartController {
                                   RedirectAttributes redirectAttributes) {
         User user = userService.getAuthenticatedUser(authMeta);
         cartSessionService.clearDiscountInfo(session);
-        boolean success = cartService.incrementPhoneQuantityInCart(user, slug);
-        if (!success) {
+        boolean enoughStock = cartService.incrementPhoneQuantityInCart(user, slug);
+        if (!enoughStock) {
             redirectAttributes.addFlashAttribute("cartError", "Not enough stock! Chill bro.");
         }
         return "redirect:/cart";
