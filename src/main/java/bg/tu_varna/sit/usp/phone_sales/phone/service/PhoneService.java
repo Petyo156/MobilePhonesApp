@@ -250,6 +250,16 @@ public class PhoneService {
         return responses;
     }
 
+    public void reducePhoneQuantityAfterPurchase(Phone phone, Integer quantity) {
+        phone.setQuantity(phone.getQuantity() - quantity);
+        if(phone.getQuantity() == 0) {
+            phone.setIsVisible(false);
+            log.info("Hidden phone from store due no quantity");
+        }
+        phoneRepository.save(phone);
+        log.info("Reduced phone quantity");
+    }
+
     private String getDiscountPrice(Phone phone) {
         BigDecimal finalPrice = calculateDiscountPrice(phone);
         return decimalFormat.format(finalPrice.setScale(2, RoundingMode.HALF_UP));
