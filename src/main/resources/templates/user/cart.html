@@ -44,6 +44,9 @@
                             </div>
                         </div>
                         <div class="item-actions">
+                            <div th:if="${cartError}" class="alert alert-danger">
+                                <p th:text="${cartError}"></p>
+                            </div>
                             <div class="quantity-controls">
                                 <form th:action="@{'/cart/down/' + ${phone.slug}}" method="post">
                                     <button type="submit" class="btn btn-outline-secondary quantity-btn">-</button>
@@ -65,7 +68,6 @@
                     Your cart is empty 🛒
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="order-summary">
                     <h2>Summary (<span th:text="${cart.summary}">0</span> items)</h2>

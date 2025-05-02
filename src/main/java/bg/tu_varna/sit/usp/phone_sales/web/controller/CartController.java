@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/cart")
@@ -88,10 +89,14 @@ public class CartController {
     @RequireAuthenticatedUser
     public String upPhoneQuantity(@PathVariable String slug,
                                   @AuthenticationPrincipal AuthenticationMetadata authMeta,
-                                  HttpSession session) {
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
         User user = userService.getAuthenticatedUser(authMeta);
         cartSessionService.clearDiscountInfo(session);
-        cartService.incrementPhoneQuantityInCart(user, slug);
+        boolean success = cartService.incrementPhoneQuantityInCart(user, slug);
+        if (!success) {
+            redirectAttributes.addFlashAttribute("cartError", "Not enough stock! Chill bro.");
+        }
         return "redirect:/cart";
     }
 
