@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/admin")
@@ -42,7 +43,6 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("admin/add-product");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-
         modelAndView.addObject("submitPhoneRequest", new SubmitPhoneRequest());
         modelAndView.addObject("user", user);
 
@@ -93,6 +93,14 @@ public class AdminController {
         return modelAndView;
     }
 
+    @PostMapping("/discounts/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String setBulkDiscount(@RequestParam List<String> slugs,
+                                @RequestParam String discountPercent) {
+        phoneService.setBulkDiscountPercentForPhones(slugs, discountPercent);
+        return "redirect:/admin/products";
+    }
+
     @GetMapping("/codes")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getCodesPage() {
@@ -135,6 +143,22 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public String updateVisibility(@PathVariable String slug) {
         phoneService.updateVisibility(slug);
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/products/bulk/hide")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String bulkHidePhones(@RequestParam String slugs) {
+        List<String> phoneSlugs = Arrays.asList(slugs.split(","));
+        phoneService.bulkUpdateVisibility(phoneSlugs, false);
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/products/bulk/show")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String bulkShowPhones(@RequestParam String slugs) {
+        List<String> phoneSlugs = Arrays.asList(slugs.split(","));
+        phoneService.bulkUpdateVisibility(phoneSlugs, true);
         return "redirect:/admin/products";
     }
 

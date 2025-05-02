@@ -111,7 +111,7 @@ th[data-sort].asc .sort-icon {
 
 .actions {
     display: flex;
-    gap: 8px;
+    gap: 2px;
     justify-content: flex-start;
     align-items: center;
 }
@@ -165,6 +165,7 @@ th[data-sort].asc .sort-icon {
 .action-button.show {
     background-color: #f1c40f;
     color: #2c3e50;
+    margin-right: 4px;
 }
 
 .action-button.show:hover {
@@ -174,11 +175,7 @@ th[data-sort].asc .sort-icon {
 .action-button.edit {
     background-color: #4CAF50;
     color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px;
+    text-decoration: none;
 }
 
 .action-button.edit:hover {
@@ -207,11 +204,6 @@ th[data-sort].asc .sort-icon {
     .phone-table th,
     .phone-table td {
         padding: 10px;
-    }
-
-    .actions {
-        flex-direction: column;
-        gap: 5px;
     }
 
     .action-link,

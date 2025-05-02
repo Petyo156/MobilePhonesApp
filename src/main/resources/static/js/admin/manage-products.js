@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const headers = tables[0].querySelectorAll('th[data-sort]');
     let currentSort = {
         column: 'date',
-        direction: 'desc'
+        direction: 'asc'
     };
 
     headers.forEach(header => {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    sortTable('date', 'desc');
+    sortTable('date', 'asc');
     updateSortIcons(document.querySelector('th[data-sort="date"]'));
 
     const modal = document.getElementById('editPhoneModal');
@@ -86,47 +86,61 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error updating phone');
         });
     });
+
+    const bulkDiscountForm = document.getElementById('bulk-discount-form');
+    if (bulkDiscountForm) {
+        bulkDiscountForm.addEventListener('submit', function(e) {
+            const selectedCheckboxes = document.querySelectorAll('input[name="slugs"]:checked');
+            if (selectedCheckboxes.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one phone to apply the discount');
+                return;
+            }
+        });
+    }
 });
 
 function sortTable(column, direction) {
-    const table = document.querySelector('.phone-table');
-    const tbody = table.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const tables = document.querySelectorAll('.phone-table');
+    tables.forEach(table => {
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
 
-    const columnIndex = getColumnIndex(column);
-    rows.sort((a, b) => {
-        const aValue = a.cells[columnIndex].textContent.trim();
-        const bValue = b.cells[columnIndex].textContent.trim();
+        const columnIndex = getColumnIndex(column);
+        rows.sort((a, b) => {
+            const aValue = a.cells[columnIndex].textContent.trim();
+            const bValue = b.cells[columnIndex].textContent.trim();
 
-        if (column === 'price' || column === 'stock' || column === 'discount') {
-            const aNum = parseFloat(aValue.replace(/[^0-9.-]+/g, ''));
-            const bNum = parseFloat(bValue.replace(/[^0-9.-]+/g, ''));
-            return direction === 'asc' ? aNum - bNum : bNum - aNum;
-        } else if (column === 'date') {
-            const aDate = new Date(aValue.split('/').reverse().join('-'));
-            const bDate = new Date(bValue.split('/').reverse().join('-'));
-            return direction === 'asc' ? aDate - bDate : bDate - aDate;
-        } else {
-            return direction === 'asc' ? 
-                aValue.localeCompare(bValue) : 
-                bValue.localeCompare(aValue);
-        }
+            if (column === 'price' || column === 'stock' || column === 'discount') {
+                const aNum = parseFloat(aValue.replace(/[^0-9.-]+/g, ''));
+                const bNum = parseFloat(bValue.replace(/[^0-9.-]+/g, ''));
+                return direction === 'asc' ? aNum - bNum : bNum - aNum;
+            } else if (column === 'date') {
+                const aDate = new Date(aValue.split('/').reverse().join('-'));
+                const bDate = new Date(bValue.split('/').reverse().join('-'));
+                return direction === 'asc' ? aDate - bDate : bDate - aDate;
+            } else {
+                return direction === 'asc' ? 
+                    aValue.localeCompare(bValue) : 
+                    bValue.localeCompare(aValue);
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
     });
-
-    rows.forEach(row => tbody.appendChild(row));
 }
 
 function getColumnIndex(column) {
     const columnMap = {
-        'name': 0,
-        'model': 1,
-        'storage': 2,
-        'ram': 3,
-        'color': 4,
-        'price': 5,
-        'stock': 6,
-        'discount': 7,
-        'date': 8
+        'name': 1,
+        'model': 2,
+        'storage': 3,
+        'ram': 4,
+        'color': 5,
+        'price': 6,
+        'stock': 7,
+        'discount': 8,
+        'date': 9
     };
     return columnMap[column];
 }

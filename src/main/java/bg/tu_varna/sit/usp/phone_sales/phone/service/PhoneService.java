@@ -146,6 +146,16 @@ public class PhoneService {
         log.info("Phone visibility state updated");
     }
 
+    @Transactional
+    public void bulkUpdateVisibility(List<String> slugs, boolean makeVisible) {
+        for (String slug : slugs) {
+            Phone phone = getPhoneBySlug(slug);
+            phone.setIsVisible(makeVisible);
+            phoneRepository.save(phone);
+            log.info("Bulk visibility update for {} set to {}", phone.getPhoneModel().getName(), makeVisible);
+        }
+    }
+
     public void setDiscountPercentForPhone(String slug, String discountPercent) {
         Phone phone = getPhoneBySlug(slug);
         try {
@@ -157,6 +167,24 @@ public class PhoneService {
             phoneRepository.save(phone);
 
             log.info("Discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
+        } catch (NumberFormatException e) {
+            throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+        }
+    }
+
+    public void setBulkDiscountPercentForPhones(List<String> slugs, String discountPercent) {
+        try {
+            BigDecimal fullPercent = new BigDecimal(discountPercent);
+            if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
+                throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+            }
+            
+            for (String slug : slugs) {
+                Phone phone = getPhoneBySlug(slug);
+                phone.setDiscountPercent(fullPercent);
+                phoneRepository.save(phone);
+                log.info("Bulk discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
+            }
         } catch (NumberFormatException e) {
             throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
         }
