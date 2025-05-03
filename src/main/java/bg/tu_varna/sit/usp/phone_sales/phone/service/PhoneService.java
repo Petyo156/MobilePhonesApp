@@ -40,6 +40,7 @@ public class PhoneService {
     private final ModelService modelService;
     private final DecimalFormat decimalFormat;
     private final ImageService imageService;
+    private final ImageRepository imageRepository;
 
     @Autowired
     public PhoneService(PhoneRepository phoneRepository, DimensionService dimensionService, HardwareService hardwareService, OperatingSystemService operatingSystemService, ModelService modelService, ImageRepository imageRepository, DecimalFormat decimalFormat, ImageService imageService) {
@@ -48,6 +49,7 @@ public class PhoneService {
         this.hardwareService = hardwareService;
         this.operatingSystemService = operatingSystemService;
         this.modelService = modelService;
+        this.imageRepository = imageRepository;
         this.decimalFormat = decimalFormat;
         this.imageService = imageService;
     }
@@ -74,7 +76,6 @@ public class PhoneService {
         List<Image> images = imageService.saveImages(files, thumbnailIndex, phone);
 
         phone.setImages(images);
-
 
         log.info("Phone initialized successfully");
         return phoneRepository.save(phone);
@@ -155,6 +156,16 @@ public class PhoneService {
         log.info("Phone visibility state updated");
     }
 
+    @Transactional
+    public void bulkUpdateVisibility(List<String> slugs, boolean makeVisible) {
+        for (String slug : slugs) {
+            Phone phone = getPhoneBySlug(slug);
+            phone.setIsVisible(makeVisible);
+            phoneRepository.save(phone);
+            log.info("Bulk visibility update for {} set to {}", phone.getPhoneModel().getName(), makeVisible);
+        }
+    }
+
     public void setDiscountPercentForPhone(String slug, String discountPercent) {
         Phone phone = getPhoneBySlug(slug);
         try {
@@ -166,6 +177,24 @@ public class PhoneService {
             phoneRepository.save(phone);
 
             log.info("Discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
+        } catch (NumberFormatException e) {
+            throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+        }
+    }
+
+    public void setBulkDiscountPercentForPhones(List<String> slugs, String discountPercent) {
+        try {
+            BigDecimal fullPercent = new BigDecimal(discountPercent);
+            if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
+                throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+            }
+            
+            for (String slug : slugs) {
+                Phone phone = getPhoneBySlug(slug);
+                phone.setDiscountPercent(fullPercent);
+                phoneRepository.save(phone);
+                log.info("Bulk discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
+            }
         } catch (NumberFormatException e) {
             throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
         }
@@ -204,7 +233,23 @@ public class PhoneService {
         Integer releaseYear = phone.getReleaseYear();
         String slug = phone.getSlug();
 
-        return initialzeGetPhoneResponse(brandAndModel, camera, hardware, operatingSystem, dimensions, slug, images, price, discountPrice, discountPercent, quantity, modelUrl, releaseYear);
+        return GetPhoneResponse.builder()
+                .slug(slug)
+                .brandAndModelResponse(brandAndModel)
+                .cameraResponse(camera)
+                .hardwareResponse(hardware)
+                .operatingSystemResponse(operatingSystem)
+                .dimensions(dimensions)
+                .images(images)
+                .price(price)
+                .quantity(quantity)
+                .discountPercent(discountPercent)
+                .discountPrice(discountPrice)
+                .releaseYear(releaseYear)
+                .modelUrl(modelUrl)
+                .createdAt(phone.getCreatedAt())
+                .isVisible(phone.getIsVisible())
+                .build();
     }
 
     public BigDecimal calculateDiscountPrice(Phone phone) {
@@ -279,24 +324,6 @@ public class PhoneService {
                 .slug(similarPhone.getSlug())
                 .imageUrl(similarPhone.getImages().get(0).getImageUrl())
                 .storage(similarPhone.getHardware().getStorage().toString())
-                .build();
-    }
-
-    private GetPhoneResponse initialzeGetPhoneResponse(BrandAndModelResponse brandAndModel, CameraResponse camera, HardwareResponse hardware, OperatingSystemResponse operatingSystem, PhoneDimensionsResponse dimensions, String slug, List<ImageResponse> images, String price, String discountPrice, String discountPercent, Integer quantity, String modelUrl, Integer releaseYear) {
-        return GetPhoneResponse.builder()
-                .slug(slug)
-                .brandAndModelResponse(brandAndModel)
-                .cameraResponse(camera)
-                .hardwareResponse(hardware)
-                .operatingSystemResponse(operatingSystem)
-                .dimensions(dimensions)
-                .images(images)
-                .price(price)
-                .quantity(quantity)
-                .discountPercent(discountPercent)
-                .discountPrice(discountPrice)
-                .releaseYear(releaseYear)
-                .modelUrl(modelUrl)
                 .build();
     }
 
@@ -382,5 +409,119 @@ public class PhoneService {
         return builtPhone.toBuilder()
                 .slug(slug)
                 .build();
+    }
+
+    public List<GetPhoneResponse> getAllPhones() {
+        List<Phone> phones = phoneRepository.findAll();
+        log.info("Get all phones for admin list");
+        return initializeGetPhoneListResponse(phones);
+    }
+
+    @Transactional
+    public Phone updatePhone(String slug, SubmitPhoneRequest submitPhoneRequest) {
+        Phone existingPhone = getPhoneBySlug(slug);
+        
+        existingPhone.setPrice(BigDecimal.valueOf(submitPhoneRequest.getPrice()));
+        existingPhone.setQuantity(submitPhoneRequest.getQuantity());
+        existingPhone.setReleaseYear(submitPhoneRequest.getReleaseYear());
+        existingPhone.setModelUrl(submitPhoneRequest.getModelUrl());
+        
+        SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
+        Dimension dimension = existingPhone.getDimension();
+        dimension.setColor(dimensions.getColor());
+        dimension.setIsWaterResistant(dimensions.getWaterResistance());
+        dimension.setHeight(dimensions.getHeight());
+        dimension.setWeight(dimensions.getWeight());
+        dimension.setThickness(dimensions.getThickness());
+        dimension.setWidth(dimensions.getWidth());
+        dimensionService.submitDimension(dimensions);
+        
+        SubmitBrandAndModel brandAndModel = submitPhoneRequest.getBrandAndModel();
+        PhoneModel phoneModel = existingPhone.getPhoneModel();
+        phoneModel.setName(brandAndModel.getModel());
+        phoneModel.getBrand().setName(brandAndModel.getBrand());
+        modelService.submitBrandAndModel(brandAndModel);
+        
+        SubmitHardware hardwareInfo = submitPhoneRequest.getHardware();
+        SubmitCamera cameraInfo = submitPhoneRequest.getCamera();
+        Hardware hardware = existingPhone.getHardware();
+        hardware.setRam(hardwareInfo.getRam());
+        hardware.setStorage(hardwareInfo.getStorage());
+        hardware.setBatteryCapacity(hardwareInfo.getBatteryCapacity());
+        hardware.setScreenSize(hardwareInfo.getScreenSize());
+        hardware.setSimType(hardwareInfo.getSimType());
+        hardware.setRefreshRate(hardwareInfo.getRefreshRate());
+        hardware.setCoreCount(hardwareInfo.getCoreCount());
+        hardware.setScreenResolution(hardwareInfo.getScreenResolution());
+        hardware.getCamera().setResolution(cameraInfo.getResolution());
+        hardware.getCamera().setCount(cameraInfo.getCount());
+        hardware.getCamera().setVideoResolution(cameraInfo.getVideoResolution());
+        hardwareService.submitHardware(hardwareInfo, cameraInfo);
+        
+        SubmitOperatingSystem operatingSystemInfo = submitPhoneRequest.getOperatingSystem();
+        OperatingSystem operatingSystem = existingPhone.getOperatingSystem();
+        operatingSystem.setType(operatingSystemInfo.getOperatingSystemType());
+        operatingSystem.setVersion(operatingSystemInfo.getVersion());
+        operatingSystemService.submitOperatingSystem(operatingSystemInfo);
+        
+        String newSlug = generateSlug(existingPhone);
+        if (!newSlug.equals(existingPhone.getSlug())) {
+            Optional<Phone> phoneWithNewSlug = phoneRepository.getPhoneBySlug(newSlug);
+            if (phoneWithNewSlug.isPresent() && !phoneWithNewSlug.get().getId().equals(existingPhone.getId())) {
+                throw new DomainException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
+            }
+            existingPhone.setSlug(newSlug);
+        }
+        
+        log.info("Phone updated successfully");
+        return phoneRepository.save(existingPhone);
+    }
+
+    public SubmitPhoneRequest convertToSubmitPhoneRequest(GetPhoneResponse phoneResponse) {
+        SubmitPhoneRequest submitPhoneRequest = new SubmitPhoneRequest();
+
+        SubmitBrandAndModel brandAndModel = new SubmitBrandAndModel();
+        brandAndModel.setBrand(phoneResponse.getBrandAndModelResponse().getBrand());
+        brandAndModel.setModel(phoneResponse.getBrandAndModelResponse().getModel());
+        submitPhoneRequest.setBrandAndModel(brandAndModel);
+
+        submitPhoneRequest.setPrice(Double.parseDouble(phoneResponse.getPrice().replaceAll("[^\\d.]", "")));
+        submitPhoneRequest.setQuantity(phoneResponse.getQuantity());
+        submitPhoneRequest.setReleaseYear(phoneResponse.getReleaseYear());
+
+        SubmitPhoneDimensions dimensions = new SubmitPhoneDimensions();
+        dimensions.setColor(phoneResponse.getDimensions().getColor());
+        dimensions.setWaterResistance(phoneResponse.getDimensions().getWaterResistance());
+        dimensions.setHeight(phoneResponse.getDimensions().getHeight());
+        dimensions.setWeight(phoneResponse.getDimensions().getWeight());
+        dimensions.setThickness(phoneResponse.getDimensions().getThickness());
+        dimensions.setWidth(phoneResponse.getDimensions().getWidth());
+        submitPhoneRequest.setDimensions(dimensions);
+
+        SubmitOperatingSystem operatingSystem = new SubmitOperatingSystem();
+        operatingSystem.setOperatingSystemType(phoneResponse.getOperatingSystemResponse().getOperatingSystemType());
+        operatingSystem.setVersion(phoneResponse.getOperatingSystemResponse().getVersion());
+        submitPhoneRequest.setOperatingSystem(operatingSystem);
+
+        SubmitHardware hardware = new SubmitHardware();
+        hardware.setRam(phoneResponse.getHardwareResponse().getRam());
+        hardware.setStorage(phoneResponse.getHardwareResponse().getStorage());
+        hardware.setBatteryCapacity(phoneResponse.getHardwareResponse().getBatteryCapacity());
+        hardware.setScreenSize(phoneResponse.getHardwareResponse().getScreenSize());
+        hardware.setSimType(phoneResponse.getHardwareResponse().getSimType());
+        hardware.setRefreshRate(phoneResponse.getHardwareResponse().getRefreshRate());
+        hardware.setCoreCount(phoneResponse.getHardwareResponse().getCoreCount());
+        hardware.setScreenResolution(phoneResponse.getHardwareResponse().getScreenResolution());
+        submitPhoneRequest.setHardware(hardware);
+
+        SubmitCamera camera = new SubmitCamera();
+        camera.setResolution(phoneResponse.getCameraResponse().getResolution());
+        camera.setCount(phoneResponse.getCameraResponse().getCount());
+        camera.setVideoResolution(phoneResponse.getCameraResponse().getVideoResolution());
+        submitPhoneRequest.setCamera(camera);
+
+        submitPhoneRequest.setModelUrl(phoneResponse.getModelUrl());
+
+        return submitPhoneRequest;
     }
 }
