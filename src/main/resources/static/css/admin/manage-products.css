@@ -1,0 +1,298 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 80px 30px 30px 30px;
+    color: #333;
+}
+
+.admin-header {
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.admin-header h1 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 2.5rem;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.back-link:hover {
+    background-color: #5a6268;
+}
+
+/* ======== Section Titles ======== */
+.section-title {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+.table-container {
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.table-container.hidden-phones {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.phone-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.phone-table th {
+    background-color: #f8f9fa;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #dee2e6;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+}
+
+.phone-table th:hover {
+    background-color: #e9ecef;
+}
+
+.phone-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #dee2e6;
+    color: #495057;
+}
+
+.phone-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.sort-icon {
+    display: inline-block;
+    margin-left: 5px;
+    color: #6c757d;
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+th[data-sort].asc .sort-icon {
+    transform: rotate(180deg);
+}
+
+.actions {
+    display: flex;
+    gap: 2px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.action-link {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.action-link.view {
+    background-color: #3498db;
+    color: white;
+}
+
+.action-link.view:hover {
+    background-color: #2980b9;
+}
+
+.action-link.add-similar {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.action-link.add-similar:hover {
+    background-color: #27ae60;
+}
+
+.action-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.action-button.hide {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.action-button.hide:hover {
+    background-color: #c0392b;
+}
+
+.action-button.show {
+    background-color: #f1c40f;
+    color: #2c3e50;
+    margin-right: 4px;
+}
+
+.action-button.show:hover {
+    background-color: #f39c12;
+}
+
+.action-button.edit {
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+}
+
+.action-button.edit:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .admin-header h1 {
+        font-size: 2rem;
+    }
+
+    .table-container {
+        padding: 15px;
+    }
+
+    .phone-table {
+        font-size: 13px;
+    }
+
+    .phone-table th,
+    .phone-table td {
+        padding: 10px;
+    }
+
+    .action-link,
+    .action-button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+.phone-table tbody tr {
+    cursor: pointer;
+}
+
+.phone-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.phone-table .actions {
+    cursor: default;
+}
+
+.phone-table .actions * {
+    pointer-events: auto;
+}

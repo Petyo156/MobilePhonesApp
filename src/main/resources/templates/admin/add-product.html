@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add Phone</title>
-    <link rel="stylesheet" th:href="@{/css/add-phone.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/add-product.css}">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script th:src="@{/js/add-phone.js}" defer></script>
 </head>
@@ -36,7 +36,7 @@
 
         <div class="form-group">
             <label for="price">Price:</label>
-            <input type="number" id="price" th:field="*{price}" class="form-input" placeholder="Enter price"/>
+            <input type="text" id="price" th:field="*{price}" class="form-input" placeholder="Enter price" step="0.01"/>
             <p class="form-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
         </div>
 
