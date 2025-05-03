@@ -143,6 +143,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public String updateVisibility(@PathVariable String slug) {
         phoneService.updateVisibility(slug);
+
         return "redirect:/admin/products";
     }
 
@@ -151,6 +152,7 @@ public class AdminController {
     public String bulkHidePhones(@RequestParam String slugs) {
         List<String> phoneSlugs = Arrays.asList(slugs.split(","));
         phoneService.bulkUpdateVisibility(phoneSlugs, false);
+
         return "redirect:/admin/products";
     }
 
@@ -159,12 +161,12 @@ public class AdminController {
     public String bulkShowPhones(@RequestParam String slugs) {
         List<String> phoneSlugs = Arrays.asList(slugs.split(","));
         phoneService.bulkUpdateVisibility(phoneSlugs, true);
+
         return "redirect:/admin/products";
     }
 
     @PostMapping("/phone/{slug}/visibility")
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseBody
     public void updatePhoneVisibility(@PathVariable String slug) {
         phoneService.updateVisibility(slug);
     }
@@ -212,6 +214,7 @@ public class AdminController {
 
         modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
         modelAndView.addObject("originalPhone", phoneResponse);
+
         return modelAndView;
     }
 }
