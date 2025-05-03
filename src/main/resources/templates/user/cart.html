@@ -67,6 +67,9 @@
                 <div th:if="${#lists.isEmpty(cart.phones)}" class="alert alert-info mt-4">
                     Your cart is empty 🛒
                 </div>
+                <div th:if="${cartWarning}" class="alert alert-danger">
+                    <p th:text="${cartWarning}"></p>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="order-summary">

@@ -1,9 +1,9 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
-import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.EnsureValidCartItems;
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartSessionService;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartValidatorService;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartViewModelService;
 import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
@@ -30,26 +30,32 @@ public class CartController {
     private final OrderService orderService;
     private final CartSessionService cartSessionService;
     private final CartViewModelService cartViewModelService;
+    private final CartValidatorService cartValidatorService;
 
     @Autowired
-    public CartController(UserService userService, CartService cartService, DiscountCodeService discountCodeService, OrderService orderService, CartSessionService cartSessionService, CartViewModelService cartViewModelService) {
+    public CartController(UserService userService, CartService cartService, DiscountCodeService discountCodeService, OrderService orderService, CartSessionService cartSessionService, CartViewModelService cartViewModelService, CartValidatorService cartValidatorService) {
         this.userService = userService;
         this.cartService = cartService;
         this.discountCodeService = discountCodeService;
         this.orderService = orderService;
         this.cartSessionService = cartSessionService;
         this.cartViewModelService = cartViewModelService;
+        this.cartValidatorService = cartValidatorService;
     }
 
     @GetMapping
     @RequireAuthenticatedUser
-    @EnsureValidCartItems
     public ModelAndView getCartPage(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             HttpSession session) {
 
         ModelAndView modelAndView = new ModelAndView("user/cart");
         User user = userService.getAuthenticatedUser(authenticationMetadata);
+
+        boolean cartModified = cartValidatorService.validateAndCleanCart(user);
+        if (cartModified) {
+            modelAndView.addObject("cartWarning", "Some items were removed due to stock changes. Refresh page to apply changes.");
+        }
 
         CartResponse cart = cartService.getCartResponseForUser(user);
         modelAndView.addObject("cart", cart);

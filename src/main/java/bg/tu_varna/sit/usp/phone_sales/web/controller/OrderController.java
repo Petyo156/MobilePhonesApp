@@ -2,6 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartSessionService;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartValidatorService;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartViewModelService;
 import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
@@ -32,13 +33,15 @@ public class OrderController {
     private final OrderService orderService;
     private final CartViewModelService cartViewModelService;
     private final CartSessionService cartSessionService;
+    private final CartValidatorService cartValidatorService;
 
     @Autowired
-    public OrderController(UserService userService, OrderService orderService, CartViewModelService cartViewModelService, CartSessionService cartSessionService) {
+    public OrderController(UserService userService, OrderService orderService, CartViewModelService cartViewModelService, CartSessionService cartSessionService, CartValidatorService cartValidatorService) {
         this.userService = userService;
         this.orderService = orderService;
         this.cartViewModelService = cartViewModelService;
         this.cartSessionService = cartSessionService;
+        this.cartValidatorService = cartValidatorService;
     }
 
     @GetMapping
@@ -46,10 +49,17 @@ public class OrderController {
     @RequireNotEmptyCart
     public ModelAndView getCheckoutPage(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
         ModelAndView modelAndView = new ModelAndView("user/checkout");
         User user = userService.getAuthenticatedUser(authenticationMetadata);
+        boolean cartModified = cartValidatorService.validateAndCleanCart(user);
+        if (cartModified) {
+            redirectAttributes.addFlashAttribute("cartWarning", "Some items were removed due to stock changes.");
+            return new ModelAndView("redirect:/cart");
+        }
+
         cartViewModelService.attachSessionAttributes(modelAndView, session, user);
         cartViewModelService.attachAndClearError(modelAndView, session);
         PersonalInformationResponse personalInformationResponse = userService.getPersonalInformationResponse(user);
@@ -73,6 +83,12 @@ public class OrderController {
                                  HttpSession session,
                                  RedirectAttributes redirectAttributes) {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
+        boolean cartModified = cartValidatorService.validateAndCleanCart(user);
+        if (cartModified) {
+            redirectAttributes.addFlashAttribute("cartWarning", "Some items were removed due to stock changes.");
+            return new ModelAndView("redirect:/cart");
+        }
+
         CheckoutResponse checkoutResponse = cartViewModelService.getCheckoutResponse(session, user);
         ModelAndView modelAndView = new ModelAndView("user/checkout");
         if (bindingResult.hasErrors()) {
