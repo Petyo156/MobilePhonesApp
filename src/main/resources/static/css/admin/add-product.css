@@ -378,3 +378,55 @@ input[type="checkbox"] {
     opacity: 0.5;
     background: #c8ebfb;
 }
+
+.original-phone-info {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.original-phone-info h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.original-phone-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.original-phone-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.form-section {
+    position: relative;
+}
+
+.copy-original {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--light-accent);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--dark);
+    transition: all 0.3s ease;
+}
+
+.copy-original:hover {
+    background: var(--dark-accent);
+    color: var(--light);
+}

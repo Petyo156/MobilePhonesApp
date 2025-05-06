@@ -1,7 +1,6 @@
 package bg.tu_varna.sit.usp.phone_sales.orderdetails.model;
 
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
-import bg.tu_varna.sit.usp.phone_sales.user.model.City;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,8 +20,8 @@ public class SaleDetails {
     @Column(nullable = false)
     private String address;
 
-    @ManyToOne(optional = false)
-    private City city;
+    @Column(nullable = false)
+    private String city;
 
     @Column(nullable = false)
     private String zipCode;

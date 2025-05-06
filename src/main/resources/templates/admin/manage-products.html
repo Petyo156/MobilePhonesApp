@@ -1,60 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Products</title>
-    <link rel="stylesheet" href="/css/manage-products.css">
-    <link rel="stylesheet" th:href="@{/css/add-phone.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone List - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/manage-products.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script th:src="@{/js/admin/manage-products.js}" defer></script>
+    <style>
+        .admin-toolbar {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #ccc;
+            z-index: 100;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .toolbar-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            border-right: 1px solid #eee;
+        }
+        .toolbar-section:last-child {
+            border-right: none;
+        }
+        .toolbar-section label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .toolbar-section input[type="number"] {
+            width: 80px;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .toolbar-section button {
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .toolbar-section button:hover {
+            background-color: #2980b9;
+        }
+        .phone-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <a href="/" class="form-back">← Back to Main Page</a>
-    <a href="/admin/phone" class="form-add-phone">+ Add New Phone</a>
+<div class="admin-header">
+    <a href="/" class="back-link">← Back to Main Page</a>
+    <h1>Phone List</h1>
+</div>
 
-    <div class="container">
-        <h1>Manage Products</h1>
-
-        <div class="section">
-            <h2>Visible Phones</h2>
-            <div class="phone-grid">
-                <th:block th:each="phone : ${allVisiblePhones}">
-                    <div class="phone-card">
-                        <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-                            <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
-                            <div class="info">
-                                <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
-                                <p th:text="'Price: ' + ${phone.price != null ? phone.price + ' лв.' : 'N/A'}"></p>
-                                <p th:text="'Stock: ' + ${phone.quantity != null ? phone.quantity : 0}"></p>
-                                <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
-                                    <button class="toggle-btn hide" type="submit">Hide</button>
-                                </form>
-                            </div>
-                        </a>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Hidden Phones</h2>
-            <div class="phone-grid">
-                <th:block th:each="phone : ${allHiddenPhones}">
-                    <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
-                        <div class="phone-card">
-                            <img th:src="${phone.images != null and !phone.images.isEmpty() ? phone.images[0].imageUrl : '/img/placeholder.jpg'}"
-                                 alt="Phone Image">
-                            <div class="info">
-                                <h3 th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : 'N/A'}"></h3>
-                                <p th:text="'Price: ' + ${phone.price + ' лв.'}"></p>
-                                <p th:text="'Stock: ' + ${phone.quantity}"></p>
-                                <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
-                                    <button class="toggle-btn show" type="submit">Show</button>
-                                </form>
-                            </div>
-                        </div>
-                    </a>
-                </th:block>
-            </div>
-        </div>
+<div class="admin-toolbar">
+    <form th:action="@{/admin/discounts/bulk}" method="post" class="toolbar-section" id="bulk-discount-form">
+        <label>Bulk Discount:</label>
+        <input type="number" name="discountPercent" min="0" max="100" placeholder="%" required />
+        <button type="submit" onclick="return validateForm()">Apply to Selected</button>
+    </form>
+    
+    <div class="toolbar-section">
+        <label>Bulk Actions:</label>
+        <form th:action="@{/admin/products/bulk/hide}" method="post" class="bulk-action-form" id="bulk-hide-form">
+            <input type="hidden" name="slugs" id="hide-slugs">
+            <button type="button" class="action-button" onclick="handleBulkHide()">Hide Selected</button>
+        </form>
+        <form th:action="@{/admin/products/bulk/show}" method="post" class="bulk-action-form" id="bulk-show-form">
+            <input type="hidden" name="slugs" id="show-slugs">
+            <button type="button" class="action-button" onclick="handleBulkShow()">Show Selected</button>
+        </form>
     </div>
+    
+    <div class="toolbar-section">
+        <label for="search-bar">Search:</label>
+        <input type="text" id="search-bar" placeholder="Search phones..." style="width: 200px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+</div>
+
+<div class="table-container">
+    <h2 class="section-title">Visible Phones</h2>
+    <table class="phone-table">
+        <thead>
+        <tr>
+            <th><input type="checkbox" id="selectAllVisible" class="phone-checkbox"></th>
+            <th data-sort="name">Phone Name <span class="sort-icon">↓</span></th>
+            <th data-sort="model">Model <span class="sort-icon"></span></th>
+            <th data-sort="storage">Storage <span class="sort-icon"></span></th>
+            <th data-sort="ram">RAM <span class="sort-icon"></span></th>
+            <th data-sort="color">Color <span class="sort-icon"></span></th>
+            <th data-sort="price">Price <span class="sort-icon"></span></th>
+            <th data-sort="stock">Stock <span class="sort-icon"></span></th>
+            <th data-sort="discount">Discount <span class="sort-icon"></span></th>
+            <th data-sort="date">Date Added <span class="sort-icon">↑</span></th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="phone : ${allVisiblePhones}">
+            <td><input type="checkbox" name="slugs" th:value="${phone.slug}" class="phone-checkbox visible-checkbox" form="bulk-discount-form"></td>
+            <td th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : ''}"></td>
+            <td th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.model : ''}"></td>
+            <td th:text="${phone.hardwareResponse != null ? phone.hardwareResponse.storage + 'GB' : ''}"></td>
+            <td th:text="${phone.hardwareResponse != null ? phone.hardwareResponse.ram + 'GB' : ''}"></td>
+            <td th:text="${phone.dimensions != null ? phone.dimensions.color : ''}"></td>
+            <td th:text="${phone.price != null ? phone.price : ''}"></td>
+            <td th:text="${phone.quantity != null ? phone.quantity : ''}"></td>
+            <td th:text="${phone.discountPercent != null ? phone.discountPercent + '%' : '0%'}"></td>
+            <td th:text="${phone.createdAt != null ? #temporals.format(phone.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></td>
+            <td class="actions">
+                <a th:href="@{'/phone/' + ${phone.slug}}" class="action-link view">View</a>
+                <a th:href="@{'/admin/'+ ${phone.slug} + '/add-similar'}" class="action-link add-similar">Copy</a>
+                <a th:href="@{${phone.slug} + '/edit'}" class="action-button edit">Edit</a>
+                <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
+                    <button class="action-button hide" type="submit">Hide</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="table-container hidden-phones">
+    <h2 class="section-title">Hidden Phones</h2>
+    <table class="phone-table">
+        <thead>
+        <tr>
+            <th><input type="checkbox" id="selectAllHidden" class="phone-checkbox"></th>
+            <th data-sort="name">Phone Name <span class="sort-icon">↓</span></th>
+            <th data-sort="model">Model <span class="sort-icon"></span></th>
+            <th data-sort="storage">Storage <span class="sort-icon"></span></th>
+            <th data-sort="ram">RAM <span class="sort-icon"></span></th>
+            <th data-sort="color">Color <span class="sort-icon"></span></th>
+            <th data-sort="price">Price <span class="sort-icon"></span></th>
+            <th data-sort="stock">Stock <span class="sort-icon"></span></th>
+            <th data-sort="discount">Discount <span class="sort-icon"></span></th>
+            <th data-sort="date">Date Added <span class="sort-icon">↑</span></th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="phone : ${allHiddenPhones}">
+            <td><input type="checkbox" name="slugs" th:value="${phone.slug}" class="phone-checkbox hidden-checkbox" form="bulk-discount-form"></td>
+            <td th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model : ''}"></td>
+            <td th:text="${phone.brandAndModelResponse != null ? phone.brandAndModelResponse.model : ''}"></td>
+            <td th:text="${phone.hardwareResponse != null ? phone.hardwareResponse.storage + 'GB' : ''}"></td>
+            <td th:text="${phone.hardwareResponse != null ? phone.hardwareResponse.ram + 'GB' : ''}"></td>
+            <td th:text="${phone.dimensions != null ? phone.dimensions.color : ''}"></td>
+            <td th:text="${phone.price != null ? phone.price : ''}"></td>
+            <td th:text="${phone.quantity != null ? phone.quantity : ''}"></td>
+            <td th:text="${phone.discountPercent != null ? phone.discountPercent + '%' : '0%'}"></td>
+            <td th:text="${phone.createdAt != null ? #temporals.format(phone.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></td>
+            <td>
+                <a th:href="@{${phone.slug} + '/edit'}" class="action-button edit">Edit</a>
+                <form th:action="@{'/admin/products/' + ${phone.slug}}" method="post">
+                    <button class="action-button show" type="submit">Show</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Edit Phone Modal -->
+<div id="editPhoneModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Phone</h2>
+        <form id="editPhoneForm" method="post">
+            <div class="form-group">
+                <label for="brand">Brand:</label>
+                <input type="text" id="brand" name="brand" required>
+            </div>
+            <div class="form-group">
+                <label for="model">Model:</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+            <div class="form-group">
+                <label for="storage">Storage (GB):</label>
+                <input type="number" id="storage" name="storage" required>
+            </div>
+            <div class="form-group">
+                <label for="ram">RAM (GB):</label>
+                <input type="number" id="ram" name="ram" required>
+            </div>
+            <div class="form-group">
+                <label for="color">Color:</label>
+                <input type="text" id="color" name="color" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" step="0.01" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Stock:</label>
+                <input type="number" id="quantity" name="quantity" required>
+            </div>
+            <div class="form-group">
+                <label for="discount">Discount (%):</label>
+                <input type="number" id="discount" name="discount" min="0" max="100">
+            </div>
+            <button type="submit" class="save-button">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllVisible = document.getElementById('selectAllVisible');
+    const selectAllHidden = document.getElementById('selectAllHidden');
+    const visibleCheckboxes = document.querySelectorAll('.visible-checkbox');
+    const hiddenCheckboxes = document.querySelectorAll('.hidden-checkbox');
+
+    selectAllVisible.addEventListener('change', function() {
+        document.querySelectorAll('.phone-table tbody tr').forEach(row => {
+            if (row.closest('.table-container') && row.closest('.table-container').classList.contains('hidden-phones')) return;
+            if (row.style.display !== 'none') {
+                const checkbox = row.querySelector('.visible-checkbox');
+                if (checkbox) checkbox.checked = this.checked;
+            }
+        });
+    });
+
+    selectAllHidden.addEventListener('change', function() {
+        document.querySelectorAll('.hidden-phones .phone-table tbody tr').forEach(row => {
+            if (row.style.display !== 'none') {
+                const checkbox = row.querySelector('.hidden-checkbox');
+                if (checkbox) checkbox.checked = this.checked;
+            }
+        });
+    });
+
+    const searchBar = document.getElementById('search-bar');
+    if (searchBar) {
+        searchBar.addEventListener('input', filterTableRows);
+    }
+});
+
+function validateForm() {
+    const selectedCheckboxes = document.querySelectorAll('input[name="slugs"]:checked');
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one phone to apply the discount');
+        return false;
+    }
+    return true;
+}
+
+function getSelectedSlugs() {
+    const selectedCheckboxes = document.querySelectorAll('input[name="slugs"]:checked');
+    return Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+}
+
+function handleBulkHide() {
+    const selectedSlugs = getSelectedSlugs();
+    if (selectedSlugs.length === 0) {
+        alert('Please select at least one phone to hide');
+        return;
+    }
+
+    const form = document.getElementById('bulk-hide-form');
+    const input = document.getElementById('hide-slugs');
+    input.value = selectedSlugs.join(',');
+    form.submit();
+}
+
+function handleBulkShow() {
+    const selectedSlugs = getSelectedSlugs();
+    if (selectedSlugs.length === 0) {
+        alert('Please select at least one phone to show');
+        return;
+    }
+
+    const form = document.getElementById('bulk-show-form');
+    const input = document.getElementById('show-slugs');
+    input.value = selectedSlugs.join(',');
+    form.submit();
+}
+
+// Search bar filtering
+function filterTableRows() {
+    const query = document.getElementById('search-bar').value.toLowerCase();
+    document.querySelectorAll('.phone-table tbody tr').forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(query) ? '' : 'none';
+    });
+}
+</script>
 </body>
 </html>

@@ -2,6 +2,9 @@ package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireNotEmptyCart;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartSessionService;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartValidatorService;
+import bg.tu_varna.sit.usp.phone_sales.cart.service.CartViewModelService;
 import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
@@ -9,7 +12,8 @@ import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUse
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.CartResponse;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.CheckoutResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,65 +28,93 @@ public class CartController {
     private final CartService cartService;
     private final DiscountCodeService discountCodeService;
     private final OrderService orderService;
+    private final CartSessionService cartSessionService;
+    private final CartViewModelService cartViewModelService;
+    private final CartValidatorService cartValidatorService;
 
     @Autowired
-    public CartController(UserService userService, CartService cartService, DiscountCodeService discountCodeService, OrderService orderService) {
+    public CartController(UserService userService, CartService cartService, DiscountCodeService discountCodeService, OrderService orderService, CartSessionService cartSessionService, CartViewModelService cartViewModelService, CartValidatorService cartValidatorService) {
         this.userService = userService;
         this.cartService = cartService;
         this.discountCodeService = discountCodeService;
         this.orderService = orderService;
+        this.cartSessionService = cartSessionService;
+        this.cartViewModelService = cartViewModelService;
+        this.cartValidatorService = cartValidatorService;
     }
 
     @GetMapping
     @RequireAuthenticatedUser
-    public ModelAndView getCartPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getCartPage(
+            @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+            HttpSession session) {
+
         ModelAndView modelAndView = new ModelAndView("user/cart");
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-        CartResponse cart = cartService.getCartResponseForUser(user);
 
-        modelAndView.addObject("user", user);
+        boolean cartModified = cartValidatorService.validateAndCleanCart(user);
+        if (cartModified) {
+            modelAndView.addObject("cartWarning", "Some items were removed due to stock changes. Refresh page to apply changes.");
+        }
+
+        CartResponse cart = cartService.getCartResponseForUser(user);
         modelAndView.addObject("cart", cart);
+
+        cartViewModelService.attachSessionAttributes(modelAndView, session, user);
+        cartViewModelService.attachAndClearError(modelAndView, session);
 
         return modelAndView;
     }
 
-    @PostMapping("/discount")
+    @PostMapping("/apply-discount")
     @RequireAuthenticatedUser
     @RequireNotEmptyCart
-    public ModelAndView applyDiscount(
+    public String applyDiscount(
             @RequestParam("discountCode") String discountCode,
             @AuthenticationPrincipal AuthenticationMetadata auth,
-            RedirectAttributes redirectAttributes) {
-
+            HttpSession session) {
+        cartSessionService.clearDiscountInfo(session);
         User user = userService.getAuthenticatedUser(auth);
-        boolean codeIsValid = discountCodeService.isValidCode(discountCode);
-        if (codeIsValid) {
+        if (discountCodeService.isValidCode(discountCode)) {
             CheckoutResponse checkoutResponse = orderService.applyDiscount(user, discountCode);
-            redirectAttributes.addFlashAttribute("checkoutResponse", checkoutResponse);
-            redirectAttributes.addFlashAttribute("discountApplied", true);
-            redirectAttributes.addFlashAttribute("discountCode", discountCode);
+            cartSessionService.storeDiscountInfo(session, checkoutResponse, discountCode);
         } else {
-            redirectAttributes.addFlashAttribute("error", "Invalid discount code.");
+            session.setAttribute("error", "Invalid discount code.");
         }
 
-        return new ModelAndView("redirect:/checkout");
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/clear-discount")
+    @RequireNotEmptyCart
+    @RequireAuthenticatedUser
+    public String clearDiscountSession(HttpSession session) {
+        cartSessionService.clearDiscountInfo(session);
+        return "redirect:/cart";
     }
 
     @PostMapping("/up/{slug}")
     @RequireAuthenticatedUser
     public String upPhoneQuantity(@PathVariable String slug,
-                                  @AuthenticationPrincipal AuthenticationMetadata authMeta) {
+                                  @AuthenticationPrincipal AuthenticationMetadata authMeta,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
         User user = userService.getAuthenticatedUser(authMeta);
-        cartService.incrementPhoneQuantityInCart(user, slug);
+        cartSessionService.clearDiscountInfo(session);
+        boolean enoughStock = cartService.incrementPhoneQuantityInCart(user, slug);
+        if (!enoughStock) {
+            redirectAttributes.addFlashAttribute("cartError", "Not enough stock! Chill bro.");
+        }
         return "redirect:/cart";
     }
 
     @PostMapping("/down/{slug}")
     @RequireAuthenticatedUser
     public String downPhoneQuantity(@PathVariable String slug,
-                                    @AuthenticationPrincipal AuthenticationMetadata authMeta) {
+                                    @AuthenticationPrincipal AuthenticationMetadata authMeta,
+                                    HttpSession session) {
         User user = userService.getAuthenticatedUser(authMeta);
-
+        cartSessionService.clearDiscountInfo(session);
         cartService.decrementPhoneQuantityInCart(user, slug);
         return "redirect:/cart";
     }
@@ -90,9 +122,10 @@ public class CartController {
     @PostMapping("/{slug}/delete")
     @RequireAuthenticatedUser
     public String removePhoneFromCart(@PathVariable String slug,
-                                      @AuthenticationPrincipal AuthenticationMetadata authMeta) {
+                                      @AuthenticationPrincipal AuthenticationMetadata authMeta,
+                                      HttpSession session) {
         User user = userService.getAuthenticatedUser(authMeta);
-
+        cartSessionService.clearDiscountInfo(session);
         cartService.removePhoneFromCart(user, slug);
         return "redirect:/cart";
     }
@@ -100,10 +133,11 @@ public class CartController {
     @PostMapping("/{slug}")
     @RequireAuthenticatedUser
     public String addPhoneToCart(@AuthenticationPrincipal AuthenticationMetadata auth,
-                                 @PathVariable String slug) {
+                                 @PathVariable String slug,
+                                 HttpSession session) {
         User user = userService.getAuthenticatedUser(auth);
+        cartSessionService.clearDiscountInfo(session);
         cartService.addPhoneToCart(slug, user);
-
         return "redirect:/cart";
     }
 }

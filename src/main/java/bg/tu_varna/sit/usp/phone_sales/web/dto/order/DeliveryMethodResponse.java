@@ -1,4 +1,4 @@
-package bg.tu_varna.sit.usp.phone_sales.web.dto;
+package bg.tu_varna.sit.usp.phone_sales.web.dto.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DiscountCodeResponse {
-    private String discountCode;
-
-    private String discountPercent;
+public class DeliveryMethodResponse {
+    private String description;
+    private String price;
 }

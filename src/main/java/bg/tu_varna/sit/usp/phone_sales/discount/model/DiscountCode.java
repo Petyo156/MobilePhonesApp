@@ -26,6 +26,9 @@ public class DiscountCode {
     @Column(nullable = false)
     private BigDecimal discount;
 
+    @Column(nullable = false)
+    private Boolean isActive;
+
     @OneToMany(mappedBy = "discountCode")
     private List<Sale> sales = new ArrayList<>();
 }

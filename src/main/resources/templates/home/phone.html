@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model + ' ' + phoneResponse.hardwareResponse.storage}">Product Page</title>
+    <title th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model + ' ' + phoneResponse.hardwareResponse.storage}">
+        Product Page</title>
     <link rel="stylesheet" href="/css/phone.css"/>
     <link rel="stylesheet" type="text/css" href="/css/filters.css">
     <link rel="stylesheet" href="/css/navbar.css"/>
@@ -18,95 +19,97 @@
 <div class="container phone-container">
     <div class="row">
         <div class="col-md-6">
-            <div class="view-toggle-container">
-                <button class="view-toggle-btn active" data-view="carousel">
-                    <i class="fas fa-images"></i> Images
-                </button>
-                <button class="view-toggle-btn" data-view="3d">
-                    <i class="fas fa-cube"></i> 3D Model
-                </button>
-            </div>
-
-            <div class="carousel-container active">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button th:each="image, stat : ${phoneResponse.images}"
-                                type="button"
-                                data-bs-target="#carouselExampleIndicators"
-                                th:data-bs-slide-to="${image.imageIndex}"
-                                th:class="${image.imageIndex == 0} ? 'active' : ''"
-                                th:aria-label="'Slide ' + ${stat.count}">
-                        </button>
-                    </div>
-                    <div class="carousel-inner">
-                        <div th:each="image, stat : ${phoneResponse.images}"
-                             th:class="${image.imageIndex == 0} ? 'carousel-item active' : 'carousel-item'">
-                            <img th:src="${image.imageUrl}"
-                                 class="d-block w-100 phone-image"
-                                 th:alt="'Phone Image ' + ${stat.count}"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#imageModal"
-                                 style="cursor: pointer;">
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+            <div class="preview-container">
+                <div class="view-toggle-container" th:if="${modelUrl != null && !modelUrl.isEmpty()}">
+                    <button class="view-toggle-btn" data-view="carousel"
+                            th:classappend="${modelUrl == null || modelUrl.isEmpty()} ? 'active' : ''">
+                        <i class="fas fa-images"></i>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                    <button class="view-toggle-btn" data-view="3d"
+                            th:classappend="${modelUrl != null && !modelUrl.isEmpty()} ? 'active' : ''">
+                        <i class="fas fa-cube"></i>
                     </button>
                 </div>
-            </div>
 
-            <div class="model-container">
-                <iframe width="100%" height="100%" th:src="${modelUrl}" frameborder="10" allowfullscreen></iframe>
+                <div class="carousel-container"
+                     th:classappend="${modelUrl == null || modelUrl.isEmpty()} ? 'active' : ''">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button th:each="image, stat : ${phoneResponse.images}"
+                                    type="button"
+                                    data-bs-target="#carouselExampleIndicators"
+                                    th:data-bs-slide-to="${image.imageIndex}"
+                                    th:class="${image.imageIndex == 0} ? 'active' : ''"
+                                    th:aria-label="'Slide ' + ${stat.count}">
+                            </button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div th:each="image, stat : ${phoneResponse.images}"
+                                 th:class="${image.imageIndex == 0} ? 'carousel-item active' : 'carousel-item'">
+                                <img th:src="${image.imageUrl}"
+                                     class="d-block w-100 phone-image"
+                                     th:alt="'Phone Image ' + ${stat.count}"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#imageModal"
+                                     style="cursor: pointer;">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="model-container"
+                     th:classappend="${modelUrl != null && !modelUrl.isEmpty()} ? 'active' : ''">
+                    <iframe width="100%" height="100%" th:src="${modelUrl}" frameborder="10" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
-            <h1 th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model + ' ' + phoneResponse.hardwareResponse.storage + 'GB ' + phoneResponse.hardwareResponse.ram + 'GB RAM'}"></h1>
-            <p class="text-muted" th:text="${phoneResponse.brandAndModelResponse.brand}">Brand</p>
+            <h1 th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model + ' ' + phoneResponse.hardwareResponse.storage + 'GB ' + phoneResponse.hardwareResponse.ram + 'GB RAM ' + phoneResponse.dimensions.color}"></h1>
+            <div class="text-muted">
+                <a th:href="'/search?result=' + ${phoneResponse.brandAndModelResponse.brand}"
+                   th:text="${phoneResponse.brandAndModelResponse.brand}" class="text-muted">Brand</a>
+                <a th:href="'/search?result=' + ${phoneResponse.brandAndModelResponse.model}"
+                   th:text="${phoneResponse.brandAndModelResponse.model}" class="text-muted">Model</a>
+                <a th:href="'/search?result=' + ${phoneResponse.hardwareResponse.storage}"
+                   th:text="${phoneResponse.hardwareResponse.storage} + 'GB'" class="text-muted">Storage</a>
+            </div>
 
             <div class="price-container">
                 <div>
                     <div th:if="${phoneResponse.discountPrice != phoneResponse.price}">
                         <span class="discounted-price" th:text="${phoneResponse.price + ' лв.'}"></span>
                         <span class="price" th:text="${phoneResponse.discountPrice + ' лв.'}"></span>
+                        <span class="discount-percent" th:text="'-'+${phoneResponse.discountPercent + '%'}"></span>
                     </div>
                     <div th:unless="${phoneResponse.discountPrice != phoneResponse.price}">
                         <span class="price" th:text="${phoneResponse.price + ' лв.'}"></span>
                     </div>
                 </div>
-                <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="submit" class="add-to-cart-btn">
-                        <i class="fas fa-shopping-cart"></i>Add to Cart
-                    </button>
-                </form>
+                    <div th:if="${user != null}">
+                        <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <button type="submit" class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart"></i>Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                    <div th:if="${user == null}">
+                        <a th:href="@{/login}"  class="add-to-cart-btn">
+                            <i class="fas fa-sign-in-alt"></i>Add to Cart
+                        </a>
+                    </div>
             </div>
 
-            <div class="selection-container">
-                <div class="selection-section">
-                    <h4>Color</h4>
-                    <div class="color-options">
-                        <button class="color-option active" style="background-color: #000000;" data-color="black">Black</button>
-                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="white">White</button>
-                        <button class="color-option" style="background-color: #c0c0c0;" data-color="silver">Silver</button>
-                        <button class="color-option" style="background-color: #ffd700;" data-color="gold">Gold</button>
-                    </div>
-                </div>
-
-                <div class="selection-section">
-                    <h4>Storage</h4>
-                    <div class="storage-options">
-                        <button class="storage-option active" data-storage="128">128GB</button>
-                        <button class="storage-option" data-storage="256">256GB</button>
-                        <button class="storage-option" data-storage="512">512GB</button>
-                        <button class="storage-option" data-storage="1024">1TB</button>
-                    </div>
-                </div>
-            </div>
 
             <div class="finance-calculator">
                 <div class="finance-row">
@@ -138,6 +141,48 @@
                 </div>
             </div>
 
+            <div class="selection-container">
+                <div class="selection-section">
+                    <h4 th:text="'Избери цвят: ' + ${phoneResponse.dimensions.color}">Избери цвят:</h4>
+                    <div th:each="colorPhone : ${differentColorPhones}">
+                        <div class="color-options">
+                            <button
+                                    class="color-option"
+                                    th:classappend="${colorPhone.color == phoneResponse.dimensions.color ? 'active' : ''}"
+                                    th:data-slug="${colorPhone.slug}">
+                                <div class="color-option-image">
+                                    <img th:src="${colorPhone.imageUrl}" th:alt="${colorPhone.color}">
+                                </div>
+                                <div class="color-option-details">
+                                    <span class="color-name"
+                                          th:text="${#strings.capitalize(colorPhone.color)}">Color</span>
+                                    <span class="color-price">
+                                    <span>Крайна цена (с ДДС): </span>
+                                    <span th:text="${colorPhone.price} + ' лв.'">0.00 лв.</span>
+                                </span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="selection-section">
+                    <h4 th:text="'Избери вградена памет: ' +${phoneResponse.hardwareResponse.storage} + 'GB'">Избери
+                        вградена памет:</h4>
+                    <div class="storage-options">
+                        <div th:each="storagePhone : ${differentStoragePhones}">
+                            <button
+                                    class="storage-option"
+                                    th:classappend="${storagePhone.storage.toString() == phoneResponse.hardwareResponse.storage.toString() ? 'active' : ''}"
+                                    th:data-slug="${storagePhone.slug}"
+                                    th:text="${storagePhone.storage + 'GB'}">
+                                Storage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="phone-specifications">
                 <h3>Specifications</h3>
                 <div class="spec-list">
@@ -147,7 +192,8 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Storage</div>
-                            <div class="spec-value" th:text="${phoneResponse.hardwareResponse.storage} + ' GB'">0 GB</div>
+                            <div class="spec-value" th:text="${phoneResponse.hardwareResponse.storage} + ' GB'">0 GB
+                            </div>
                         </div>
                     </div>
                     <div class="spec-item">
@@ -165,7 +211,9 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Screen Size</div>
-                            <div class="spec-value" th:text="${phoneResponse.hardwareResponse.screenSize} + ' inches'">0 inches</div>
+                            <div class="spec-value" th:text="${phoneResponse.hardwareResponse.screenSize} + ' inches'">0
+                                inches
+                            </div>
                         </div>
                     </div>
                     <div class="spec-item">
@@ -174,7 +222,9 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Battery</div>
-                            <div class="spec-value" th:text="${phoneResponse.hardwareResponse.batteryCapacity} + ' mAh'">0 mAh</div>
+                            <div class="spec-value"
+                                 th:text="${phoneResponse.hardwareResponse.batteryCapacity} + ' mAh'">0 mAh
+                            </div>
                         </div>
                     </div>
                     <div class="spec-item">
@@ -183,7 +233,9 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Camera</div>
-                            <div class="spec-value" th:text="${phoneResponse.cameraResponse.resolution} + 'MP'">0 cameras (0 MP)</div>
+                            <div class="spec-value" th:text="${phoneResponse.cameraResponse.resolution} + 'MP'">0
+                                cameras (0 MP)
+                            </div>
                         </div>
                     </div>
                     <div class="spec-item">
@@ -192,7 +244,10 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Operating System</div>
-                            <div class="spec-value" th:text="${phoneResponse.operatingSystemResponse.operatingSystemType} + ' ' + ${phoneResponse.operatingSystemResponse.version}">OS version</div>
+                            <div class="spec-value"
+                                 th:text="${phoneResponse.operatingSystemResponse.operatingSystemType} + ' ' + ${phoneResponse.operatingSystemResponse.version}">
+                                OS version
+                            </div>
                         </div>
                     </div>
                     <div class="spec-item">
@@ -219,7 +274,9 @@
                         </div>
                         <div class="spec-content">
                             <div class="spec-label">Water-Resistant</div>
-                            <div class="spec-value" th:text="${phoneResponse.dimensions.waterResistance ? 'Yes' : 'No'}">No</div>
+                            <div class="spec-value"
+                                 th:text="${phoneResponse.dimensions.waterResistance ? 'Yes' : 'No'}">No
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,7 +290,9 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel" th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model}">Phone Image</h5>
+                <h5 class="modal-title" id="imageModalLabel"
+                    th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model}">
+                    Phone Image</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -246,11 +305,13 @@
                                  th:alt="'Phone Image ' + ${stat.count}">
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#modalCarousel" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#modalCarousel"
+                            data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#modalCarousel" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#modalCarousel"
+                            data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
@@ -261,7 +322,8 @@
 </div>
 
 <!-- modalche -->
-<div class="modal fade pr-0 fast-leasing-modal" id="financeInfoModal" tabindex="-1" role="dialog" aria-labelledby="financeInfoModalLabel" aria-hidden="true">
+<div class="modal fade pr-0 fast-leasing-modal" id="financeInfoModal" tabindex="-1" role="dialog"
+     aria-labelledby="financeInfoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-leasing" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -273,7 +335,8 @@
                 </div>
                 <button class="modal__close-btn" data-bs-dismiss="modal" aria-label="Close">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17.521" height="17.521" viewBox="0 0 17.521 17.521">
-                        <path d="M17.521,1.752,15.769,0,8.76,7.008,1.752,0,0,1.752,7.008,8.76,0,15.769l1.752,1.752L8.76,10.513l7.008,7.008,1.752-1.752L10.513,8.76Z" fill="#29479d"/>
+                        <path d="M17.521,1.752,15.769,0,8.76,7.008,1.752,0,0,1.752,7.008,8.76,0,15.769l1.752,1.752L8.76,10.513l7.008,7.008,1.752-1.752L10.513,8.76Z"
+                              fill="#29479d"/>
                     </svg>
                 </button>
             </div>
@@ -299,7 +362,7 @@
                     <div class="form-group">
                         <label for="modal_down_payment" class="label-leasing">Първоначална вноска</label>
                         <div class="input-group">
-                            <input id="modal_down_payment" type="number" class="form-control down-payment" 
+                            <input id="modal_down_payment" type="number" class="form-control down-payment"
                                    placeholder="Въведете сумата, която искате да поставите като депозит"
                                    min="0">
                             <div class="invalid-feedback">
@@ -325,7 +388,8 @@
                         </div>
                     </div>
                     <div class="credit-bottom">
-                        <p class="m-0"><span>Общ размер на кредита:</span> <strong id="totalCreditValue">0 лв.</strong></p>
+                        <p class="m-0"><span>Общ размер на кредита:</span> <strong id="totalCreditValue">0 лв.</strong>
+                        </p>
                         <p class="m-0"><span>Месечна вноска:</span> <strong id="finalMonthlyPayment">0 лв.</strong>
                             <span class="apr-tag">ГПР: <span id="finalAprValue">0%</span></span></p>
                     </div>
@@ -345,12 +409,14 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
         const carouselContainer = document.querySelector('.carousel-container');
         const modelContainer = document.querySelector('.model-container');
@@ -373,32 +439,32 @@
         const discountedPriceElement = document.querySelector('.discounted-price');
         const regularPriceElement = document.querySelector('.price');
         // const priceElement = discountedPriceElement || regularPriceElement;
-        
+
         const priceText = regularPriceElement.textContent.trim();
         const mainPrice = priceText.match(/\d+/)[0];
         const decimalPart = priceText.match(/\.(\d+)/)?.[1] || '00';
         const price = parseFloat(`${mainPrice}.${decimalPart}`);
-        
+
         const financePeriod = document.getElementById('financePeriod');
         const monthlyPaymentMain = document.getElementById('monthlyPaymentMain');
         const monthlyPaymentDecimal = document.getElementById('monthlyPaymentDecimal');
         const totalMonths = document.getElementById('totalMonths');
 
         const periods = [
-            { months: 6, apr: 7.9 },
-            { months: 12, apr: 8.9 },
-            { months: 24, apr: 9.9 },
-            { months: 36, apr: 11.9 }
+            {months: 6, apr: 7.9},
+            {months: 12, apr: 8.9},
+            {months: 24, apr: 9.9},
+            {months: 36, apr: 11.9}
         ];
 
         function calculateMonthlyPayment() {
             const months = parseInt(financePeriod.value);
             const period = periods.find(p => p.months === months);
             const interestRate = period.apr / 100;
-            
+
             const totalAmount = price * (1 + interestRate);
             const monthlyAmount = totalAmount / months;
-            
+
             const [main, decimal] = monthlyAmount.toFixed(2).split('.');
             monthlyPaymentMain.textContent = main;
             monthlyPaymentDecimal.textContent = decimal;
@@ -412,19 +478,19 @@
         const modalCarousel = document.getElementById('modalCarousel');
         const imageModal = document.getElementById('imageModal');
 
-        mainCarousel.addEventListener('slide.bs.carousel', function(e) {
+        mainCarousel.addEventListener('slide.bs.carousel', function (e) {
             if (imageModal.classList.contains('show')) {
                 const modalCarouselInstance = bootstrap.Carousel.getInstance(modalCarousel);
                 modalCarouselInstance.to(e.to);
             }
         });
 
-        modalCarousel.addEventListener('slide.bs.carousel', function(e) {
+        modalCarousel.addEventListener('slide.bs.carousel', function (e) {
             const mainCarouselInstance = bootstrap.Carousel.getInstance(mainCarousel);
             mainCarouselInstance.to(e.to);
         });
 
-        imageModal.addEventListener('show.bs.modal', function() {
+        imageModal.addEventListener('show.bs.modal', function () {
             const mainCarouselInstance = bootstrap.Carousel.getInstance(mainCarousel);
             const activeIndex = [...mainCarousel.querySelectorAll('.carousel-item')].findIndex(item => item.classList.contains('active'));
             const modalCarouselInstance = bootstrap.Carousel.getInstance(modalCarousel);
@@ -463,7 +529,7 @@
             const currentAPR = period.apr;
             const downPayment = parseFloat(downPaymentInput.value) || 0;
             const creditAmount = price - downPayment;
-            
+
             const totalAmount = creditAmount * (1 + (currentAPR / 100));
             const monthlyPayment = totalAmount / months;
 
@@ -479,6 +545,25 @@
         paymentRange.addEventListener('input', updateCreditInfo);
 
         updateCreditInfo();
+
+        // Add color and storage selection handlers
+        document.querySelectorAll('.color-option').forEach(button => {
+            button.addEventListener('click', function () {
+                const slug = this.dataset.slug;
+                if (slug) {
+                    window.location.href = `/phone/${slug}`;
+                }
+            });
+        });
+
+        document.querySelectorAll('.storage-option').forEach(button => {
+            button.addEventListener('click', function () {
+                const slug = this.dataset.slug;
+                if (slug) {
+                    window.location.href = `/phone/${slug}`;
+                }
+            });
+        });
     });
 </script>
 </body>

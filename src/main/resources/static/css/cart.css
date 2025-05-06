@@ -176,6 +176,20 @@ h1 {
     font-weight: 500;
 }
 
+.discount-code input,
+.discount-code button {
+    width: 1200px;
+    height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.discount-code button:hover{
+    background-color: #536FDC;
+}
+
 .summary-item {
     display: flex;
     justify-content: space-between;
@@ -184,25 +198,10 @@ h1 {
 }
 
 .discount-code {
-    margin: 20px 0;
     display: flex;
     gap: 10px;
 }
 
-.discount-code input {
-    flex-grow: 1;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.discount-code button {
-    padding: 8px 20px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
 .summary-total {
     display: flex;
@@ -305,4 +304,35 @@ h1 {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
+}
+
+.promo-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #536FDC;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-left: 10px;
+    position: relative;
+}
+
+.promo-tag i {
+    margin-right: 5px;
+    color: white;
+}
+
+.promo-tag .remove-item {
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    background: none;
+    position: relative;
+}
+
+.promo-tag .remove-item:hover {
+    color: #f8d7da;
 } 

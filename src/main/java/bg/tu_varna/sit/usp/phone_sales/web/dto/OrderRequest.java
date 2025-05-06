@@ -29,7 +29,7 @@ public class OrderRequest {
     private String lastName;
 
     @NotNull
-    @Size(min = 10, max = 100, message = "Address must be 10-100 symbols long")
+    @Size(min = 5, max = 100, message = "Address must be 10-100 symbols long")
     private String address;
 
     @NotNull
@@ -37,7 +37,7 @@ public class OrderRequest {
     private String phoneNumber;
 
     @NotNull
-    @Size(min = 10, max = 100, message = "City must be 10-100 symbols long")
+    @Size(min = 3, max = 100, message = "City must be 10-100 symbols long")
     private String city;
 
     @Size(min = 4, max = 4, message = "Zip code must be 4 symbols long")

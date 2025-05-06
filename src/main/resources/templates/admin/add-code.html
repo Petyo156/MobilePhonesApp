@@ -7,44 +7,77 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Manage Discount Codes</h1>
+    <h1 class="mb-4 text-center">Manage Discount Codes</h1>
 
-    <!-- Form to Add New Code -->
-    <form th:action="@{/admin/codes}" method="post" class="row g-3 mb-5">
-        <div class="col-md-5">
-            <label for="name" class="form-label">Code Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="e.g. SPRING20" required>
+    <!-- Add New Discount Code Form -->
+    <div class="card mb-5 shadow">
+        <div class="card-body">
+            <h4 class="card-title">Add New Discount Code</h4>
+            <form th:action="@{/admin/codes}" method="post" class="row g-3">
+                <div class="col-md-5">
+                    <label for="name" class="form-label">Code Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. SPRING20" required>
+                </div>
+                <div class="col-md-5">
+                    <label for="discountPercent" class="form-label">Discount (%)</label>
+                    <input type="number" class="form-control" id="discountPercent" name="discountPercent" min="1" max="99" required>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100">Add Code</button>
+                </div>
+            </form>
         </div>
-        <div class="col-md-5">
-            <label for="discountPercent" class="form-label">Discount (%)</label>
-            <input type="number" class="form-control" id="discountPercent" name="discountPercent" min="1" max="99" required>
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-success w-100">Add Code</button>
-        </div>
-    </form>
+    </div>
 
-    <!-- Discount Codes Table -->
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Code</th>
-            <th>Discount (%)</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="code : ${discountCodes}">
-            <td th:text="${code.discountCode}"></td>
-            <td th:text="${code.discountPercent} + '%'"></td>
-            <td>
-                <form th:action="@{|/admin/codes/deletion/${code.discountCode}|}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Active Discount Codes -->
+    <div class="mb-5">
+        <h4 class="mb-3 text-success">Active Discount Codes</h4>
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-success">
+            <tr>
+                <th>Code</th>
+                <th>Discount (%)</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="code : ${activeDiscountCodes}">
+                <td th:text="${code.discountCode}"></td>
+                <td th:text="${code.discountPercent} + '%'"></td>
+                <td>
+                    <form th:action="@{|/admin/codes/${code.discountCode}|}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-warning btn-sm">Deactivate</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Inactive Discount Codes -->
+    <div>
+        <h4 class="mb-3 text-danger">Inactive Discount Codes</h4>
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-danger">
+            <tr>
+                <th>Code</th>
+                <th>Discount (%)</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="code : ${inactiveDiscountCodes}">
+                <td th:text="${code.discountCode}"></td>
+                <td th:text="${code.discountPercent} + '%'"></td>
+                <td>
+                    <form th:action="@{|/admin/codes/${code.discountCode}|}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-success btn-sm">Activate</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

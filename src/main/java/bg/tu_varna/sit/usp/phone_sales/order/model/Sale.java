@@ -34,7 +34,11 @@ public class Sale {
     private BigDecimal totalPrice;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SaleStatus saleStatus;
+
+    @Column(nullable = false)
+    private String orderNumber;
 
     @OneToOne(optional = false)
     private SaleDetails saleDetails;
@@ -42,6 +46,6 @@ public class Sale {
     @ManyToOne
     private DiscountCode discountCode;
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleItem> saleItems = new ArrayList<>();
 }

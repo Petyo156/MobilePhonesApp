@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +26,15 @@ public class CartService {
     private final PhoneService phoneService;
     private final CartItemService cartItemService;
     private final DiscountCodeService discountCodeService;
+    private final DecimalFormat decimalFormat;
 
     @Autowired
-    public CartService(CartRepository cartRepository, PhoneService phoneService, CartItemService cartItemService, DiscountCodeService discountCodeService) {
+    public CartService(CartRepository cartRepository, PhoneService phoneService, CartItemService cartItemService, DiscountCodeService discountCodeService, DecimalFormat decimalFormat) {
         this.cartRepository = cartRepository;
         this.phoneService = phoneService;
         this.cartItemService = cartItemService;
         this.discountCodeService = discountCodeService;
+        this.decimalFormat = decimalFormat;
     }
 
     public Cart initializeCartForUser(User user) {
@@ -89,16 +92,8 @@ public class CartService {
         return discountCodeService.calculateDiscountPrice(totalPrice, discountCodePercent);
     }
 
-    private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
-        return CartResponse.builder()
-                .phones(phoneResponses)
-                .totalPrice(totalPrice.toString())
-                .summary(summary)
-                .build();
-    }
-
-    public void incrementPhoneQuantityInCart(User user, String slug) {
-        cartItemService.incrementItemQuantity(user, slug);
+    public boolean incrementPhoneQuantityInCart(User user, String slug) {
+        return cartItemService.incrementItemQuantity(user, slug);
     }
 
     public void decrementPhoneQuantityInCart(User user, String slug) {
@@ -107,5 +102,13 @@ public class CartService {
 
     public void removePhoneFromCart(User user, String slug) {
         cartItemService.removeFromCart(user, slug);
+    }
+
+    private CartResponse initializeCartResponse(List<GetPhoneResponse> phoneResponses, BigDecimal totalPrice, Integer summary) {
+        return CartResponse.builder()
+                .phones(phoneResponses)
+                .totalPrice(decimalFormat.format(totalPrice))
+                .summary(summary)
+                .build();
     }
 }

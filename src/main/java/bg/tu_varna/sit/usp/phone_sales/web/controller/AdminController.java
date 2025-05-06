@@ -7,9 +7,9 @@ import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.DiscountCodeResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DiscountCodeResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
-import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.SubmitPhoneRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/admin")
@@ -39,10 +40,9 @@ public class AdminController {
     @GetMapping("/phone")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView submitPhonePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("admin/add-phone");
+        ModelAndView modelAndView = new ModelAndView("admin/add-product");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-
         modelAndView.addObject("submitPhoneRequest", new SubmitPhoneRequest());
         modelAndView.addObject("user", user);
 
@@ -56,7 +56,7 @@ public class AdminController {
                                     @RequestParam("imageFile") List<MultipartFile> files,
                                     @RequestParam("thumbnailIndex") int thumbnailIndex) {
 
-        ModelAndView modelAndView = new ModelAndView("admin/add-phone");
+        ModelAndView modelAndView = new ModelAndView("admin/add-product");
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
             return modelAndView;
@@ -93,13 +93,23 @@ public class AdminController {
         return modelAndView;
     }
 
+    @PostMapping("/discounts/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String setBulkDiscount(@RequestParam List<String> slugs,
+                                @RequestParam String discountPercent) {
+        phoneService.setBulkDiscountPercentForPhones(slugs, discountPercent);
+        return "redirect:/admin/products";
+    }
+
     @GetMapping("/codes")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getCodesPage() {
         ModelAndView modelAndView = new ModelAndView("admin/add-code");
-        List<DiscountCodeResponse> discountCodes = discountCodeService.getAllDiscountCodesResponse();
+        List<DiscountCodeResponse> activeDiscountCodes = discountCodeService.getDiscountCodeResponses(true);
+        List<DiscountCodeResponse> inactiveDiscountCodes = discountCodeService.getDiscountCodeResponses(false);
 
-        modelAndView.addObject("discountCodes", discountCodes);
+        modelAndView.addObject("activeDiscountCodes", activeDiscountCodes);
+        modelAndView.addObject("inactiveDiscountCodes", inactiveDiscountCodes);
 
         return modelAndView;
     }
@@ -112,10 +122,10 @@ public class AdminController {
         return "redirect:/admin/codes";
     }
 
-    @PostMapping("/codes/deletion/{name}")
+    @PostMapping("/codes/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteCode(@PathVariable String name) {
-        discountCodeService.deleteCodeByName(name);
+    public String updateCodeStatus(@PathVariable String name) {
+        discountCodeService.updateStatusByName(name);
 
         return "redirect:/admin/codes";
     }
@@ -133,7 +143,78 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public String updateVisibility(@PathVariable String slug) {
         phoneService.updateVisibility(slug);
+
         return "redirect:/admin/products";
     }
 
+    @PostMapping("/products/bulk/hide")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String bulkHidePhones(@RequestParam String slugs) {
+        List<String> phoneSlugs = Arrays.asList(slugs.split(","));
+        phoneService.bulkUpdateVisibility(phoneSlugs, false);
+
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/products/bulk/show")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String bulkShowPhones(@RequestParam String slugs) {
+        List<String> phoneSlugs = Arrays.asList(slugs.split(","));
+        phoneService.bulkUpdateVisibility(phoneSlugs, true);
+
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/phone/{slug}/visibility")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updatePhoneVisibility(@PathVariable String slug) {
+        phoneService.updateVisibility(slug);
+    }
+
+    @GetMapping("/{slug}/edit")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView updatePhone(@PathVariable String slug, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("admin/edit-product");
+        GetPhoneResponse phoneResponse = phoneService.getPhoneResponseForVisiblePhoneBySlug(slug);
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        SubmitPhoneRequest submitPhoneRequest = phoneService.convertToSubmitPhoneRequest(phoneResponse);
+
+        modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
+        modelAndView.addObject("phoneToEdit", phoneResponse);
+        modelAndView.addObject("user", user);
+        
+        return modelAndView;
+    }
+
+    @PostMapping("/{slug}/edit")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView editPhone(@PathVariable String slug,
+                             @Valid @ModelAttribute SubmitPhoneRequest submitPhoneRequest,
+                             BindingResult bindingResult) {
+
+        ModelAndView modelAndView = new ModelAndView("admin/edit-product");
+        if (bindingResult.hasErrors()) {
+            GetPhoneResponse phoneResponse = phoneService.getPhoneResponseForVisiblePhoneBySlug(slug);
+            modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
+            modelAndView.addObject("phoneToEdit", phoneResponse);
+            return modelAndView;
+        }
+
+        Phone updatedPhone = phoneService.updatePhone(slug, submitPhoneRequest);
+
+        return new ModelAndView("redirect:/phone/" + updatedPhone.getSlug());
+    }
+
+    @GetMapping("/{slug}/add-similar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getAddSimilarPhonePage(@PathVariable String slug) {
+        ModelAndView modelAndView = new ModelAndView("admin/add-similar-product");
+        GetPhoneResponse phoneResponse = phoneService.getPhoneResponseForVisiblePhoneBySlug(slug);
+        SubmitPhoneRequest submitPhoneRequest = phoneService.convertToSubmitPhoneRequest(phoneResponse);
+
+        modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
+        modelAndView.addObject("originalPhone", phoneResponse);
+
+        return modelAndView;
+    }
 }
