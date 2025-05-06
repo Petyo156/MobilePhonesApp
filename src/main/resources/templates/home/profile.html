@@ -4,44 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | MobileStore</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/filters.css">
+    <link rel="stylesheet" type="text/css" href="/css/profile.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css">
+    <link rel="stylesheet" type="text/css" href="/css/product-card.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/navbar.css">
-    <link rel="stylesheet" href="/css/profile.css">
-    <link rel="stylesheet" href="/css/footer.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: header}">
     <header></header>
 </div>
+<div class="filter-section" th:replace="~{fragments/filters :: filters}"></div>
+
 <main>
 
     <div class="account-section">
         <div class="left-column">
-            <div class="profile-section">
+            <form th:action="@{/profile/update}" th:object="${user}" method="post" class="profile-section">
                 <h2>Profile</h2>
-                <h3 class="account-name" th:text="|${user.firstName} ${user.lastName}|"></h3>
-                <p>Email: <span th:text="${user.email}"></span></p>
-                <p>Address: <span th:text="|${user.city} ${user.address}|"></span></p>
-                <p>Phone number: <span th:text="${user.phoneNumber}"></span></p>
-                <p>User since: <span th:text="${user.createdAt}"></span></p>
-            </div>
+
+                <input type="text" class="form-control" name="fullName"
+                       th:value="|${user.firstName} ${user.lastName}|"
+                       th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}" />
+
+                <input type="email" class="form-control" th:field="*{email}"
+                       th:placeholder="${user.email} == null ? 'Email address' : ${user.email}" />
+
+                <input type="text" class="form-control" th:field="*{city}"
+                       th:placeholder="${user.city} == null ? 'City' : ${user.city}" />
+
+                <input type="text" class="form-control" th:field="*{address}"
+                       th:placeholder="${user.address} == null ? 'Street address' : ${user.address}" />
+
+                <input type="tel" class="form-control" th:field="*{phoneNumber}"
+                       th:placeholder="${user.phoneNumber} == null ? 'Phone number' : ${user.phoneNumber}" />
+
+                <input type="text" class="form-control" th:field="*{createdAt}" disabled/>
+
+                <button type="submit" class="submitButton">Update Profile</button>
+            </form>
+
             <div class="change_pass-section">
                 <h2>Change Password</h2>
                 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
                 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
                 <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
                     <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{oldPassword}" placeholder="Current Password">
+                        <input class="form-control" type="password" th:field="*{oldPassword}"
+                               placeholder="Current Password">
                     </div>
                     <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{newPassword}" placeholder="New Password">
+                        <input class="form-control" type="password" th:field="*{newPassword}"
+                               placeholder="New Password">
                     </div>
                     <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{confirmNewPassword}" placeholder="Confirm New Password">
+                        <input class="form-control" type="password" th:field="*{confirmNewPassword}"
+                               placeholder="Confirm New Password">
                     </div>
-                    <button id="submitButton" type="submit" class="btn btn-primary">Change</button>
+                    <button type="submit" class="submitButton">Change</button>
                 </form>
             </div>
 
@@ -60,18 +83,18 @@
                     <th>Total Price</th>
                 </tr>
                 </thead>
-                            <tbody>
-                            <tr th:each="order,index : ${orders}">
-                                <td th:text="${index.index+1}"></td>
-                                <td th:text="${order.orderDate}"></td>
-                                <td th:text="|  ${order.phone.brandAndModelResponse.brand}
+                <tbody>
+                <tr th:each="order,index : ${orders}">
+                    <td th:text="${index.index+1}"></td>
+                    <td th:text="${order.orderDate}"></td>
+                    <td th:text="|  ${order.phone.brandAndModelResponse.brand}
                                                 ${order.phone.brandAndModelResponse.model}
                                                 x ${order.quantity}|"></td>
-                                <td th:text="|${order.deliveryOption.city} ${order.deliveryOption.address}|"></td>
-                                <td th:text="${order.deliveryOption.deliveryMethod}"></td>
-                                <td th:text="|${order.phone.price} лв. (${order.deliveryOption.paymentMethod})|"></td>
-                            </tr>
-                            </tbody>
+                    <td th:text="|${order.deliveryOption.city} ${order.deliveryOption.address}|"></td>
+                    <td th:text="${order.deliveryOption.deliveryMethod}"></td>
+                    <td th:text="|${order.phone.price} лв. (${order.deliveryOption.paymentMethod})|"></td>
+                </tr>
+                </tbody>
             </table>
         </div>
     </div>

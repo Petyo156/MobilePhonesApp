@@ -43,6 +43,10 @@ body {
     margin-bottom: 1rem;
 }
 
+.profile-section *{
+    margin: 0.5rem 0;
+}
+
 .account-name {
     font-size: 1.5rem;
     font-weight: bold;
@@ -69,7 +73,7 @@ input[type="password"]:focus {
     box-shadow: 0 0 0 2px var(--light-accent);
 }
 
-#submitButton {
+.submitButton {
     background-color: var(--accent);
     color: var(--light);
     border: none;
@@ -82,7 +86,7 @@ input[type="password"]:focus {
     margin-top: 0.5rem;
 }
 
-#submitButton:hover {
+.submitButton:hover {
     background-color: var(--dark-accent);
 }
 
@@ -157,6 +161,10 @@ input[type="password"]:focus {
 
 .dropdown-menu {
     margin:0;
+}
+
+.filter-section{
+    margin-top:0;
 }
 
 @media (max-width: 992px) {
