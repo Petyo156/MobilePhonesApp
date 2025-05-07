@@ -17,4 +17,5 @@ public class ExceptionMessages {
     public static final String INVALID_DISCOUNT_CODE_PERCENT_INPUT = "Invalid discount code percent input.";
     public static final String INVALID_COUNTER_ID = "Counter not initialized";
     public static final String USER_WITH_THIS_PHONE_NUMBER_ALREADY_EXISTS = "User with this phone number already exists";
+    public static final String USER_HAS_ALREADY_LEFT_A_REVIEW = "User has already left a review for this product";
 }

@@ -11,6 +11,7 @@ import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.DeliveryMethod;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.PaymentMethod;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.model.SaleDetails;
 import bg.tu_varna.sit.usp.phone_sales.orderdetails.service.SaleDetailsService;
+import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.service.SaleItemService;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.CheckoutResponse;
@@ -56,8 +57,8 @@ public class OrderService {
     public String makeOrder(User user, OrderRequest orderRequest, CheckoutResponse checkoutResponse) {
         SaleDetails saleDetails = saleDetailsService.initializeSaleDetailsForUser(orderRequest, user);
 
-        String priceToUse = checkoutResponse.getDiscountPrice() != null ? 
-                checkoutResponse.getDiscountPrice() : 
+        String priceToUse = checkoutResponse.getDiscountPrice() != null ?
+                checkoutResponse.getDiscountPrice() :
                 checkoutResponse.getTotalPrice();
 
         String formattedOrderNumber = saleCounterService.getFormattedOrderNumber();
@@ -102,7 +103,7 @@ public class OrderService {
 
     public List<DeliveryMethodResponse> getDeliveryMethodValues() {
         List<DeliveryMethodResponse> responses = new ArrayList<>();
-        for(DeliveryMethod deliveryMethod : DeliveryMethod.values()){
+        for (DeliveryMethod deliveryMethod : DeliveryMethod.values()) {
             DeliveryMethodResponse response = initializeDeliveryMethodResponse(deliveryMethod);
             responses.add(response);
         }
@@ -112,7 +113,7 @@ public class OrderService {
 
     public List<PaymentMethodResponse> getPaymentMethodValues() {
         List<PaymentMethodResponse> responses = new ArrayList<>();
-        for(PaymentMethod paymentMethod : PaymentMethod.values()){
+        for (PaymentMethod paymentMethod : PaymentMethod.values()) {
             PaymentMethodResponse response = initializePaymentMethodResponse(paymentMethod);
             responses.add(response);
         }
@@ -149,5 +150,18 @@ public class OrderService {
                 .saleDetails(saleDetails)
                 .orderNumber(formattedOrderNumber)
                 .build();
+    }
+
+    public boolean userHasBoughtItem(String slug, User user) {
+        for (Sale sale : user.getSales()) {
+            for (SaleItem saleItem : sale.getSaleItems()) {
+                if (saleItem.getPhone().getSlug().equals(slug)) {
+                    log.info("User has bought this item");
+                    return true;
+                }
+            }
+        }
+        log.info("User has not bought this item");
+        return false;
     }
 }
