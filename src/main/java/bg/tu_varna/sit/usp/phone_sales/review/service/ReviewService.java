@@ -62,7 +62,7 @@ public class ReviewService {
                         .map(this::initializeReviewResponse))
                 .collect(Collectors.toList());
 
-        log.info("Fetched all reviews for product with slug: {}", slug);
+        log.info("Fetched all reviews for product");
         return responses;
     }
 
