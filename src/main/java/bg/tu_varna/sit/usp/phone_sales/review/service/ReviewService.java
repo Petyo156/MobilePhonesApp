@@ -2,6 +2,8 @@ package bg.tu_varna.sit.usp.phone_sales.review.service;
 
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
+import bg.tu_varna.sit.usp.phone_sales.orderitem.service.SaleItemService;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.review.repository.ReviewRepository;
@@ -23,18 +25,22 @@ import java.util.stream.Collectors;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final PhoneService phoneService;
+    private final SaleItemService saleItemService;
 
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, PhoneService phoneService) {
+    public ReviewService(ReviewRepository reviewRepository, PhoneService phoneService, SaleItemService saleItemService) {
         this.reviewRepository = reviewRepository;
         this.phoneService = phoneService;
+        this.saleItemService = saleItemService;
     }
 
     public void postReview(ReviewRequest reviewRequest, User user, String slug) {
         if(userHasAlreadyLeftAReview(slug, user)){
             throw new DomainException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
         }
-        Review review = initializeReview(reviewRequest);
+        SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
+        Review review = initializeReview(reviewRequest, saleItem);
+
         reviewRepository.save(review);
         log.info("Review published successfully");
     }
@@ -64,7 +70,7 @@ public class ReviewService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        log.info("Fetched all reviews for product with slug: {}", slug);
+        log.info("Fetched all reviews for product");
         return responses;
     }
 
@@ -76,12 +82,13 @@ public class ReviewService {
                 .build();
     }
 
-    private Review initializeReview(ReviewRequest reviewRequest) {
+    private Review initializeReview(ReviewRequest reviewRequest, SaleItem saleItem) {
         return Review.builder()
                 .name(reviewRequest.getName())
                 .comment(reviewRequest.getComment())
                 .rating(reviewRequest.getRating())
                 .createdAt(LocalDateTime.now())
+                .saleItem(saleItem)
                 .build();
     }
 }

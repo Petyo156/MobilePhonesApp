@@ -273,6 +273,15 @@ public class PhoneService {
         return phoneRepository.save(phone);
     }
 
+    public String getExtendedPhoneNameBySlug(String slug) {
+        Phone phoneBySlug = getPhoneBySlug(slug);
+        return phoneBySlug.getPhoneModel().getBrand().getName() +
+                " " + phoneBySlug.getPhoneModel().getName() +
+                " " + phoneBySlug.getDimension().getColor() +
+                " " + phoneBySlug.getHardware().getStorage() +
+                "GB";
+    }
+
     public SubmitPhoneRequest convertToSubmitPhoneRequest(GetPhoneResponse phoneResponse) {
         return SubmitPhoneRequest.builder()
                 .brandAndModel(buildBrandAndModel(phoneResponse))
