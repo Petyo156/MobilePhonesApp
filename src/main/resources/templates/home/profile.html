@@ -26,20 +26,20 @@
             <form th:action="@{/profile/update}" th:object="${user}" method="post" class="profile-section">
                 <h2>Profile</h2>
 
-                <input type="text" class="form-control" name="fullName"
+                <input type="text" class="form-control" name="fullName" required
                        th:value="|${user.firstName} ${user.lastName}|"
                        th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}" />
 
-                <input type="email" class="form-control" th:field="*{email}"
+                <input type="email" class="form-control" th:field="*{email}" disabled
                        th:placeholder="${user.email} == null ? 'Email address' : ${user.email}" />
 
-                <input type="text" class="form-control" th:field="*{city}"
+                <input type="text" class="form-control" th:field="*{city}" required
                        th:placeholder="${user.city} == null ? 'City' : ${user.city}" />
 
-                <input type="text" class="form-control" th:field="*{address}"
+                <input type="text" class="form-control" th:field="*{address}" required
                        th:placeholder="${user.address} == null ? 'Street address' : ${user.address}" />
 
-                <input type="tel" class="form-control" th:field="*{phoneNumber}"
+                <input type="tel" class="form-control" th:field="*{phoneNumber}" required
                        th:placeholder="${user.phoneNumber} == null ? 'Phone number' : ${user.phoneNumber}" />
 
                 <input type="text" class="form-control" th:field="*{createdAt}" disabled/>
