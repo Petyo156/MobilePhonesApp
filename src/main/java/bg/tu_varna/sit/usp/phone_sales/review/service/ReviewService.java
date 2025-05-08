@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,12 +61,12 @@ public class ReviewService {
                         .getReviewsBySaleItem_Phone_Slug(variantSlug)
                         .stream()
                         .map(this::initializeReviewResponse))
+                .distinct()
                 .collect(Collectors.toList());
 
         log.info("Fetched all reviews for product with slug: {}", slug);
         return responses;
     }
-
 
     private ReviewResponse initializeReviewResponse(Review review) {
         return ReviewResponse.builder()
@@ -80,6 +81,7 @@ public class ReviewService {
                 .name(reviewRequest.getName())
                 .comment(reviewRequest.getComment())
                 .rating(reviewRequest.getRating())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

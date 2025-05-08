@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(of = {"name", "comment", "rating"})
 public class ReviewResponse {
     private String comment;
 
