@@ -448,7 +448,8 @@ h1 {
 
 .preview-container {
     position: sticky;
-    top: 5rem;
+    top: 8rem;
+    /*mqsto mejdu filters i preview*!*/
     height: fit-content;
     margin-bottom: 2rem;
     transition: all 0.3s ease;
@@ -982,4 +983,129 @@ input[type="range"]::-webkit-slider-thumb {
     border-color: var(--accent);
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* User Reviews Styles */
+.user-reviews {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+}
+
+.user-reviews h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-item {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.review-author {
+    margin-right: 10px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.review-rating {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.star {
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+.star.empty {
+    color: #ddd;
+}
+
+.rating-number {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.review-content {
+    font-style: italic;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid #eee;
+    background: #f4f4f4;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    font-size: 2rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.star-rating .star {
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.star-rating .star.selected,
+.star-rating .star.hovered {
+    color: #ffd700;
+}
+
+.review-form-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e0e0e0;
+}
+
+.form-row {
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1.2rem;
+}
+.rating-group {
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 160px;
+}
+.name-group {
+    flex: 1;
+}
+.review-form .form-group {
+    margin-bottom: 1.2rem;
 }
