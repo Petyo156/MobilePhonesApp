@@ -1,6 +1,8 @@
 package bg.tu_varna.sit.usp.phone_sales.orderitem.service;
 
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
+import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
+import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.repository.SaleItemRepository;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -41,5 +44,13 @@ public class SaleItemService {
                 .priceAtTime(cartItem.getPhone().getPrice())
                 .sale(sale)
                 .build();
+    }
+
+    public SaleItem getSaleItemReviewForUser(User user, String slug) {
+        Optional<SaleItem> saleItemOptional = saleItemRepository.findFirstSaleItemByPhone_SlugAndSale_User(slug, user);
+        if(saleItemOptional.isEmpty()) {
+            throw new DomainException(ExceptionMessages.SALE_ITEM_DOESNT_EXIST);
+        }
+        return saleItemOptional.get();
     }
 }
