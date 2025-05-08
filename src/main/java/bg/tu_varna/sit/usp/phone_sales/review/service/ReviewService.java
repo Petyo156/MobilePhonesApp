@@ -2,6 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.review.service;
 
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.review.repository.ReviewRepository;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
@@ -14,15 +15,18 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final PhoneService phoneService;
 
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewService(ReviewRepository reviewRepository, PhoneService phoneService) {
         this.reviewRepository = reviewRepository;
+        this.phoneService = phoneService;
     }
 
     public void postReview(ReviewRequest reviewRequest, User user, String slug) {
@@ -45,15 +49,23 @@ public class ReviewService {
     }
 
     public List<ReviewResponse> getAllReviewsForProduct(String slug) {
-        List<Review> reviews = reviewRepository.getReviewsBySaleItem_Phone_Slug(slug);
-        List<ReviewResponse> responses = new ArrayList<>();
-        for(Review review : reviews){
-            ReviewResponse response = initializeReviewResponse(review);
-            responses.add(response);
-        }
-        log.info("Fetched all reviews for given product");
+        List<String> allVariantSlugs = new ArrayList<>();
+        phoneService.getPhonesWithDifferentColor(slug)
+                .forEach(phone -> allVariantSlugs.add(phone.getSlug()));
+        phoneService.getPhonesWithDifferentStorage(slug)
+                .forEach(phone -> allVariantSlugs.add(phone.getSlug()));
+
+        List<ReviewResponse> responses = allVariantSlugs.stream()
+                .flatMap(variantSlug -> reviewRepository
+                        .getReviewsBySaleItem_Phone_Slug(variantSlug)
+                        .stream()
+                        .map(this::initializeReviewResponse))
+                .collect(Collectors.toList());
+
+        log.info("Fetched all reviews for product with slug: {}", slug);
         return responses;
     }
+
 
     private ReviewResponse initializeReviewResponse(Review review) {
         return ReviewResponse.builder()
