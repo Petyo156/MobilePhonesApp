@@ -62,7 +62,7 @@ public class IndexController {
         }
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index/register");
+        modelAndView.setViewName("auth/register");
         modelAndView.addObject("registerRequest", new RegisterRequest());
         modelAndView.addObject("user", null);
         modelAndView.addObject("hasHiddenElements", true);
@@ -90,7 +90,7 @@ public class IndexController {
         }
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index/login");
+        modelAndView.setViewName("auth/login");
 
         modelAndView.addObject("error", errorParam);
         modelAndView.addObject("loginRequest", loginRequest);
