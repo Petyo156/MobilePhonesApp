@@ -2,7 +2,6 @@ package bg.tu_varna.sit.usp.phone_sales.review.service;
 
 import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
-import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.review.repository.ReviewRepository;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
@@ -40,7 +39,7 @@ public class ReviewService {
         if(reviewOptional.isEmpty()){
             log.info("User has not left a review");
             return false;
-        };
+        }
         log.info("User already left a review");
         return true;
     }

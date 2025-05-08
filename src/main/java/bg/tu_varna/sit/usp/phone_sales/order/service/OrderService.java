@@ -153,6 +153,10 @@ public class OrderService {
     }
 
     public boolean userHasBoughtItem(String slug, User user) {
+        if(null == user){
+            log.info("User is not logged in");
+            return false;
+        }
         for (Sale sale : user.getSales()) {
             for (SaleItem saleItem : sale.getSaleItems()) {
                 if (saleItem.getPhone().getSlug().equals(slug)) {
