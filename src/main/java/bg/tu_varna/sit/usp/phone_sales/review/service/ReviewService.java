@@ -10,6 +10,7 @@ import bg.tu_varna.sit.usp.phone_sales.review.repository.ReviewRepository;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ReviewRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ReviewResponse;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,20 +35,23 @@ public class ReviewService {
         this.saleItemService = saleItemService;
     }
 
+    @Transactional
     public void postReview(ReviewRequest reviewRequest, User user, String slug) {
-        if(userHasAlreadyLeftAReview(slug, user)){
+        if (userHasAlreadyLeftAReview(slug, user)) {
             throw new DomainException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
         }
         SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
         Review review = initializeReview(reviewRequest, saleItem);
 
         reviewRepository.save(review);
+
+        saleItemService.setSaleItemReview(saleItem, review);
         log.info("Review published successfully");
     }
 
     public boolean userHasAlreadyLeftAReview(String slug, User user) {
         Optional<Review> reviewOptional = reviewRepository.getReviewBySaleItem_Phone_SlugAndSaleItem_Sale_User(slug, user);
-        if(reviewOptional.isEmpty()){
+        if (reviewOptional.isEmpty()) {
             log.info("User has not left a review");
             return false;
         }

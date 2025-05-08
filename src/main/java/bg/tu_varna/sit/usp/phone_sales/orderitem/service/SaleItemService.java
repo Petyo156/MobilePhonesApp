@@ -7,6 +7,7 @@ import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.repository.SaleItemRepository;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
+import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +53,10 @@ public class SaleItemService {
             throw new DomainException(ExceptionMessages.SALE_ITEM_DOESNT_EXIST);
         }
         return saleItemOptional.get();
+    }
+
+    public void setSaleItemReview(SaleItem saleItem, Review review) {
+        saleItem.setReview(review);
+        saleItemRepository.save(saleItem);
     }
 }
