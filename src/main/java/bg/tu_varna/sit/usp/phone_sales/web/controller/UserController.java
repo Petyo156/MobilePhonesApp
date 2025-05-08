@@ -1,30 +1,34 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
+import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.aspect.annotation.RequireAuthenticatedUser;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ChangePasswordRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.ExtendedOrderResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.OrderResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/profile")
 public class UserController {
     private final UserService userService;
+    private final OrderService orderService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, OrderService orderService) {
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     @GetMapping()
@@ -33,11 +37,26 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("home/profile");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-//        List<OrderResponse> orders = inventoryService.getAllOrdersForUser(user);
+        List<OrderResponse> orders = orderService.getAllOrders(user);
 
         modelAndView.addObject("changePasswordRequest", new ChangePasswordRequest());
         modelAndView.addObject("user", user);
-//        modelAndView.addObject("orders", orders);
+        modelAndView.addObject("orders", orders);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/order/{orderNumber}")
+    @RequireAuthenticatedUser
+    public ModelAndView getOrderPage(@PathVariable String orderNumber,
+                                     @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("home/order");
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        ExtendedOrderResponse extendedOrderResponse = orderService.getExtendedInformationForOrder(orderNumber, user);
+        OrderResponse orderResponse = orderService.getInformationForOrder(orderNumber);
+
+        modelAndView.addObject("orderResponse", orderResponse);
+        modelAndView.addObject("extendedOrderResponse", extendedOrderResponse);
 
         return modelAndView;
     }

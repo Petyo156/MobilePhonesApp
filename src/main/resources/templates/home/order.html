@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <link rel="stylesheet" href="/css/order.css">
+</head>
+<body>
+<div class="order-container">
+    <h1 class="order-title">Order Details</h1>
+
+    <!-- Basic Order Info -->
+    <section class="order-section order-info">
+        <h2>Order Info</h2>
+        <p><strong>Order Number:</strong> <span th:text="${orderResponse.orderNumber}"></span></p>
+        <p><strong>Order Date:</strong> <span th:text="${#temporals.format(orderResponse.orderDate, 'dd MMM yyyy HH:mm')}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${orderResponse.status}"></span></p>
+        <p><strong>Total Price:</strong> <span th:text="${orderResponse.price} + ' BGN'"></span></p>
+    </section>
+
+    <!-- Extended Info -->
+    <section class="order-section shipping-info">
+        <h2>Shipping Info</h2>
+        <p><strong>Address:</strong> <span th:text="${extendedOrderResponse.address}"></span></p>
+        <p><strong>City:</strong> <span th:text="${extendedOrderResponse.city}"></span></p>
+        <p><strong>ZIP Code:</strong> <span th:text="${extendedOrderResponse.zipCode}"></span></p>
+        <p><strong>Delivery Method:</strong> <span th:text="${extendedOrderResponse.deliveryMethod.description}"></span></p>
+        <p><strong>Delivery Price:</strong> <span th:text="${extendedOrderResponse.deliveryMethod.price} + ' BGN'"></span></p>
+        <p><strong>Payment Method:</strong> <span th:text="${extendedOrderResponse.paymentMethod.description}"></span></p>
+    </section>
+
+    <!-- Order Items -->
+    <section class="order-section item-list">
+        <h2>Items</h2>
+        <div class="item" th:each="item : ${orderResponse.orderItemResponseList}">
+            <img th:src="@{${item.media}}" alt="Product Image" class="item-image"/>
+            <div class="item-details">
+                <p class="item-name" th:text="${item.itemName}"></p>
+                <p class="item-quantity">Quantity: <span th:text="${item.quantity}"></span></p>
+                <a th:href="@{'/phone/' + ${item.slug}}" class="item-link">View Product</a>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
