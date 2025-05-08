@@ -1109,3 +1109,26 @@ input[type="range"]::-webkit-slider-thumb {
 .review-form .form-group {
     margin-bottom: 1.2rem;
 }
+
+.delete-review-form {
+    margin: 0 0 0 10px;
+    display: flex;
+    align-items: center;
+}
+.delete-review-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 6px;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.review-item:hover .delete-review-btn {
+    display: inline;
+}
+.delete-review-btn:hover {
+    color: #e74c3c;
+}

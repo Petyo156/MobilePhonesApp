@@ -331,8 +331,11 @@
                                       th:class="${i <= review.rating.ordinal() + 1} ? 'star' : 'star empty'">
                                     <i class="fas fa-star"></i>
                                 </span>
-                                <span class="rating-number" th:text="'(' + ${review.rating.ordinal() + 1} + ')'"></span>
+                                <span class="rating-number" th:text="'(' + ${review.rating.ordinal() + 1} + ')' "></span>
                             </div>
+                            <form th:if="${null != user && user.role.name == 'ADMIN'}" th:action="@{/admin/review/delete/{id}(id=${review.id})}" method="post" class="delete-review-form">
+                                <button type="submit" class="delete-review-btn" title="Delete review">&times;</button>
+                            </form>
                         </div>
                         <p class="review-content" th:text="${review.comment} ?  ${review.comment} : 'Няма коментар.'  ">
                             Review content goes here.</p>

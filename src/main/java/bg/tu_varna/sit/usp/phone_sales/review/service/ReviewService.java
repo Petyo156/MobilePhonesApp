@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,6 +81,7 @@ public class ReviewService {
 
     private ReviewResponse initializeReviewResponse(Review review) {
         return ReviewResponse.builder()
+                .id(review.getId())
                 .name(review.getName())
                 .comment(review.getComment())
                 .rating(review.getRating())
@@ -94,5 +96,20 @@ public class ReviewService {
                 .createdAt(LocalDateTime.now())
                 .saleItem(saleItem)
                 .build();
+    }
+
+    @Transactional
+    public void deleteReview(UUID reviewId) {
+        Optional<Review> reviewOptional = reviewRepository.findById(reviewId);
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            SaleItem saleItem = review.getSaleItem();
+            if (saleItem != null) {
+                saleItem.setReview(null);
+                saleItemService.setSaleItemReview(saleItem, null);
+            }
+            reviewRepository.delete(review);
+            log.info("Review deleted successfully");
+        }
     }
 }

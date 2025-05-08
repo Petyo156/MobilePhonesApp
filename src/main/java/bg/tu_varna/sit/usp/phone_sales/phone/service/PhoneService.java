@@ -564,4 +564,12 @@ public class PhoneService {
             phone.setSlug(newSlug);
         }
     }
+
+    public GetPhoneResponse getPhoneResponseByReviewId(UUID reviewId) {
+        Optional<Phone> phone = phoneRepository.findBySaleItems_Review_Id(reviewId);
+        if (phone.isEmpty()) {
+            throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
+        }
+        return getPhoneResponseByPhone(phone.get());
+    }
 }
