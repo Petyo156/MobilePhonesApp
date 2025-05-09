@@ -127,6 +127,10 @@
     margin: 0 1px;
 }
 
+.rating-stars i.far {
+    color: #e0e0e0;
+}
+
 .rating-count {
     color: #666;
     font-size: 0.8rem;

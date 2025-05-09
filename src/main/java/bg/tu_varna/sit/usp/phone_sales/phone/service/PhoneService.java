@@ -314,20 +314,24 @@ public class PhoneService {
     }
 
     public void setRatingValueForSimilarPhones(BigDecimal newRating, String slug) {
-        List<Phone> differentColorPhones = getDifferentColorPhones(slug);
-        List<Phone> differentStoragePhones = getDifferentStoragePhones(slug);
+        Phone currentPhone = getVisiblePhoneBySlug(slug);
+        String modelName = currentPhone.getPhoneModel().getName();
+        String brandName = currentPhone.getPhoneModel().getBrand().getName();
+        Integer releaseYear = currentPhone.getReleaseYear();
 
-        Set<Phone> allPhoneVariants = new HashSet<>();
-        allPhoneVariants.addAll(differentColorPhones);
-        allPhoneVariants.addAll(differentStoragePhones);
+        List<Phone> allVariants = phoneRepository.findAll().stream()
+                .filter(phone -> phone.getPhoneModel().getName().equals(modelName) &&
+                        phone.getPhoneModel().getBrand().getName().equals(brandName) &&
+                        phone.getReleaseYear().equals(releaseYear))
+                .collect(Collectors.toList());
 
-        if (allPhoneVariants.isEmpty()) {
-            log.warn("No phone variants found for slug: {}", slug);
+        if (allVariants.isEmpty()) {
+            log.warn("No phone variants found for model: {} {}", brandName, modelName);
             return;
         }
 
         List<Review> allReviews = new ArrayList<>();
-        for (Phone phone : allPhoneVariants) {
+        for (Phone phone : allVariants) {
             allReviews.addAll(phone.getSaleItems().stream()
                     .map(SaleItem::getReview)
                     .filter(Objects::nonNull)
@@ -349,15 +353,8 @@ public class PhoneService {
         BigDecimal average = total.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
         BigDecimal roundedAverage = roundToNearestHalf(average);
 
-        setAllSimilarPhonesRating(roundedAverage, allPhoneVariants);
-    }
-
-    private void setAllSimilarPhonesRating(BigDecimal rating, Set<Phone> similarPhones) {
-        if (rating == null) {
-            rating = BigDecimal.ZERO;
-        }
-        for (Phone phone : similarPhones) {
-            phone.setRating(rating);
+        for (Phone phone : allVariants) {
+            phone.setRating(roundedAverage);
             phoneRepository.save(phone);
         }
     }
@@ -421,6 +418,7 @@ public class PhoneService {
         String modelUrl = phone.getModelUrl();
         Integer releaseYear = phone.getReleaseYear();
         String slug = phone.getSlug();
+        BigDecimal rating = phone.getRating();
 
         return GetPhoneResponse.builder()
                 .slug(slug)
@@ -438,6 +436,7 @@ public class PhoneService {
                 .modelUrl(modelUrl)
                 .createdAt(phone.getCreatedAt())
                 .isVisible(phone.getIsVisible())
+                .rating(rating)
                 .build();
     }
 

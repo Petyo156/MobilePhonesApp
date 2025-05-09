@@ -9,13 +9,9 @@
             Brand</h3>
         <div class="rating">
             <div class="rating-stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
+                <i th:each="i : ${#numbers.sequence(1, 5)}" th:class="${phone.rating != null && phone.rating.doubleValue() >= i - 0.5 && phone.rating.doubleValue() < i ? 'fas fa-star-half-alt' : (phone.rating != null && phone.rating.doubleValue() >= i ? 'fas fa-star' : 'far fa-star')}"></i>
             </div>
-            <span class="rating-count">(4.5)</span>
+            <span class="rating-count" th:text="${phone.rating != null ? '(' + phone.rating + ')' : '(0.0)'}"></span>
         </div>
         <div class="price-container">
             <div th:if="${phone.discountPrice != phone.price}">
