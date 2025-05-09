@@ -418,6 +418,7 @@ public class PhoneService {
         String modelUrl = phone.getModelUrl();
         Integer releaseYear = phone.getReleaseYear();
         String slug = phone.getSlug();
+        BigDecimal rating = phone.getRating();
 
         return GetPhoneResponse.builder()
                 .slug(slug)
@@ -435,6 +436,7 @@ public class PhoneService {
                 .modelUrl(modelUrl)
                 .createdAt(phone.getCreatedAt())
                 .isVisible(phone.getIsVisible())
+                .rating(rating)
                 .build();
     }
 
