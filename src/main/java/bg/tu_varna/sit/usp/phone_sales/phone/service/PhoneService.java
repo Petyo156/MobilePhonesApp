@@ -11,9 +11,11 @@ import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
 import bg.tu_varna.sit.usp.phone_sales.model.service.ModelService;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.service.OperatingSystemService;
+import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.PhoneRepository;
+import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.*;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
 import jakarta.transaction.Transactional;
@@ -27,6 +29,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST;
 
@@ -285,42 +288,52 @@ public class PhoneService {
         List<Phone> differentColorPhones = getDifferentColorPhones(slug);
         List<Phone> differentStoragePhones = getDifferentStoragePhones(slug);
 
-        Phone differentColorPhone = differentColorPhones.get(0);
-        Phone differentStoragePhone = differentStoragePhones.get(0);
+        Set<Phone> allPhoneVariants = new HashSet<>();
+        allPhoneVariants.addAll(differentColorPhones);
+        allPhoneVariants.addAll(differentStoragePhones);
 
-        Set<Phone> allSimilarPhones = new HashSet<>();
-        allSimilarPhones.addAll(differentColorPhones);
-        allSimilarPhones.addAll(differentStoragePhones);
-
-        // If any of the similar phones are unrated, apply the new rating directly
-        if (differentColorPhone.getRating().equals(BigDecimal.ZERO) &&
-                differentStoragePhone.getRating().equals(BigDecimal.ZERO)) {
-            setAllSimilarPhonesRating(newRating, allSimilarPhones);
+        if (allPhoneVariants.isEmpty()) {
+            log.warn("No phone variants found for slug: {}", slug);
             return;
         }
 
-        // Calculate average rating of similar phones
+        List<Review> allReviews = new ArrayList<>();
+        for (Phone phone : allPhoneVariants) {
+            allReviews.addAll(phone.getSaleItems().stream()
+                    .map(SaleItem::getReview)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList()));
+        }
+
         BigDecimal total = BigDecimal.ZERO;
         int count = 0;
-        for (Phone phone : allSimilarPhones) {
-            BigDecimal rating = phone.getRating();
-            if (rating != null && rating.compareTo(BigDecimal.ZERO) > 0) {
-                total = total.add(rating);
+        for (Review review : allReviews) {
+            if (review.getRating() != null) {
+                total = total.add(review.getRating().getValue());
                 count++;
             }
         }
-        if (count == 0) {
-            setAllSimilarPhonesRating(newRating, allSimilarPhones);
-            return;
-        }
+
+        total = total.add(newRating);
+        count++;
 
         BigDecimal average = total.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
         BigDecimal roundedAverage = roundToNearestHalf(average);
 
-        setAllSimilarPhonesRating(roundedAverage, allSimilarPhones);
+        setAllSimilarPhonesRating(roundedAverage, allPhoneVariants);
+    }
+
+    private boolean isZeroOrNull(BigDecimal value) {
+        if (value == null) {
+            return true;
+        }
+        return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
     private void setAllSimilarPhonesRating(BigDecimal rating, Set<Phone> similarPhones) {
+        if (rating == null) {
+            rating = BigDecimal.ZERO;
+        }
         for (Phone phone : similarPhones) {
             phone.setRating(rating);
             phoneRepository.save(phone);

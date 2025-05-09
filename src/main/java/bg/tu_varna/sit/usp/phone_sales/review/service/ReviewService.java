@@ -45,9 +45,9 @@ public class ReviewService {
         SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
         Review review = initializeReview(reviewRequest, saleItem, user);
 
-        phoneService.setRatingValueForSimilarPhones(reviewRequest.getRating().getValue(), slug);
-
         reviewRepository.save(review);
+
+        phoneService.setRatingValueForSimilarPhones(reviewRequest.getRating().getValue(), slug);
 
         saleItemService.setSaleItemReview(saleItem, review);
         log.info("Review published successfully");
