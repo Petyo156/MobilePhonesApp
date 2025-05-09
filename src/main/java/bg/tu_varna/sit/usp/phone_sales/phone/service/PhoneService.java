@@ -75,11 +75,40 @@ public class PhoneService {
         Phone phone = initializePhone(submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
 
         List<Image> images = imageService.saveImages(files, thumbnailIndex, phone);
-
         phone.setImages(images);
+        phone = phoneRepository.save(phone);
+
+        try {
+            List<Phone> differentColorPhones = getDifferentColorPhones(phone.getSlug());
+            List<Phone> differentStoragePhones = getDifferentStoragePhones(phone.getSlug());
+
+            Set<Phone> allPhoneVariants = new HashSet<>();
+            allPhoneVariants.addAll(differentColorPhones);
+            allPhoneVariants.addAll(differentStoragePhones);
+
+            if (!allPhoneVariants.isEmpty()) {
+                BigDecimal total = BigDecimal.ZERO;
+                int count = 0;
+                for (Phone existingPhone : allPhoneVariants) {
+                    if (existingPhone.getRating() != null && existingPhone.getRating().compareTo(BigDecimal.ZERO) > 0) {
+                        total = total.add(existingPhone.getRating());
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    BigDecimal average = total.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
+                    BigDecimal roundedAverage = roundToNearestHalf(average);
+                    phone.setRating(roundedAverage);
+                    phoneRepository.save(phone);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not link ratings for new phone: {}", e.getMessage());
+        }
 
         log.info("Phone initialized successfully");
-        return phoneRepository.save(phone);
+        return phone;
     }
 
     public List<GetPhoneResponse> getSearchResult(String info) {
@@ -321,13 +350,6 @@ public class PhoneService {
         BigDecimal roundedAverage = roundToNearestHalf(average);
 
         setAllSimilarPhonesRating(roundedAverage, allPhoneVariants);
-    }
-
-    private boolean isZeroOrNull(BigDecimal value) {
-        if (value == null) {
-            return true;
-        }
-        return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
     private void setAllSimilarPhonesRating(BigDecimal rating, Set<Phone> similarPhones) {
