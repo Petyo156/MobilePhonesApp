@@ -4,6 +4,7 @@ import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.service.SaleItemService;
+import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.review.repository.ReviewRepository;
@@ -64,21 +65,23 @@ public class ReviewService {
     }
 
     public List<ReviewResponse> getAllReviewsForProduct(String slug) {
-        List<String> allVariantSlugs = new ArrayList<>();
-        phoneService.getPhonesWithDifferentColor(slug)
-                .forEach(phone -> allVariantSlugs.add(phone.getSlug()));
-        phoneService.getPhonesWithDifferentStorage(slug)
-                .forEach(phone -> allVariantSlugs.add(phone.getSlug()));
+        Phone currentPhone = phoneService.getVisiblePhoneBySlug(slug);
+        String modelName = currentPhone.getPhoneModel().getName();
+        String brandName = currentPhone.getPhoneModel().getBrand().getName();
+        Integer releaseYear = currentPhone.getReleaseYear();
 
-        List<ReviewResponse> responses = allVariantSlugs.stream()
-                .flatMap(variantSlug -> reviewRepository
-                        .getReviewsBySaleItem_Phone_Slug(variantSlug)
-                        .stream()
-                        .map(this::initializeReviewResponse))
+        List<ReviewResponse> responses = reviewRepository.findAll().stream()
+                .filter(review -> {
+                    Phone phone = review.getSaleItem().getPhone();
+                    return phone.getPhoneModel().getName().equals(modelName) &&
+                           phone.getPhoneModel().getBrand().getName().equals(brandName) &&
+                           phone.getReleaseYear().equals(releaseYear);
+                })
+                .map(this::initializeReviewResponse)
                 .distinct()
                 .collect(Collectors.toList());
 
-        log.info("Fetched all reviews for product");
+        log.info("Fetched all reviews for product and its variants");
         return responses;
     }
 

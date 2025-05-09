@@ -448,7 +448,7 @@ h1 {
 
 .preview-container {
     position: sticky;
-    top: 8rem;
+    top: 10rem;
     /*mqsto mejdu filters i preview*!*/
     height: fit-content;
     margin-bottom: 2rem;
