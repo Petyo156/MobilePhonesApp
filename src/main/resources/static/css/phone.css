@@ -1050,9 +1050,10 @@ input[type="range"]::-webkit-slider-thumb {
 
 .review-content {
     font-style: italic;
-    color: #666;
+    color: #5a6473;
+    font-size: 1rem;
     line-height: 1.6;
-    margin: 0;
+    margin: 0 0 0 60px;
 }
 
 .review-avatar {
@@ -1128,6 +1129,94 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .review-item:hover .delete-review-btn {
     display: inline;
+}
+.delete-review-btn:hover {
+    color: #e74c3c;
+}
+
+.review-button {
+    background: var(--accent);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    text-decoration: none;
+}
+
+.review-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.review-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.review-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.review-date {
+    font-size: 0.95rem;
+    color: #7b8497;
+    font-weight: 500;
+    margin-left: 1rem;
+    white-space: nowrap;
+}
+.anonymous-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.anonymous-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.anonymous-toggle label {
+    font-size: 0.9rem;
+    color: #666;
+    cursor: pointer;
+}
+
+.review-item-has-delete {
+    position: relative;
+}
+.delete-review-form-absolute {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    margin: 0;
+    z-index: 2;
+    display: none;
+}
+.review-item-has-delete:hover .delete-review-form-absolute {
+    display: flex;
+}
+.delete-review-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 6px;
+    transition: color 0.2s;
+    line-height: 1;
 }
 .delete-review-btn:hover {
     color: #e74c3c;

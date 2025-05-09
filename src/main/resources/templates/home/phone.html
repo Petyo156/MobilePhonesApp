@@ -303,17 +303,26 @@
                                         <span class="star" data-value="5">&#9733;</span>
                                     </div>
                                     <input type="hidden" th:field="*{rating}" id="ratingInput" required>
+                                    <div id="ratingError" class="emp-error-msg" style="display:none;">Моля, изберете оценка.</div>
                                 </div>
                                 <div class="form-group name-group">
-                                    <input type="text" id="name" th:field="*{name}" class="form-control" required minlength="2"
-                                           maxlength="50" placeholder="Your name">
+                                    <div class="anonymous-toggle">
+                                        <input type="checkbox" id="anonymousCheckbox" class="anonymous-checkbox">
+                                        <label for="anonymousCheckbox">Анонимен отзив</label>
+                                    </div>
+                                    <input type="text" id="name" th:field="*{name}" class="form-control" required
+                                           minlength="2"
+                                           maxlength="50" placeholder="Вашето име">
+                                    <div id="nameError" class="emp-error-msg" style="display:none;">Моля, въведете име с поне 2 символа.</div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <textarea id="comment" th:field="*{comment}" class="form-control" rows="3" maxlength="200"
-                                          placeholder="Your review (optional)"></textarea>
+                                <textarea id="comment" th:field="*{comment}" class="form-control" rows="3"
+                                          maxlength="200"
+                                          placeholder="Вашият отзив (незадължително)"></textarea>
+                                <div id="commentError" class="emp-error-msg" style="display:none;">Моля, въведете отзив с поне 3 символа.</div>
                             </div>
-                            <button type="submit" class="add-to-cart-btn">Submit Review</button>
+                            <button type="submit" class="review-button">Submit Review</button>
                         </form>
                     </div>
                 </div>
@@ -322,23 +331,32 @@
                     <div th:if="${reviews.empty}" class="review-item">
                         <p class="review-content">Този продукт все още няма отзиви.</p>
                     </div>
-                    <div th:each="review : ${reviews}" class="review-item">
-                        <div class="review-header">
-                            <img src="/images/anonimniq.jpg" alt="User avatar" class="review-avatar">
-                            <span class="review-author" th:text="${review.name}">User Name</span>
-                            <div class="review-rating">
-                                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                      th:class="${i <= review.rating.ordinal() + 1} ? 'star' : 'star empty'">
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                <span class="rating-number" th:text="'(' + ${review.rating.ordinal() + 1} + ')' "></span>
+                    <div th:each="review : ${reviews}" class="review-item review-item-has-delete">
+                        <div class="review-header-flex">
+                            <div class="review-header-left">
+                                <img src="/images/anonimniq.jpg" alt="User avatar" class="review-avatar">
+                                <div>
+                                    <span class="review-author" th:text="${review.name}">User Name</span>
+                                    <div class="review-rating-row">
+                                        <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                              th:class="${i <= review.rating.ordinal() + 1} ? 'star' : 'star empty'">
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                        <span class="rating-number"
+                                              th:text="'(' + ${review.rating.ordinal() + 1} + ')' "></span>
+                                    </div>
+                                </div>
                             </div>
-                            <form th:if="${null != user && user.role.name == 'ADMIN'}" th:action="@{/admin/review/delete/{id}(id=${review.id})}" method="post" class="delete-review-form">
-                                <button type="submit" class="delete-review-btn" title="Delete review">&times;</button>
-                            </form>
+                            <span class="review-date"
+                                  th:text="${review.createdAt != null} ? ${#temporals.format(review.createdAt, 'dd.MM.yyyy')} : ''">01.01.2024</span>
                         </div>
-                        <p class="review-content" th:text="${review.comment} ?  ${review.comment} : 'Няма коментар.'  ">
-                            Review content goes here.</p>
+                        <form th:if="${null != user && user.role.name == 'ADMIN'}"
+                              th:action="@{/admin/review/delete/{id}(id=${review.id})}" method="post"
+                              class="delete-review-form delete-review-form-absolute">
+                            <button type="submit" class="delete-review-btn" title="Delete review">&times;</button>
+                        </form>
+                        <p class="review-content"
+                           th:text="${#strings.isEmpty(review.comment)} ? 'Няма коментар.' : ${review.comment} "></p>
                     </div>
                 </div>
             </div>
@@ -608,7 +626,6 @@
 
         updateCreditInfo();
 
-        // Add color and storage selection handlers
         document.querySelectorAll('.color-option').forEach(button => {
             button.addEventListener('click', function () {
                 const slug = this.dataset.slug;
@@ -627,7 +644,7 @@
             });
         });
 
-        // Star rating for review form
+
         const stars = document.querySelectorAll('#starRating .star');
         const ratingInput = document.getElementById('ratingInput');
         let selected = 0;
@@ -649,12 +666,59 @@
                     stars.forEach((s, i) => {
                         s.classList.toggle('selected', i < selected);
                     });
-                    // Set the hidden input value to the correct enum value
                     const enumValues = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'];
                     ratingInput.value = enumValues[selected - 1];
                 });
             });
         }
+
+        const anonymousCheckbox = document.getElementById('anonymousCheckbox');
+        const nameInput = document.getElementById('name');
+
+        anonymousCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                nameInput.value = 'Анонимен';
+                nameInput.style.display = 'none';
+            } else {
+                nameInput.value = '';
+                nameInput.style.display = 'block';
+            }
+        });
+
+        document.querySelector('.review-form').addEventListener('submit', function(e) {
+            let valid = true;
+            const ratingInput = document.getElementById('ratingInput');
+            const ratingError = document.getElementById('ratingError');
+            const nameInput = document.getElementById('name');
+            const nameError = document.getElementById('nameError');
+            const commentInput = document.getElementById('comment');
+            const commentError = document.getElementById('commentError');
+
+            if (!ratingInput.value) {
+                ratingError.style.display = 'block';
+                valid = false;
+            } else {
+                ratingError.style.display = 'none';
+            }
+
+            if (nameInput.style.display !== 'none' && (!nameInput.value || nameInput.value.trim().length < 2)) {
+                nameError.style.display = 'block';
+                valid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            if (commentInput.value && commentInput.value.trim().length > 0 && commentInput.value.trim().length < 3) {
+                commentError.style.display = 'block';
+                valid = false;
+            } else {
+                commentError.style.display = 'none';
+            }
+
+            if (!valid) {
+                e.preventDefault();
+            }
+        });
     });
 </script>
 </body>
