@@ -186,7 +186,7 @@ public class PhoneService {
             if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
                 throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
             }
-            
+
             for (String slug : slugs) {
                 Phone phone = getPhoneBySlug(slug);
                 phone.setDiscountPercent(fullPercent);
@@ -207,16 +207,9 @@ public class PhoneService {
     }
 
     public List<DifferentColorPhoneResponse> getPhonesWithDifferentColor(String slug) {
-        Phone phone = getVisiblePhoneBySlug(slug);
-        PhoneModel model = phone.getPhoneModel();
-        Hardware hardware = phone.getHardware();
-
-        log.info("Fetching phones with different colors");
-        List<Phone> similarPhonesWithDifferentColor = phoneRepository.findSimilarPhonesWithDifferentColor
-                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), hardware.getStorage());
-
+        List<Phone> similarPhonesWithDifferentColor = getDifferentColorPhones(slug);
         List<DifferentColorPhoneResponse> responses = new ArrayList<>();
-        for(Phone similarPhone : similarPhonesWithDifferentColor) {
+        for (Phone similarPhone : similarPhonesWithDifferentColor) {
             DifferentColorPhoneResponse response = initializeDifferentColorPhoneResponse(similarPhone);
             responses.add(response);
         }
@@ -224,17 +217,9 @@ public class PhoneService {
     }
 
     public List<DifferentStoragePhoneResponse> getPhonesWithDifferentStorage(String slug) {
-        Phone phone = getVisiblePhoneBySlug(slug);
-        PhoneModel model = phone.getPhoneModel();
-        Hardware hardware = phone.getHardware();
-        Dimension dimension = phone.getDimension();
-
-        log.info("Fetching phones with different storage");
-        List<Phone> similarPhonesWithDifferentStorage = phoneRepository.findSimilarPhonesWithDifferentStorage
-                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), dimension.getColor());
-
+        List<Phone> similarPhonesWithDifferentStorage = getDifferentStoragePhones(slug);
         List<DifferentStoragePhoneResponse> responses = new ArrayList<>();
-        for(Phone similarPhone : similarPhonesWithDifferentStorage) {
+        for (Phone similarPhone : similarPhonesWithDifferentStorage) {
             DifferentStoragePhoneResponse response = initializeDifferentStoragePhoneResponse(similarPhone);
             responses.add(response);
         }
@@ -243,7 +228,7 @@ public class PhoneService {
 
     public void reducePhoneQuantityAfterPurchase(Phone phone, Integer quantity) {
         phone.setQuantity(phone.getQuantity() - quantity);
-        if(phone.getQuantity() == 0) {
+        if (phone.getQuantity() == 0) {
             phone.setIsVisible(false);
             log.info("Hidden phone from store due no quantity");
         }
@@ -294,6 +279,79 @@ public class PhoneService {
                 .camera(buildCamera(phoneResponse))
                 .modelUrl(phoneResponse.getModelUrl())
                 .build();
+    }
+
+    public void setRatingValueForSimilarPhones(BigDecimal newRating, String slug) {
+        List<Phone> differentColorPhones = getDifferentColorPhones(slug);
+        List<Phone> differentStoragePhones = getDifferentStoragePhones(slug);
+
+        Phone differentColorPhone = differentColorPhones.get(0);
+        Phone differentStoragePhone = differentStoragePhones.get(0);
+
+        Set<Phone> allSimilarPhones = new HashSet<>();
+        allSimilarPhones.addAll(differentColorPhones);
+        allSimilarPhones.addAll(differentStoragePhones);
+
+        // If any of the similar phones are unrated, apply the new rating directly
+        if (differentColorPhone.getRating().equals(BigDecimal.ZERO) &&
+                differentStoragePhone.getRating().equals(BigDecimal.ZERO)) {
+            setAllSimilarPhonesRating(newRating, allSimilarPhones);
+            return;
+        }
+
+        // Calculate average rating of similar phones
+        BigDecimal total = BigDecimal.ZERO;
+        int count = 0;
+        for (Phone phone : allSimilarPhones) {
+            BigDecimal rating = phone.getRating();
+            if (rating != null && rating.compareTo(BigDecimal.ZERO) > 0) {
+                total = total.add(rating);
+                count++;
+            }
+        }
+        if (count == 0) {
+            setAllSimilarPhonesRating(newRating, allSimilarPhones);
+            return;
+        }
+
+        BigDecimal average = total.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
+        BigDecimal roundedAverage = roundToNearestHalf(average);
+
+        setAllSimilarPhonesRating(roundedAverage, allSimilarPhones);
+    }
+
+    private void setAllSimilarPhonesRating(BigDecimal rating, Set<Phone> similarPhones) {
+        for (Phone phone : similarPhones) {
+            phone.setRating(rating);
+            phoneRepository.save(phone);
+        }
+    }
+
+    private BigDecimal roundToNearestHalf(BigDecimal value) {
+        BigDecimal multiplied = value.multiply(BigDecimal.valueOf(2));
+        BigDecimal rounded = new BigDecimal(Math.round(multiplied.doubleValue()));
+        return rounded.divide(BigDecimal.valueOf(2));
+    }
+
+    private List<Phone> getDifferentColorPhones(String slug) {
+        Phone phone = getVisiblePhoneBySlug(slug);
+        PhoneModel model = phone.getPhoneModel();
+        Hardware hardware = phone.getHardware();
+
+        log.info("Fetching phones with different colors");
+        return phoneRepository.findSimilarPhonesWithDifferentColor
+                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), hardware.getStorage());
+    }
+
+    private List<Phone> getDifferentStoragePhones(String slug) {
+        Phone phone = getVisiblePhoneBySlug(slug);
+        PhoneModel model = phone.getPhoneModel();
+        Hardware hardware = phone.getHardware();
+        Dimension dimension = phone.getDimension();
+
+        log.info("Fetching phones with different storage");
+        return phoneRepository.findSimilarPhonesWithDifferentStorage
+                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), dimension.getColor());
     }
 
     private String generateSlug(Phone phone) {
@@ -442,6 +500,7 @@ public class PhoneService {
                 .isVisible(true)
                 .discountPercent(BigDecimal.ZERO)
                 .modelUrl(submitPhoneRequest.getModelUrl())
+                .rating(BigDecimal.ZERO)
                 .build();
 
         String slug = generateSlug(builtPhone);

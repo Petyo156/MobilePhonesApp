@@ -63,8 +63,6 @@ public class Phone {
     @Column(nullable = false, unique = true)
     private String slug;
 
-//   novodobaveni
-
     @OneToMany(mappedBy = "phone")
     private List<CartItem> cartItems = new ArrayList<>();
 
@@ -73,4 +71,7 @@ public class Phone {
 
     @Column
     private String modelUrl;
+
+    @Column
+    private BigDecimal rating;
 }
