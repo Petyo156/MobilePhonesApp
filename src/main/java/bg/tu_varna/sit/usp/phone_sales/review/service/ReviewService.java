@@ -85,6 +85,7 @@ public class ReviewService {
                 .name(review.getName())
                 .comment(review.getComment())
                 .rating(review.getRating())
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 

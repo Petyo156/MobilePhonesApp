@@ -3,6 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.web.dto;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Rating;
 import lombok.*;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,4 +16,5 @@ public class ReviewResponse {
     private String comment;
     private Rating rating;
     private String name;
+    private LocalDateTime createdAt;
 }
