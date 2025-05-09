@@ -20,84 +20,87 @@
 <div class="filter-section" th:replace="~{fragments/filters :: filters}"></div>
 
 <main>
+    <div class="top-section d-flex flex-column flex-md-row gap-4 mb-4">
+        <form th:action="@{/profile/update}" th:object="${user}" method="post" class="profile-section flex-fill">
+            <h2>Profile</h2>
+            <input type="text" class="form-control" name="fullName" required
+                   th:value="|${user.firstName} ${user.lastName}|"
+                   th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}"/>
+            <input type="email" class="form-control" th:field="*{email}" disabled
+                   th:placeholder="${user.email} == null ? 'Email address' : ${user.email}"/>
+            <input type="text" class="form-control" th:field="*{city}" required
+                   th:placeholder="${user.city} == null ? 'City' : ${user.city}"/>
+            <input type="text" class="form-control" th:field="*{address}" required
+                   th:placeholder="${user.address} == null ? 'Street address' : ${user.address}"/>
+            <input type="tel" class="form-control" th:field="*{phoneNumber}" required
+                   th:placeholder="${user.phoneNumber} == null ? 'Phone number' : ${user.phoneNumber}"/>
+            <input type="text" class="form-control" th:field="*{createdAt}" disabled/>
+            <button type="submit" class="submitButton">Update Profile</button>
+        </form>
 
-    <div class="account-section">
-        <div class="left-column">
-            <form th:action="@{/profile/update}" th:object="${user}" method="post" class="profile-section">
-                <h2>Profile</h2>
-
-                <input type="text" class="form-control" name="fullName" required
-                       th:value="|${user.firstName} ${user.lastName}|"
-                       th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}" />
-
-                <input type="email" class="form-control" th:field="*{email}" disabled
-                       th:placeholder="${user.email} == null ? 'Email address' : ${user.email}" />
-
-                <input type="text" class="form-control" th:field="*{city}" required
-                       th:placeholder="${user.city} == null ? 'City' : ${user.city}" />
-
-                <input type="text" class="form-control" th:field="*{address}" required
-                       th:placeholder="${user.address} == null ? 'Street address' : ${user.address}" />
-
-                <input type="tel" class="form-control" th:field="*{phoneNumber}" required
-                       th:placeholder="${user.phoneNumber} == null ? 'Phone number' : ${user.phoneNumber}" />
-
-                <input type="text" class="form-control" th:field="*{createdAt}" disabled/>
-
-                <button type="submit" class="submitButton">Update Profile</button>
+        <div class="change_pass-section flex-fill">
+            <h2>Change Password</h2>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
+                <div class="mb-2">
+                    <input class="form-control" type="password" th:field="*{oldPassword}"
+                           placeholder="Current Password">
+                </div>
+                <div class="mb-2">
+                    <input class="form-control" type="password" th:field="*{newPassword}" placeholder="New Password">
+                </div>
+                <div class="mb-2">
+                    <input class="form-control" type="password" th:field="*{confirmNewPassword}"
+                           placeholder="Confirm New Password">
+                </div>
+                <button type="submit" class="submitButton">Change</button>
             </form>
-
-            <div class="change_pass-section">
-                <h2>Change Password</h2>
-                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-                <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
-                    <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{oldPassword}"
-                               placeholder="Current Password">
-                    </div>
-                    <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{newPassword}"
-                               placeholder="New Password">
-                    </div>
-                    <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{confirmNewPassword}"
-                               placeholder="Confirm New Password">
-                    </div>
-                    <button type="submit" class="submitButton">Change</button>
-                </form>
-            </div>
-
-        </div>
-
-        <div class="right-column">
-            <h1>Orders</h1>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Product Name</th>
-                    <th>Address</th>
-                    <th>Delivery Option</th>
-                    <th>Total Price</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="order,index : ${orders}">
-                    <td th:text="${index.index+1}"></td>
-                    <td th:text="${order.orderDate}"></td>
-                    <td th:text="|  ${order.phone.brandAndModelResponse.brand}
-                                                ${order.phone.brandAndModelResponse.model}
-                                                x ${order.quantity}|"></td>
-                    <td th:text="|${order.deliveryOption.city} ${order.deliveryOption.address}|"></td>
-                    <td th:text="${order.deliveryOption.deliveryMethod}"></td>
-                    <td th:text="|${order.phone.price} лв. (${order.deliveryOption.paymentMethod})|"></td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </div>
+
+    <div class="orders-section">
+        <h1>Orders</h1>
+        <div th:each="order : ${orders}"
+             class="product-container d-block mb-3 p-3 border rounded text-decoration-none text-dark">
+
+            <div class="order-row">
+                <p class="order-info">
+                    <i class="fas fa-hashtag"></i> Order Number:
+                </p>
+                <span class="order-data relevant" th:text="${order.orderNumber}"></span>
+            </div>
+
+            <div class="order-row">
+                <p class="order-info">
+                    <i class="fas fa-calendar-alt"></i> Order Date:
+                </p>
+                <span class="order-data" th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy')}"></span>
+            </div>
+
+            <div class="order-row">
+                <p class="order-info">
+                    <i class="fas fa-clipboard-check"></i> Status:
+                </p>
+                <span class="order-data" th:text="${order.status}"></span>
+            </div>
+
+            <div class="order-row">
+                <p class="order-info">
+                    <i class="fas fa-coins"></i> Total Price:
+                </p>
+                <span class="order-data" th:text="${order.price}"></span> лв
+            </div>
+            <div class="order-row-wrapper">
+                <ul class="order-row-list">
+                    <li th:each="item : ${order.orderItemResponseList}" th:text="${item.itemName}"></li>
+                </ul>
+                <a th:href="@{/profile/order/{orderNumber}(orderNumber=${order.orderNumber})}" class="btn btn-redirect">View Details</a>
+            </div>
+        </div>
+    </div>
+    </div>
+
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
