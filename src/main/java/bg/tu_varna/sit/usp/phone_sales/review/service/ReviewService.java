@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,9 @@ public class ReviewService {
             throw new DomainException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
         }
         SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
-        Review review = initializeReview(reviewRequest, saleItem);
+        Review review = initializeReview(reviewRequest, saleItem, user);
+
+        phoneService.setRatingValueForSimilarPhones(reviewRequest.getRating().getValue(), slug);
 
         reviewRepository.save(review);
 
@@ -89,13 +92,14 @@ public class ReviewService {
                 .build();
     }
 
-    private Review initializeReview(ReviewRequest reviewRequest, SaleItem saleItem) {
+    private Review initializeReview(ReviewRequest reviewRequest, SaleItem saleItem, User user) {
         return Review.builder()
                 .name(reviewRequest.getName())
                 .comment(reviewRequest.getComment())
                 .rating(reviewRequest.getRating())
                 .createdAt(LocalDateTime.now())
                 .saleItem(saleItem)
+                .user(user)
                 .build();
     }
 
