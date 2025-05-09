@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ReviewRequest {
-    @Size(min = 4, max = 200)
+    @Size(max = 200)
     private String comment;
 
     @NotNull

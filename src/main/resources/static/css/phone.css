@@ -448,7 +448,8 @@ h1 {
 
 .preview-container {
     position: sticky;
-    top: 5rem;
+    top: 10rem;
+    /*mqsto mejdu filters i preview*!*/
     height: fit-content;
     margin-bottom: 2rem;
     transition: all 0.3s ease;
@@ -982,4 +983,241 @@ input[type="range"]::-webkit-slider-thumb {
     border-color: var(--accent);
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* User Reviews Styles */
+.user-reviews {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+}
+
+.user-reviews h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-item {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.review-author {
+    margin-right: 10px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.review-rating {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.star {
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+.star.empty {
+    color: #ddd;
+}
+
+.rating-number {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.review-content {
+    font-style: italic;
+    color: #5a6473;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 0 60px;
+}
+
+.review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid #eee;
+    background: #f4f4f4;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    font-size: 2rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.star-rating .star {
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.star-rating .star.selected,
+.star-rating .star.hovered {
+    color: #ffd700;
+}
+
+.review-form-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e0e0e0;
+}
+
+.form-row {
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1.2rem;
+}
+.rating-group {
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 160px;
+}
+.name-group {
+    flex: 1;
+}
+.review-form .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.delete-review-form {
+    margin: 0 0 0 10px;
+    display: flex;
+    align-items: center;
+}
+.delete-review-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 6px;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.review-item:hover .delete-review-btn {
+    display: inline;
+}
+.delete-review-btn:hover {
+    color: #e74c3c;
+}
+
+.review-button {
+    background: var(--accent);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    text-decoration: none;
+}
+
+.review-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.review-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.review-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.review-date {
+    font-size: 0.95rem;
+    color: #7b8497;
+    font-weight: 500;
+    margin-left: 1rem;
+    white-space: nowrap;
+}
+.anonymous-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.anonymous-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.anonymous-toggle label {
+    font-size: 0.9rem;
+    color: #666;
+    cursor: pointer;
+}
+
+.review-item-has-delete {
+    position: relative;
+}
+.delete-review-form-absolute {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    margin: 0;
+    z-index: 2;
+    display: none;
+}
+.review-item-has-delete:hover .delete-review-form-absolute {
+    display: flex;
+}
+.delete-review-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 6px;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.delete-review-btn:hover {
+    color: #e74c3c;
 }

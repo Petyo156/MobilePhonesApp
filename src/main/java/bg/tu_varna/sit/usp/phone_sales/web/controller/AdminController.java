@@ -4,6 +4,7 @@ import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.ImageService;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
+import bg.tu_varna.sit.usp.phone_sales.review.service.ReviewService;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Arrays;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,12 +31,14 @@ public class AdminController {
     private final UserService userService;
     private final PhoneService phoneService;
     private final DiscountCodeService discountCodeService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public AdminController(UserService userService, PhoneService phoneService, ImageService imageService, DiscountCodeService discountCodeService) {
+    public AdminController(UserService userService, PhoneService phoneService, ImageService imageService, DiscountCodeService discountCodeService, ReviewService reviewService) {
         this.userService = userService;
         this.phoneService = phoneService;
         this.discountCodeService = discountCodeService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/phone")
@@ -216,5 +220,13 @@ public class AdminController {
         modelAndView.addObject("originalPhone", phoneResponse);
 
         return modelAndView;
+    }
+
+    @PostMapping("/review/delete/{reviewId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteReview(@PathVariable UUID reviewId) {
+        String phoneSlug = phoneService.getPhoneResponseByReviewId(reviewId).getSlug();
+        reviewService.deleteReview(reviewId);
+        return "redirect:/phone/" + phoneSlug;
     }
 }

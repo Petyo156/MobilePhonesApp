@@ -58,4 +58,6 @@ public interface PhoneRepository extends JpaRepository<Phone, UUID> {
                                                     @Param("ram") Integer ram,
                                                     @Param("color") String color);
 
+    Optional<Phone> findBySaleItems_Review_Id(UUID reviewId);
+
 }

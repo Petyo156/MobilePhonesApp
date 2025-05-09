@@ -4,19 +4,24 @@ import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.service.SaleItemService;
+import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.review.repository.ReviewRepository;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ReviewRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.ReviewResponse;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,20 +38,25 @@ public class ReviewService {
         this.saleItemService = saleItemService;
     }
 
+    @Transactional
     public void postReview(ReviewRequest reviewRequest, User user, String slug) {
-        if(userHasAlreadyLeftAReview(slug, user)){
+        if (userHasAlreadyLeftAReview(slug, user)) {
             throw new DomainException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
         }
         SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
-        Review review = initializeReview(reviewRequest, saleItem);
+        Review review = initializeReview(reviewRequest, saleItem, user);
 
         reviewRepository.save(review);
+
+        phoneService.setRatingValueForSimilarPhones(reviewRequest.getRating().getValue(), slug);
+
+        saleItemService.setSaleItemReview(saleItem, review);
         log.info("Review published successfully");
     }
 
     public boolean userHasAlreadyLeftAReview(String slug, User user) {
         Optional<Review> reviewOptional = reviewRepository.getReviewBySaleItem_Phone_SlugAndSaleItem_Sale_User(slug, user);
-        if(reviewOptional.isEmpty()){
+        if (reviewOptional.isEmpty()) {
             log.info("User has not left a review");
             return false;
         }
@@ -55,38 +65,59 @@ public class ReviewService {
     }
 
     public List<ReviewResponse> getAllReviewsForProduct(String slug) {
-        List<String> allVariantSlugs = new ArrayList<>();
-        phoneService.getPhonesWithDifferentColor(slug)
-                .forEach(phone -> allVariantSlugs.add(phone.getSlug()));
-        phoneService.getPhonesWithDifferentStorage(slug)
-                .forEach(phone -> allVariantSlugs.add(phone.getSlug()));
+        Phone currentPhone = phoneService.getVisiblePhoneBySlug(slug);
+        String modelName = currentPhone.getPhoneModel().getName();
+        String brandName = currentPhone.getPhoneModel().getBrand().getName();
+        Integer releaseYear = currentPhone.getReleaseYear();
 
-        List<ReviewResponse> responses = allVariantSlugs.stream()
-                .flatMap(variantSlug -> reviewRepository
-                        .getReviewsBySaleItem_Phone_Slug(variantSlug)
-                        .stream()
-                        .map(this::initializeReviewResponse))
+        List<ReviewResponse> responses = reviewRepository.findAll().stream()
+                .filter(review -> {
+                    Phone phone = review.getSaleItem().getPhone();
+                    return phone.getPhoneModel().getName().equals(modelName) &&
+                           phone.getPhoneModel().getBrand().getName().equals(brandName) &&
+                           phone.getReleaseYear().equals(releaseYear);
+                })
+                .map(this::initializeReviewResponse)
+                .distinct()
                 .collect(Collectors.toList());
 
-        log.info("Fetched all reviews for product");
+        log.info("Fetched all reviews for product and its variants");
         return responses;
     }
 
-
     private ReviewResponse initializeReviewResponse(Review review) {
         return ReviewResponse.builder()
+                .id(review.getId())
                 .name(review.getName())
                 .comment(review.getComment())
                 .rating(review.getRating())
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 
-    private Review initializeReview(ReviewRequest reviewRequest, SaleItem saleItem) {
+    private Review initializeReview(ReviewRequest reviewRequest, SaleItem saleItem, User user) {
         return Review.builder()
                 .name(reviewRequest.getName())
                 .comment(reviewRequest.getComment())
                 .rating(reviewRequest.getRating())
+                .createdAt(LocalDateTime.now())
                 .saleItem(saleItem)
+                .user(user)
                 .build();
+    }
+
+    @Transactional
+    public void deleteReview(UUID reviewId) {
+        Optional<Review> reviewOptional = reviewRepository.findById(reviewId);
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            SaleItem saleItem = review.getSaleItem();
+            if (saleItem != null) {
+                saleItem.setReview(null);
+                saleItemService.setSaleItemReview(saleItem, null);
+            }
+            reviewRepository.delete(review);
+            log.info("Review deleted successfully");
+        }
     }
 }

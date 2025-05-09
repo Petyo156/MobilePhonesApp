@@ -11,9 +11,11 @@ import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
 import bg.tu_varna.sit.usp.phone_sales.model.service.ModelService;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.model.OperatingSystem;
 import bg.tu_varna.sit.usp.phone_sales.operatingsystem.service.OperatingSystemService;
+import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.PhoneRepository;
+import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.*;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
 import jakarta.transaction.Transactional;
@@ -27,6 +29,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST;
 
@@ -72,11 +75,40 @@ public class PhoneService {
         Phone phone = initializePhone(submitPhoneRequest, hardware, operatingSystem, phoneModel, dimension);
 
         List<Image> images = imageService.saveImages(files, thumbnailIndex, phone);
-
         phone.setImages(images);
+        phone = phoneRepository.save(phone);
+
+        try {
+            List<Phone> differentColorPhones = getDifferentColorPhones(phone.getSlug());
+            List<Phone> differentStoragePhones = getDifferentStoragePhones(phone.getSlug());
+
+            Set<Phone> allPhoneVariants = new HashSet<>();
+            allPhoneVariants.addAll(differentColorPhones);
+            allPhoneVariants.addAll(differentStoragePhones);
+
+            if (!allPhoneVariants.isEmpty()) {
+                BigDecimal total = BigDecimal.ZERO;
+                int count = 0;
+                for (Phone existingPhone : allPhoneVariants) {
+                    if (existingPhone.getRating() != null && existingPhone.getRating().compareTo(BigDecimal.ZERO) > 0) {
+                        total = total.add(existingPhone.getRating());
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    BigDecimal average = total.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
+                    BigDecimal roundedAverage = roundToNearestHalf(average);
+                    phone.setRating(roundedAverage);
+                    phoneRepository.save(phone);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not link ratings for new phone: {}", e.getMessage());
+        }
 
         log.info("Phone initialized successfully");
-        return phoneRepository.save(phone);
+        return phone;
     }
 
     public List<GetPhoneResponse> getSearchResult(String info) {
@@ -186,7 +218,7 @@ public class PhoneService {
             if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
                 throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
             }
-            
+
             for (String slug : slugs) {
                 Phone phone = getPhoneBySlug(slug);
                 phone.setDiscountPercent(fullPercent);
@@ -207,16 +239,9 @@ public class PhoneService {
     }
 
     public List<DifferentColorPhoneResponse> getPhonesWithDifferentColor(String slug) {
-        Phone phone = getVisiblePhoneBySlug(slug);
-        PhoneModel model = phone.getPhoneModel();
-        Hardware hardware = phone.getHardware();
-
-        log.info("Fetching phones with different colors");
-        List<Phone> similarPhonesWithDifferentColor = phoneRepository.findSimilarPhonesWithDifferentColor
-                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), hardware.getStorage());
-
+        List<Phone> similarPhonesWithDifferentColor = getDifferentColorPhones(slug);
         List<DifferentColorPhoneResponse> responses = new ArrayList<>();
-        for(Phone similarPhone : similarPhonesWithDifferentColor) {
+        for (Phone similarPhone : similarPhonesWithDifferentColor) {
             DifferentColorPhoneResponse response = initializeDifferentColorPhoneResponse(similarPhone);
             responses.add(response);
         }
@@ -224,17 +249,9 @@ public class PhoneService {
     }
 
     public List<DifferentStoragePhoneResponse> getPhonesWithDifferentStorage(String slug) {
-        Phone phone = getVisiblePhoneBySlug(slug);
-        PhoneModel model = phone.getPhoneModel();
-        Hardware hardware = phone.getHardware();
-        Dimension dimension = phone.getDimension();
-
-        log.info("Fetching phones with different storage");
-        List<Phone> similarPhonesWithDifferentStorage = phoneRepository.findSimilarPhonesWithDifferentStorage
-                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), dimension.getColor());
-
+        List<Phone> similarPhonesWithDifferentStorage = getDifferentStoragePhones(slug);
         List<DifferentStoragePhoneResponse> responses = new ArrayList<>();
-        for(Phone similarPhone : similarPhonesWithDifferentStorage) {
+        for (Phone similarPhone : similarPhonesWithDifferentStorage) {
             DifferentStoragePhoneResponse response = initializeDifferentStoragePhoneResponse(similarPhone);
             responses.add(response);
         }
@@ -243,7 +260,7 @@ public class PhoneService {
 
     public void reducePhoneQuantityAfterPurchase(Phone phone, Integer quantity) {
         phone.setQuantity(phone.getQuantity() - quantity);
-        if(phone.getQuantity() == 0) {
+        if (phone.getQuantity() == 0) {
             phone.setIsVisible(false);
             log.info("Hidden phone from store due no quantity");
         }
@@ -294,6 +311,82 @@ public class PhoneService {
                 .camera(buildCamera(phoneResponse))
                 .modelUrl(phoneResponse.getModelUrl())
                 .build();
+    }
+
+    public void setRatingValueForSimilarPhones(BigDecimal newRating, String slug) {
+        List<Phone> differentColorPhones = getDifferentColorPhones(slug);
+        List<Phone> differentStoragePhones = getDifferentStoragePhones(slug);
+
+        Set<Phone> allPhoneVariants = new HashSet<>();
+        allPhoneVariants.addAll(differentColorPhones);
+        allPhoneVariants.addAll(differentStoragePhones);
+
+        if (allPhoneVariants.isEmpty()) {
+            log.warn("No phone variants found for slug: {}", slug);
+            return;
+        }
+
+        List<Review> allReviews = new ArrayList<>();
+        for (Phone phone : allPhoneVariants) {
+            allReviews.addAll(phone.getSaleItems().stream()
+                    .map(SaleItem::getReview)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList()));
+        }
+
+        BigDecimal total = BigDecimal.ZERO;
+        int count = 0;
+        for (Review review : allReviews) {
+            if (review.getRating() != null) {
+                total = total.add(review.getRating().getValue());
+                count++;
+            }
+        }
+
+        total = total.add(newRating);
+        count++;
+
+        BigDecimal average = total.divide(BigDecimal.valueOf(count), 2, RoundingMode.HALF_UP);
+        BigDecimal roundedAverage = roundToNearestHalf(average);
+
+        setAllSimilarPhonesRating(roundedAverage, allPhoneVariants);
+    }
+
+    private void setAllSimilarPhonesRating(BigDecimal rating, Set<Phone> similarPhones) {
+        if (rating == null) {
+            rating = BigDecimal.ZERO;
+        }
+        for (Phone phone : similarPhones) {
+            phone.setRating(rating);
+            phoneRepository.save(phone);
+        }
+    }
+
+    private BigDecimal roundToNearestHalf(BigDecimal value) {
+        BigDecimal multiplied = value.multiply(BigDecimal.valueOf(2));
+        BigDecimal rounded = new BigDecimal(Math.round(multiplied.doubleValue()));
+        return rounded.divide(BigDecimal.valueOf(2));
+    }
+
+    private List<Phone> getDifferentColorPhones(String slug) {
+        Phone phone = getVisiblePhoneBySlug(slug);
+        PhoneModel model = phone.getPhoneModel();
+        Hardware hardware = phone.getHardware();
+
+        log.info("Fetching phones with different colors");
+        return phoneRepository.findSimilarPhonesWithDifferentColor
+                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), hardware.getStorage());
+    }
+
+    private List<Phone> getDifferentStoragePhones(String slug) {
+        Phone phone = getVisiblePhoneBySlug(slug);
+        PhoneModel model = phone.getPhoneModel();
+        Hardware hardware = phone.getHardware();
+        Dimension dimension = phone.getDimension();
+
+        log.info("Fetching phones with different storage");
+        return phoneRepository.findSimilarPhonesWithDifferentStorage
+                (model.getName(), model.getBrand().getName(), phone.getReleaseYear(), hardware.getRam(), dimension.getColor());
     }
 
     private String generateSlug(Phone phone) {
@@ -442,6 +535,7 @@ public class PhoneService {
                 .isVisible(true)
                 .discountPercent(BigDecimal.ZERO)
                 .modelUrl(submitPhoneRequest.getModelUrl())
+                .rating(BigDecimal.ZERO)
                 .build();
 
         String slug = generateSlug(builtPhone);
@@ -563,5 +657,13 @@ public class PhoneService {
             });
             phone.setSlug(newSlug);
         }
+    }
+
+    public GetPhoneResponse getPhoneResponseByReviewId(UUID reviewId) {
+        Optional<Phone> phone = phoneRepository.findBySaleItems_Review_Id(reviewId);
+        if (phone.isEmpty()) {
+            throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
+        }
+        return getPhoneResponseByPhone(phone.get());
     }
 }
