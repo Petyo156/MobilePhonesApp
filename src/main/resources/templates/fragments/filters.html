@@ -1,10 +1,216 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="product-filters" th:fragment="filters">
+    <aside class="filter-sidebar p-3 bg-light rounded">
+        <h5 class="mb-3">Filters</h5>
 
-</body>
-</html>
+        <div class="active-filters mb-4" th:if="${param.brands != null || param.storages != null || param.ram != null || param.maxPrice != null}">
+            <h6 class="mb-3">Active Filters:</h6>
+            <div>
+                <span th:each="brand : ${param.brands}" class="filter-tag">
+                    Brand: <span th:text="${brand}"></span>
+                    <a th:href="@{/display(brands=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.brands, ',').replace(brand + ',', '').replace(',' + brand, '').replace(brand, ''), ','), ',')}, 
+                                   storages=${param.storages}, 
+                                   ram=${param.ram}, 
+                                   maxPrice=${param.maxPrice})}" 
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:each="storage : ${param.storages}" class="filter-tag">
+                    Storage: <span th:text="${storage + ' GB'}"></span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.storages, ',').replace(storage + ',', '').replace(',' + storage, '').replace(storage, ''), ','), ',')}, 
+                                   ram=${param.ram}, 
+                                   maxPrice=${param.maxPrice})}" 
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:each="ram : ${param.ram}" class="filter-tag">
+                    RAM: <span th:text="${ram + ' GB'}"></span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${param.storages}, 
+                                   ram=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.ram, ',').replace(ram + ',', '').replace(',' + ram, '').replace(ram, ''), ','), ',')}, 
+                                   maxPrice=${param.maxPrice})}" 
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:if="${param.maxPrice != null && param.maxPrice[0] != '3000'}" class="filter-tag">
+                    Max Price: <span th:text="${param.maxPrice[0] + ' €'}"></span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${param.storages}, 
+                                   ram=${param.ram})}" 
+                       class="remove-filter">×</a>
+                </span>
+
+                <a th:if="${param.brands != null || param.storages != null || param.ram != null || param.maxPrice != null}"
+                   th:href="@{/display}" 
+                   class="btn btn-outline-danger btn-sm ms-2">Clear All</a>
+            </div>
+        </div>
+
+        <form id="filterForm" action="/display" method="get">
+            <div class="mb-4">
+                <h6>Brand</h6>
+                <div>
+                    <div class="form-check" th:each="brand : ${brands}">
+                        <input class="form-check-input" type="checkbox" th:id="'brand' + ${brand}" 
+                               th:value="${brand}" name="brands"
+                               th:checked="${param.brands != null && #lists.contains(param.brands, brand)}">
+                        <label class="form-check-label" th:for="'brand' + ${brand}" th:text="${brand}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Storage</h6>
+                <div>
+                    <div class="form-check" th:each="storage : ${storages}">
+                        <input class="form-check-input" type="checkbox" th:id="'storage' + ${storage}" 
+                               th:value="${storage}" name="storages"
+                               th:checked="${param.storages != null && #lists.contains(param.storages, storage.toString())}">
+                        <label class="form-check-label" th:for="'storage' + ${storage}" 
+                               th:text="${storage} + ' GB'"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Color</h6>
+                <div>
+                    <div class="form-check" th:each="color : ${colors}">
+                        <input class="form-check-input" type="checkbox" th:id="'color' + ${color}" 
+                               th:value="${color}" name="colors"
+                               th:checked="${param.colors != null && #lists.contains(param.colors, color)}">
+                        <label class="form-check-label" th:for="'color' + ${color}" th:text="${color}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>RAM</h6>
+                <div>
+                    <div class="form-check" th:each="ram : ${ramOptions}">
+                        <input class="form-check-input" type="checkbox" th:id="'ram' + ${ram}" 
+                               th:value="${ram}" name="ram"
+                               th:checked="${param.ram != null && #lists.contains(param.ram, ram.toString())}">
+                        <label class="form-check-label" th:for="'ram' + ${ram}" 
+                               th:text="${ram} + ' GB'"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Camera Resolution</h6>
+                <div>
+                    <div class="form-check" th:each="resolution : ${cameraResolutions}">
+                        <input class="form-check-input" type="checkbox" th:id="'resolution' + ${resolution}" 
+                               th:value="${resolution}" name="cameraResolutions"
+                               th:checked="${param.cameraResolutions != null && #lists.contains(param.cameraResolutions, resolution)}">
+                        <label class="form-check-label" th:for="'resolution' + ${resolution}" 
+                               th:text="${resolution} + ' MP'"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Price Range</h6>
+                <div class="price-range-container" style="background: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="input-group input-group-sm" style="width: 45%;">
+                            <span class="input-group-text">Min</span>
+                            <input type="number" id="minPriceInput" class="form-control" min="0" th:attr="max=${maxPhonePrice}" th:value="${param.minPrice != null ? param.minPrice[0] : 0}" step="1">
+                        </div>
+                        <span style="font-weight: bold;">-</span>
+                        <div class="input-group input-group-sm" style="width: 45%;">
+                            <span class="input-group-text">Max</span>
+                            <input type="number" id="maxPriceInput" class="form-control" min="0" th:attr="max=${maxPhonePrice}" th:value="${param.maxPrice != null ? param.maxPrice[0] : maxPhonePrice}" step="1">
+                        </div>
+                    </div>
+                    <div class="range-slider">
+                        <input type="range" id="minPriceRange" min="0" th:attr="max=${maxPhonePrice}" th:value="${param.minPrice != null ? param.minPrice[0] : 0}" step="1">
+                        <input type="range" id="maxPriceRange" min="0" th:attr="max=${maxPhonePrice}" th:value="${param.maxPrice != null ? param.maxPrice[0] : maxPhonePrice}" step="1">
+                        <div class="progress" id="sliderProgress"></div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </form>
+    </aside>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const minPriceRange = document.getElementById('minPriceRange');
+            const maxPriceRange = document.getElementById('maxPriceRange');
+            const minPriceInput = document.getElementById('minPriceInput');
+            const maxPriceInput = document.getElementById('maxPriceInput');
+            const sliderProgress = document.getElementById('sliderProgress');
+            const filterForm = document.getElementById('filterForm');
+            const maxPhonePrice = parseInt(minPriceRange.max);
+            const priceGap = 100;
+
+            function setSliderProgress() {
+                const min = parseInt(minPriceRange.value);
+                const max = parseInt(maxPriceRange.value);
+                const percentMin = (min / maxPhonePrice) * 100;
+                const percentMax = (max / maxPhonePrice) * 100;
+                sliderProgress.style.left = percentMin + '%';
+                sliderProgress.style.width = (percentMax - percentMin) + '%';
+            }
+
+            function clampValues() {
+                let minVal = parseInt(minPriceInput.value);
+                let maxVal = parseInt(maxPriceInput.value);
+                if (maxVal - minVal < priceGap) {
+                    if (event && event.target === minPriceInput) {
+                        minPriceInput.value = maxVal - priceGap;
+                    } else {
+                        maxPriceInput.value = minVal + priceGap;
+                    }
+                }
+                if (parseInt(minPriceInput.value) < 0) minPriceInput.value = 0;
+                if (parseInt(maxPriceInput.value) > maxPhonePrice) maxPriceInput.value = maxPhonePrice;
+            }
+
+            minPriceInput.addEventListener('input', function() {
+                clampValues();
+                minPriceRange.value = minPriceInput.value;
+                setSliderProgress();
+            });
+            maxPriceInput.addEventListener('input', function() {
+                clampValues();
+                maxPriceRange.value = maxPriceInput.value;
+                setSliderProgress();
+            });
+            minPriceRange.addEventListener('input', function() {
+                if (parseInt(maxPriceRange.value) - parseInt(minPriceRange.value) < priceGap) {
+                    minPriceRange.value = parseInt(maxPriceRange.value) - priceGap;
+                }
+                minPriceInput.value = minPriceRange.value;
+                setSliderProgress();
+            });
+            maxPriceRange.addEventListener('input', function() {
+                if (parseInt(maxPriceRange.value) - parseInt(minPriceRange.value) < priceGap) {
+                    maxPriceRange.value = parseInt(minPriceRange.value) + priceGap;
+                }
+                maxPriceInput.value = maxPriceRange.value;
+                setSliderProgress();
+            });
+
+            // Initialize
+            setSliderProgress();
+
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const brands = Array.from(document.querySelectorAll('input[name="brands"]:checked')).map(cb => cb.value);
+                const storages = Array.from(document.querySelectorAll('input[name="storages"]:checked')).map(cb => parseInt(cb.value));
+                const ram = Array.from(document.querySelectorAll('input[name="ram"]:checked')).map(cb => parseInt(cb.value));
+                const colors = Array.from(document.querySelectorAll('input[name="colors"]:checked')).map(cb => cb.value);
+                const cameraResolutions = Array.from(document.querySelectorAll('input[name="cameraResolutions"]:checked')).map(cb => cb.value);
+                const minPrice = minPriceInput.value;
+                const maxPrice = maxPriceInput.value;
+                const params = new URLSearchParams();
+                if (brands.length > 0) brands.forEach(b => params.append('brands', b));
+                if (storages.length > 0) storages.forEach(s => params.append('storages', s));
+                if (ram.length > 0) ram.forEach(r => params.append('ram', r));
+                if (colors.length > 0) colors.forEach(c => params.append('colors', c));
+                if (cameraResolutions.length > 0) cameraResolutions.forEach(r => params.append('cameraResolutions', r));
+                if (minPrice > 0) params.append('minPrice', minPrice);
+                if (maxPrice < maxPhonePrice) params.append('maxPrice', maxPrice);
+                window.location.href = '/display?' + params.toString();
+            });
+        });
+    </script>
+</div>

@@ -1,6 +1,6 @@
 <div class="discount-sticker" th:if="${phone.discountPrice != phone.price}">
     <img src="/images/discount-sticker.png" alt="discount sticker" class="sticker-bg">
-    <span class="discount-text" th:text="${phone.discountPercent +'%'}"></span>
+    <span class="discount-text" th:text="'-' + ${phone.discountPercent +'%'}"></span>
 </div>
 <div class="product-card">
     <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
