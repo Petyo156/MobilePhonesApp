@@ -1,0 +1,23 @@
+
+.active-filters {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+.filter-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: #e9ecef;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+.filter-tag .remove-filter {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #6c757d;
+}
+.filter-tag .remove-filter:hover {
+    color: #dc3545;
+}

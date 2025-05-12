@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/css/fragments/categories.css">
     <link rel="stylesheet" type="text/css" href="/css/fragments/footer.css">
     <link rel="stylesheet" type="text/css" href="/css/fragments/product-card.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/filters.css">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -20,17 +21,30 @@
     <div th:insert="~{fragments/categories :: categories}"></div>
     <div class="containera mt-5">
         <h2 class="mb-4">Search Results for: <span th:text="${param.result}" class="text-primary"></span></h2>
-
-        <div class="product-container-container">
-            <div class="product-container">
-                <div class="product-wrapper" th:each="phone : ${searchResult}">
-                    <div th:replace="~{fragments/product-card}"></div>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div th:insert="~{fragments/filters :: filters}"></div>
+            </div>
+            <div class="col-md-9">
+                <div class="d-flex justify-content-end mb-3">
+                    <div class="btn-group" role="group" aria-label="Sort options">
+                        <button type="button" class="btn btn-outline-secondary" disabled>Price: Low to High</button>
+                        <button type="button" class="btn btn-outline-secondary" disabled>Price: High to Low</button>
+                        <button type="button" class="btn btn-outline-secondary" disabled>Name: A-Z</button>
+                        <button type="button" class="btn btn-outline-secondary" disabled>Name: Z-A</button>
+                    </div>
+                </div>
+                <div class="product-container-container">
+                    <div class="product-container">
+                        <div class="product-wrapper" th:each="phone : ${searchResult}">
+                            <div th:replace="~{fragments/product-card}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(searchResult)}" class="alert alert-info mt-4">
+                    No phones found matching your search criteria. 🔍
                 </div>
             </div>
-        </div>
-
-        <div th:if="${#lists.isEmpty(searchResult)}" class="alert alert-info mt-4">
-            No phones found matching your search criteria. 🔍
         </div>
     </div>
 </main>
