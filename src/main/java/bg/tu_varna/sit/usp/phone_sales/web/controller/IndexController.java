@@ -43,14 +43,48 @@ public class IndexController {
     }
 
     @GetMapping("/search")
-    public ModelAndView getSearchPage(@RequestParam("result") String info,
-                                      @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getSearchPage(@RequestParam("result") String info) {
         ModelAndView modelAndView = new ModelAndView("home/search");
 
         List<GetPhoneResponse> searchResult = phoneService.getSearchResult(info);
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        
+        // Add filter data
+        modelAndView.addObject("brands", phoneService.getUniqueVisibleBrands());
+        modelAndView.addObject("storages", phoneService.getUniqueVisibleStorages());
+        modelAndView.addObject("ramOptions", phoneService.getUniqueVisibleRam());
+        modelAndView.addObject("colors", phoneService.getUniqueVisibleColors());
+        modelAndView.addObject("cameraResolutions", phoneService.getUniqueVisibleCameraResolutions());
+        modelAndView.addObject("searchKeyword", info);
+        modelAndView.addObject("maxPhonePrice", phoneService.getMaxVisiblePhonePrice());
+        
         modelAndView.addObject("searchResult", searchResult);
-        modelAndView.addObject("user", user);
+        modelAndView.addObject("user", null);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/display")
+    public ModelAndView getDisplayPage(@RequestParam(value = "brands", required = false) List<String> brands,
+                                     @RequestParam(value = "storages", required = false) List<Integer> storages,
+                                     @RequestParam(value = "ram", required = false) List<Integer> ram,
+                                     @RequestParam(value = "minPrice", required = false) Double minPrice,
+                                     @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+                                     @RequestParam(value = "colors", required = false) List<String> colors,
+                                     @RequestParam(value = "cameraResolutions", required = false) List<String> cameraResolutions) {
+        ModelAndView modelAndView = new ModelAndView("home/display");
+
+        List<GetPhoneResponse> filteredResults = phoneService.getFilteredPhones(brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions);
+        
+        // Add filter data
+        modelAndView.addObject("brands", phoneService.getUniqueVisibleBrands());
+        modelAndView.addObject("storages", phoneService.getUniqueVisibleStorages());
+        modelAndView.addObject("ramOptions", phoneService.getUniqueVisibleRam());
+        modelAndView.addObject("colors", phoneService.getUniqueVisibleColors());
+        modelAndView.addObject("cameraResolutions", phoneService.getUniqueVisibleCameraResolutions());
+        modelAndView.addObject("maxPhonePrice", phoneService.getMaxVisiblePhonePrice());
+        
+        modelAndView.addObject("searchResult", filteredResults);
+        modelAndView.addObject("user", null);
 
         return modelAndView;
     }

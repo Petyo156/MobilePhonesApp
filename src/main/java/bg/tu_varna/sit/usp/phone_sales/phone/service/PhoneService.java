@@ -665,4 +665,72 @@ public class PhoneService {
         }
         return getPhoneResponseByPhone(phone.get());
     }
+
+    public List<String> getUniqueVisibleBrands() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getPhoneModel().getBrand().getName())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Integer> getUniqueVisibleStorages() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getStorage())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<Integer> getUniqueVisibleRam() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getRam())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getUniqueVisibleColors() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getDimension().getColor())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getUniqueVisibleCameraResolutions() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getCamera().getResolution().toString())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<GetPhoneResponse> getFilteredPhones(List<String> brands, List<Integer> storages, 
+                                                  List<Integer> ram, Double minPrice, Double maxPrice,
+                                                  List<String> colors, List<String> cameraResolutions) {
+        List<Phone> phones = phoneRepository.findAllByIsVisibleTrue();
+        
+        return phones.stream()
+                .filter(phone -> brands == null || brands.isEmpty() || 
+                        brands.contains(phone.getPhoneModel().getBrand().getName()))
+                .filter(phone -> storages == null || storages.isEmpty() || 
+                        storages.contains(phone.getHardware().getStorage()))
+                .filter(phone -> ram == null || ram.isEmpty() || 
+                        ram.contains(phone.getHardware().getRam()))
+                .filter(phone -> minPrice == null || 
+                        phone.getPrice().compareTo(BigDecimal.valueOf(minPrice)) >= 0)
+                .filter(phone -> maxPrice == null || 
+                        phone.getPrice().compareTo(BigDecimal.valueOf(maxPrice)) <= 0)
+                .filter(phone -> colors == null || colors.isEmpty() || 
+                        colors.contains(phone.getDimension().getColor()))
+                .filter(phone -> cameraResolutions == null || cameraResolutions.isEmpty() || 
+                        cameraResolutions.contains(phone.getHardware().getCamera().getResolution().toString()))
+                .map(this::initializeGetPhoneResponse)
+                .collect(Collectors.toList());
+    }
+
+    public double getMaxVisiblePhonePrice() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+            .map(phone -> phone.getPrice().doubleValue())
+            .max(Double::compareTo)
+            .orElse(3000.0);
+    }
 }
