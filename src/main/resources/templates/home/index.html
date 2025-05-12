@@ -16,7 +16,7 @@
 <div th:replace="~{fragments/navbar :: header}">
     <header></header>
 </div>
-<div class="filter-section" th:replace="~{fragments/categories :: filters}"></div>
+<div class="filter-section" th:replace="~{fragments/categories :: categories}"></div>
 <main>
     <div class="phones-section">
         <div th:each="phone: ${mostRecentPhones}">

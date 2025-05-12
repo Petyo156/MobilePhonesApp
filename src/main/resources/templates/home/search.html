@@ -17,8 +17,8 @@
 <header th:replace="~{fragments/navbar :: header}">
 </header>
 <main class="flex-grow-1">
-    <div th:insert="~{fragments/categories :: filters}"></div>
-    <div class="container mt-5">
+    <div th:insert="~{fragments/categories :: categories}"></div>
+    <div class="containera mt-5">
         <h2 class="mb-4">Search Results for: <span th:text="${param.result}" class="text-primary"></span></h2>
 
         <div class="product-container-container">

@@ -1,4 +1,4 @@
-.filter-section {
+.categories-section {
     height: 5vh;
     background: var(--dark-accent);
     display: flex;
@@ -104,17 +104,17 @@
     color: var(--light);
 }
 
-.categories{
+.categories-menu {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
 
-.categories div{
+.categories-menu div{
     width: 25%;
 }
 
-.categories div select{
+.categories-menu div select{
     width:100%;
 }
 
