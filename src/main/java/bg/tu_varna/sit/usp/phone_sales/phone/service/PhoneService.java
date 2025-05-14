@@ -323,7 +323,7 @@ public class PhoneService {
                 .filter(phone -> phone.getPhoneModel().getName().equals(modelName) &&
                         phone.getPhoneModel().getBrand().getName().equals(brandName) &&
                         phone.getReleaseYear().equals(releaseYear))
-                .collect(Collectors.toList());
+                .toList();
 
         if (allVariants.isEmpty()) {
             log.warn("No phone variants found for model: {} {}", brandName, modelName);
@@ -335,7 +335,7 @@ public class PhoneService {
             allReviews.addAll(phone.getSaleItems().stream()
                     .map(SaleItem::getReview)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         BigDecimal total = BigDecimal.ZERO;
