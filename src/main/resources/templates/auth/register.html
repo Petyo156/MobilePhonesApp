@@ -20,17 +20,17 @@
 
     <form class="register-form" th:action="@{/register}" th:method="POST" th:object="${registerRequest}">
         <div class="input-group">
-            <input type="text" id="email" th:field="*{email}" placeholder="Email">
+            <input type="text" id="email" th:field="*{email}" placeholder="Email" required>
             <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
         </div>
 
         <div class="input-group">
-            <input type="password" id="password" th:field="*{password}" placeholder="Password">
+            <input type="password" id="password" th:field="*{password}" placeholder="Password" required>
             <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
         </div>
 
         <div class="input-group">
-            <input type="password" id="password1" th:field="*{confirmPassword}" placeholder="Confirm Password">
+            <input type="password" id="password1" th:field="*{confirmPassword}" placeholder="Confirm Password" required>
             <p class="alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
         </div>
 
