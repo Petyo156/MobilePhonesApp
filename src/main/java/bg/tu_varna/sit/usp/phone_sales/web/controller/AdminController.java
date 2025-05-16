@@ -1,6 +1,8 @@
 package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
+import bg.tu_varna.sit.usp.phone_sales.order.model.SaleStatus;
+import bg.tu_varna.sit.usp.phone_sales.order.service.OrderService;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.ImageService;
 import bg.tu_varna.sit.usp.phone_sales.phone.service.PhoneService;
@@ -10,6 +12,8 @@ import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DiscountCodeResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.ExtendedOrderResponse;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.orderresponse.OrderResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import java.util.List;
 import java.util.Arrays;
 import java.util.UUID;
@@ -32,13 +37,15 @@ public class AdminController {
     private final PhoneService phoneService;
     private final DiscountCodeService discountCodeService;
     private final ReviewService reviewService;
+    private final OrderService orderService;
 
     @Autowired
-    public AdminController(UserService userService, PhoneService phoneService, ImageService imageService, DiscountCodeService discountCodeService, ReviewService reviewService) {
+    public AdminController(UserService userService, PhoneService phoneService, DiscountCodeService discountCodeService, ReviewService reviewService, OrderService orderService) {
         this.userService = userService;
         this.phoneService = phoneService;
         this.discountCodeService = discountCodeService;
         this.reviewService = reviewService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/phone")
@@ -100,7 +107,7 @@ public class AdminController {
     @PostMapping("/discounts/bulk")
     @PreAuthorize("hasRole('ADMIN')")
     public String setBulkDiscount(@RequestParam List<String> slugs,
-                                @RequestParam String discountPercent) {
+                                  @RequestParam String discountPercent) {
         phoneService.setBulkDiscountPercentForPhones(slugs, discountPercent);
         return "redirect:/admin/products";
     }
@@ -137,7 +144,7 @@ public class AdminController {
     @PostMapping("/discounts/{slug}")
     @PreAuthorize("hasRole('ADMIN')")
     public String setDiscount(@PathVariable String slug,
-                                  @RequestParam String discountPercent) {
+                              @RequestParam String discountPercent) {
         phoneService.setDiscountPercentForPhone(slug, discountPercent);
 
         return "redirect:/admin/discounts";
@@ -186,15 +193,15 @@ public class AdminController {
         modelAndView.addObject("submitPhoneRequest", submitPhoneRequest);
         modelAndView.addObject("phoneToEdit", phoneResponse);
         modelAndView.addObject("user", user);
-        
+
         return modelAndView;
     }
 
     @PostMapping("/{slug}/edit")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView editPhone(@PathVariable String slug,
-                             @Valid @ModelAttribute SubmitPhoneRequest submitPhoneRequest,
-                             BindingResult bindingResult) {
+                                  @Valid @ModelAttribute SubmitPhoneRequest submitPhoneRequest,
+                                  BindingResult bindingResult) {
 
         ModelAndView modelAndView = new ModelAndView("admin/edit-product");
         if (bindingResult.hasErrors()) {
@@ -228,5 +235,38 @@ public class AdminController {
         String phoneSlug = phoneService.getPhoneResponseByReviewId(reviewId).getSlug();
         reviewService.deleteReview(reviewId);
         return "redirect:/phone/" + phoneSlug;
+    }
+
+    @GetMapping("/orders")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView viewOrdersPage() {
+        ModelAndView modelAndView = new ModelAndView("admin/orders");
+        List<OrderResponse> orderResponses = orderService.fetchAllOrdersForAdmin();
+        modelAndView.addObject("orderResponses", orderResponses);
+
+        return modelAndView;
+    }
+
+    @PostMapping("/order/{orderNumber}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String setOrderStatus(SaleStatus saleStatus,
+                                 @PathVariable String orderNumber) {
+        orderService.updateOrderStatus(orderNumber, saleStatus);
+
+        return "redirect:/admin/orders";
+    }
+
+    @GetMapping("/order/{orderNumber}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getOrderPage(@PathVariable String orderNumber) {
+        ModelAndView modelAndView = new ModelAndView("home/order");
+        User user = orderService.getUserByOrderNumber(orderNumber);
+        ExtendedOrderResponse extendedOrderResponse = orderService.getExtendedInformationForOrder(orderNumber, user);
+        OrderResponse orderResponse = orderService.getInformationForOrder(orderNumber);
+
+        modelAndView.addObject("orderResponse", orderResponse);
+        modelAndView.addObject("extendedOrderResponse", extendedOrderResponse);
+
+        return modelAndView;
     }
 }
