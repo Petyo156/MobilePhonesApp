@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Orders</title>
+    <link rel="stylesheet" th:href="@{/css/admin/orders.css}">
+
+</head>
+<body>
+<h1>All Orders</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Order Number</th>
+        <th>Order Date</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Update Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orderResponses}">
+        <td>
+            <a th:href="@{'/admin/order/' + ${order.orderNumber}}"
+               th:text="${order.orderNumber}">ORD-0001</a>
+        </td>
+        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</td>
+        <td th:text="${order.price}">$199.99</td>
+        <td th:text="${order.status}">PENDING</td>
+        <td th:text="${order.userEmail}">user@example.com</td>
+        <td th:text="${order.userPhoneNumber}">+123456789</td>
+        <td>
+            <form th:action="@{'/admin/order/' + ${order.orderNumber} + '/status'}" method="post">
+                <select name="saleStatus">
+                    <option th:each="status : ${T(bg.tu_varna.sit.usp.phone_sales.order.model.SaleStatus).values()}"
+                            th:value="${status}"
+                            th:text="${status}"
+                            th:selected="${status} == ${order.status}">
+                    </option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
