@@ -43,7 +43,7 @@ public class User {
     @Column
     private String zipCode;
 
-    @Column(unique = true)
+    @Column
     private String phoneNumber;
 
     @Column(nullable = false)

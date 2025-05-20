@@ -93,10 +93,6 @@ public class UserService implements UserDetailsService {
             return;
         }
 
-        if (userRepository.findByPhoneNumber(phoneNumber).isPresent() && !Objects.equals(phoneNumber, user.getPhoneNumber())) {
-            throw new UserWithThisPhoneNumberAlreadyExistsException(ExceptionMessages.USER_WITH_THIS_PHONE_NUMBER_ALREADY_EXISTS);
-        }
-
         user.setAddress(address);
         user.setCity(city);
         user.setPhoneNumber(phoneNumber);
