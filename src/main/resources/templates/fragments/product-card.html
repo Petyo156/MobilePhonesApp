@@ -7,7 +7,7 @@
         <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
         <h3 class="card-title" th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB ' + phone.dimensions.color }">
             Brand</h3>
-        <div class="rating">
+        <div class="rating product-rating" th:attr="data-rating=${phone.rating != null ? phone.rating : 0}">
             <div class="rating-stars">
                 <i th:each="i : ${#numbers.sequence(1, 5)}" th:class="${phone.rating != null && phone.rating.doubleValue() >= i - 0.5 && phone.rating.doubleValue() < i ? 'fas fa-star-half-alt' : (phone.rating != null && phone.rating.doubleValue() >= i ? 'fas fa-star' : 'far fa-star')}"></i>
             </div>

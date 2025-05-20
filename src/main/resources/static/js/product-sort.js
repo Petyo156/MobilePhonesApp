@@ -42,11 +42,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 const priceA = parseFloat(priceElementA.getAttribute('data-price'));
                 const priceB = parseFloat(priceElementB.getAttribute('data-price'));
                 
+                const ratingElementA = a.querySelector('.product-rating');
+                const ratingElementB = b.querySelector('.product-rating');
+                
+                const ratingA = ratingElementA ? parseFloat(ratingElementA.getAttribute('data-rating') || 0) : 0;
+                const ratingB = ratingElementB ? parseFloat(ratingElementB.getAttribute('data-rating') || 0) : 0;
+                
                 switch(sortType) {
                     case 'price-asc':
                         return priceA - priceB;
                     case 'price-desc':
                         return priceB - priceA;
+                    case 'rating-desc':
+                        return ratingB === ratingA ? priceA - priceB : ratingB - ratingA;
                     case 'relevance':
                     default:
                         const indexA = parseInt(a.getAttribute('data-index')) || 0;

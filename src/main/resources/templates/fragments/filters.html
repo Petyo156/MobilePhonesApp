@@ -52,7 +52,7 @@
                 </span>
 
                 <span th:if="${param.maxPrice != null && param.maxPrice[0] != '3000'}" class="filter-tag">
-                    Max Price: <span th:text=" ${param.maxPrice[0] + ' €'}"></span>
+                    Max Price: <span th:text=" ${param.maxPrice[0] + ' лв.'}"></span>
                     <a th:href="@{/display(brands=${param.brands}, 
                                    storages=${param.storages},
                                    colors=${param.colors},
