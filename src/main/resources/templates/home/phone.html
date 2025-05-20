@@ -287,6 +287,9 @@
             <!-- reviews-->
             <div class="user-reviews">
                 <h3>Потребителски отзиви</h3>
+
+                <div th:if="${reviewError}" class="alert alert-danger"><p th:text="${reviewError}"></p></div>
+
                 <div th:if="${hasBoughtItem} and ${user != null}" class="review-form-container">
                     <div class="review-form-box">
                         <h4>Оставете отзив</h4>

@@ -14,8 +14,9 @@
     <h2>Sign Up</h2>
 
     <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
-
     <div th:if="${message}" class="alert alert-danger"><p th:text="${message}"></p></div>
+    <div th:if="${notMatchingPasswords}" class="error-message" th:text="${notMatchingPasswords}"></div>
+    <div th:if="${userWithEmailExists}" class="error-message" th:text="${userWithEmailExists}"></div>
 
     <form class="register-form" th:action="@{/register}" th:method="POST" th:object="${registerRequest}">
         <div class="input-group">

@@ -158,7 +158,8 @@
                 </div>
             </div>
         </div>
-
+        <div th:if="${phoneWithSlugAlreadyExists}" class="error-message" th:text="${phoneWithSlugAlreadyExists}"></div>
+        <div th:if="${atLeastOnePhonePicture}" class="error-message" th:text="${atLeastOnePhonePicture}"></div>
         <!-- image preview -->
         <div class="image-preview-section">
             <div id="imagePreview" class="image-preview-container">

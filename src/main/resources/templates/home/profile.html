@@ -54,6 +54,7 @@
                 <h2>Change Password</h2>
                 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
                 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+                <div th:if="${changePasswordError}" class="alert alert-danger" th:text="${changePasswordError}"></div>
                 <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
                     <div class="mb-2">
                         <input class="form-control" type="password" th:field="*{oldPassword}"

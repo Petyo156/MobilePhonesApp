@@ -46,6 +46,8 @@
 <h2 style="margin-left: 2rem;">Visible Phones</h2>
 <div class="phone-grid">
     <div class="phone-card" th:each="phone : ${allVisiblePhones}">
+        <div th:if="${discountError}" class="error-message" th:text="${discountError}"></div>
+
         <a th:href="@{'/phone/' + ${phone.slug}}">
             <img th:src="${phone.images[0].imageUrl}" alt="Phone image"/>
         </a>
