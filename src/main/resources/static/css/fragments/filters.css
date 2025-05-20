@@ -108,6 +108,24 @@
     border-color: #007bff;
 }
 
+.discount-label {
+    position: relative;
+    color: #dc3545;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+.discount-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
 .price-range {
     margin-top: 20px;
 }

@@ -51,6 +51,10 @@ public class IndexController {
                                        @RequestParam(value = "maxPrice", required = false) Double maxPrice,
                                        @RequestParam(value = "colors", required = false) List<String> colors,
                                        @RequestParam(value = "cameraResolutions", required = false) List<String> cameraResolutions,
+                                       @RequestParam(value = "screenSizes", required = false) List<String> screenSizes,
+                                       @RequestParam(value = "waterResistant", required = false) Boolean waterResistant,
+                                       @RequestParam(value = "batteryCapacities", required = false) List<Integer> batteryCapacities,
+                                       @RequestParam(value = "discountedOnly", required = false) Boolean discountedOnly,
                                        @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("home/display");
 
@@ -61,7 +65,8 @@ public class IndexController {
             displayResults = phoneService.getSearchResult(searchQuery);
             modelAndView.addObject("searchQuery", searchQuery);
         } else {
-            displayResults = phoneService.getFilteredPhones(brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions);
+            displayResults = phoneService.getFilteredPhones(brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions,
+                    screenSizes, waterResistant, batteryCapacities, discountedOnly);
         }
 
         modelAndView.addObject("brands", phoneService.getUniqueVisibleBrands());
@@ -70,7 +75,9 @@ public class IndexController {
         modelAndView.addObject("colors", phoneService.getUniqueVisibleColors());
         modelAndView.addObject("cameraResolutions", phoneService.getUniqueVisibleCameraResolutions());
         modelAndView.addObject("maxPhonePrice", phoneService.getMaxVisiblePhonePrice());
-
+        modelAndView.addObject("screenSizes", phoneService.getUniqueVisibleScreenSizes());
+        modelAndView.addObject("hasWaterResistantPhones", phoneService.hasWaterResistantPhones());
+        modelAndView.addObject("batteryCapacities", phoneService.getUniqueVisibleBatteryCapacities());
         modelAndView.addObject("searchResult", displayResults);
         modelAndView.addObject("user", user);
 

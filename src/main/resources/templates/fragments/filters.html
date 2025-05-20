@@ -3,10 +3,10 @@
         <h5 class="mb-3">Filters</h5>
 
         <div class="active-filters mb-4"
-             th:if="${param.brands != null || param.storages != null || param.colors != null || param.ram != null || param.maxPrice != null}">
+             th:if="${param.brands != null || param.storages != null || param.colors != null || param.ram != null || param.maxPrice != null || param.screenSizes != null || param.waterResistant != null || param.batteryCapacities != null || param.discountedOnly != null}">
             <h6 class="mb-3">Active Filters:
 
-                <a th:if="${param.brands != null || param.storages != null || param.colors != null || param.ram != null || param.maxPrice != null}"
+                <a th:if="${param.brands != null || param.storages != null || param.colors != null || param.ram != null || param.maxPrice != null || param.screenSizes != null || param.waterResistant != null || param.batteryCapacities != null || param.discountedOnly != null}"
                    th:href="@{/display}"
                    class="btn btn-outline-danger btn-sm ms-2">Clear All</a>
             </h6>
@@ -57,6 +57,60 @@
                                    storages=${param.storages},
                                    colors=${param.colors},
                                    ram=${param.ram})}"
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:each="screenSize : ${param.screenSizes}" class="filter-tag">
+                    Screen: <span th:text="${screenSize + ' inches'}"></span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${param.storages},
+                                   colors=${param.colors},
+                                   ram=${param.ram},
+                                   screenSizes=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.screenSizes, ',').replace(screenSize + ',', '').replace(',' + screenSize, '').replace(screenSize, ''), ','), ',')},
+                                   waterResistance=${param.waterResistance},
+                                   batteryCapacities=${param.batteryCapacities},
+                                   discountedOnly=${param.discountedOnly},
+                                   maxPrice=${param.maxPrice})}"
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:if="${param.waterResistant != null && param.waterResistant[0] == 'true'}" class="filter-tag">
+                    <span>Water Resistant</span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${param.storages},
+                                   colors=${param.colors},
+                                   ram=${param.ram},
+                                   screenSizes=${param.screenSizes},
+                                   batteryCapacities=${param.batteryCapacities},
+                                   discountedOnly=${param.discountedOnly},
+                                   maxPrice=${param.maxPrice})}"
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:each="capacity : ${param.batteryCapacities}" class="filter-tag">
+                    Battery: <span th:text="${capacity + ' mAh'}"></span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${param.storages},
+                                   colors=${param.colors},
+                                   ram=${param.ram},
+                                   screenSizes=${param.screenSizes},
+                                   waterResistance=${param.waterResistance},
+                                   batteryCapacities=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.batteryCapacities, ',').replace(capacity + ',', '').replace(',' + capacity, '').replace(capacity, ''), ','), ',')},
+                                   discountedOnly=${param.discountedOnly},
+                                   maxPrice=${param.maxPrice})}"
+                       class="remove-filter">×</a>
+                </span>
+
+                <span th:if="${param.discountedOnly != null && param.discountedOnly[0] == 'true'}" class="filter-tag">
+                    <span>On Sale Only</span>
+                    <a th:href="@{/display(brands=${param.brands}, 
+                                   storages=${param.storages},
+                                   colors=${param.colors},
+                                   ram=${param.ram},
+                                   screenSizes=${param.screenSizes},
+                                   waterResistance=${param.waterResistance},
+                                   batteryCapacities=${param.batteryCapacities},
+                                   maxPrice=${param.maxPrice})}"
                        class="remove-filter">×</a>
                 </span>
             </div>
@@ -118,6 +172,55 @@
                                th:checked="${param.cameraResolutions != null && #lists.contains(param.cameraResolutions, resolution)}">
                         <label class="form-check-label" th:for="'resolution' + ${resolution}"
                                th:text="${resolution} + ' MP'"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Screen Size</h6>
+                <div>
+                    <div class="form-check" th:each="screenSize : ${screenSizes}">
+                        <input class="form-check-input" type="checkbox" th:id="'screenSize' + ${screenSize}"
+                               th:value="${screenSize}" name="screenSizes"
+                               th:checked="${param.screenSizes != null && #lists.contains(param.screenSizes, screenSize)}">
+                        <label class="form-check-label" th:for="'screenSize' + ${screenSize}" 
+                               th:text="${screenSize} + ' inches'"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Water Resistance</h6>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="waterResistant"
+                               name="waterResistant" value="true"
+                               th:checked="${param.waterResistant != null && param.waterResistant[0] == 'true'}"
+                               th:disabled="${!hasWaterResistantPhones}">
+                        <label class="form-check-label" for="waterResistant">Water Resistant</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Battery Capacity</h6>
+                <div>
+                    <div class="form-check" th:each="capacity : ${batteryCapacities}">
+                        <input class="form-check-input" type="checkbox" th:id="'battery' + ${capacity}"
+                               th:value="${capacity}" name="batteryCapacities"
+                               th:checked="${param.batteryCapacities != null && #lists.contains(param.batteryCapacities, capacity.toString())}">
+                        <label class="form-check-label" th:for="'battery' + ${capacity}" 
+                               th:text="${capacity} + ' mAh'"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h6>Special Offers</h6>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="discountedOnly"
+                               name="discountedOnly" value="true"
+                               th:checked="${param.discountedOnly != null && param.discountedOnly[0] == 'true'}">
+                        <label class="form-check-label" for="discountedOnly">
+                            <span class="discount-label">On Sale</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -273,14 +376,23 @@
                 const ram = Array.from(document.querySelectorAll('input[name="ram"]:checked')).map(cb => parseInt(cb.value));
                 const colors = Array.from(document.querySelectorAll('input[name="colors"]:checked')).map(cb => cb.value);
                 const cameraResolutions = Array.from(document.querySelectorAll('input[name="cameraResolutions"]:checked')).map(cb => cb.value);
+                const screenSizes = Array.from(document.querySelectorAll('input[name="screenSizes"]:checked')).map(cb => cb.value);
+                const waterResistant = document.getElementById('waterResistant').checked ? 'true' : null;
+                const batteryCapacities = Array.from(document.querySelectorAll('input[name="batteryCapacities"]:checked')).map(cb => parseInt(cb.value));
+                const discountedOnly = document.getElementById('discountedOnly').checked ? 'true' : null;
                 const minPrice = minPriceInput.value;
                 const maxPrice = maxPriceInput.value;
+                
                 const params = new URLSearchParams();
                 if (brands.length > 0) brands.forEach(b => params.append('brands', b));
                 if (storages.length > 0) storages.forEach(s => params.append('storages', s));
                 if (ram.length > 0) ram.forEach(r => params.append('ram', r));
                 if (colors.length > 0) colors.forEach(c => params.append('colors', c));
                 if (cameraResolutions.length > 0) cameraResolutions.forEach(r => params.append('cameraResolutions', r));
+                if (screenSizes.length > 0) screenSizes.forEach(s => params.append('screenSizes', s));
+                if (waterResistant) params.append('waterResistant', waterResistant);
+                if (batteryCapacities.length > 0) batteryCapacities.forEach(b => params.append('batteryCapacities', b));
+                if (discountedOnly) params.append('discountedOnly', discountedOnly);
                 if (minPrice > 0) params.append('minPrice', minPrice);
                 if (maxPrice < maxPhonePrice) params.append('maxPrice', maxPrice);
                 window.location.href = '/display?' + params.toString();
