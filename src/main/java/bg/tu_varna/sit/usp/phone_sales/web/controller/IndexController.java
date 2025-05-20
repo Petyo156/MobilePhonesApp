@@ -42,14 +42,43 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping("/search")
-    public ModelAndView getSearchPage(@RequestParam("result") String info,
-                                      @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("home/search");
+    @GetMapping("/display")
+    public ModelAndView getDisplayPage(@RequestParam(value = "search", required = false) String searchQuery,
+                                       @RequestParam(value = "brands", required = false) List<String> brands,
+                                       @RequestParam(value = "storages", required = false) List<Integer> storages,
+                                       @RequestParam(value = "ram", required = false) List<Integer> ram,
+                                       @RequestParam(value = "minPrice", required = false) Double minPrice,
+                                       @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+                                       @RequestParam(value = "colors", required = false) List<String> colors,
+                                       @RequestParam(value = "cameraResolutions", required = false) List<String> cameraResolutions,
+                                       @RequestParam(value = "screenSizes", required = false) List<String> screenSizes,
+                                       @RequestParam(value = "waterResistant", required = false) Boolean waterResistant,
+                                       @RequestParam(value = "batteryCapacities", required = false) List<Integer> batteryCapacities,
+                                       @RequestParam(value = "discountedOnly", required = false) Boolean discountedOnly,
+                                       @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("home/display");
 
-        List<GetPhoneResponse> searchResult = phoneService.getSearchResult(info);
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-        modelAndView.addObject("searchResult", searchResult);
+        List<GetPhoneResponse> displayResults;
+        
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            displayResults = phoneService.getSearchResult(searchQuery);
+            modelAndView.addObject("searchQuery", searchQuery);
+        } else {
+            displayResults = phoneService.getFilteredPhones(brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions,
+                    screenSizes, waterResistant, batteryCapacities, discountedOnly);
+        }
+
+        modelAndView.addObject("brands", phoneService.getUniqueVisibleBrands());
+        modelAndView.addObject("storages", phoneService.getUniqueVisibleStorages());
+        modelAndView.addObject("ramOptions", phoneService.getUniqueVisibleRam());
+        modelAndView.addObject("colors", phoneService.getUniqueVisibleColors());
+        modelAndView.addObject("cameraResolutions", phoneService.getUniqueVisibleCameraResolutions());
+        modelAndView.addObject("maxPhonePrice", phoneService.getMaxVisiblePhonePrice());
+        modelAndView.addObject("screenSizes", phoneService.getUniqueVisibleScreenSizes());
+        modelAndView.addObject("hasWaterResistantPhones", phoneService.hasWaterResistantPhones());
+        modelAndView.addObject("batteryCapacities", phoneService.getUniqueVisibleBatteryCapacities());
+        modelAndView.addObject("searchResult", displayResults);
         modelAndView.addObject("user", user);
 
         return modelAndView;
@@ -81,10 +110,10 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam, 
-                            @Valid LoginRequest loginRequest, 
-                            BindingResult bindingResult, 
-                            @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam,
+                              @Valid LoginRequest loginRequest,
+                              BindingResult bindingResult,
+                              @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         if (authenticationMetadata != null) {
             return new ModelAndView("redirect:/");
         }

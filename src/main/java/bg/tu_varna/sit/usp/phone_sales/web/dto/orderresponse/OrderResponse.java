@@ -23,4 +23,8 @@ public class OrderResponse {
     private SaleStatus status;
 
     private List<OrderItemResponse> orderItemResponseList;
+
+    private String userEmail;
+
+    private String userPhoneNumber;
 }

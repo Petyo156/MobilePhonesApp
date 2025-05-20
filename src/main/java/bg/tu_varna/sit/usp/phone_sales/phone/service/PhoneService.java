@@ -322,7 +322,7 @@ public class PhoneService {
                 .filter(phone -> phone.getPhoneModel().getName().equals(modelName) &&
                         phone.getPhoneModel().getBrand().getName().equals(brandName) &&
                         phone.getReleaseYear().equals(releaseYear))
-                .collect(Collectors.toList());
+                .toList();
 
         if (allVariants.isEmpty()) {
             log.warn("No phone variants found for model: {} {}", brandName, modelName);
@@ -334,7 +334,7 @@ public class PhoneService {
             allReviews.addAll(phone.getSaleItems().stream()
                     .map(SaleItem::getReview)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         BigDecimal total = BigDecimal.ZERO;
@@ -663,5 +663,110 @@ public class PhoneService {
             throw new PhoneWithThisSlugDoesntExistException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }
         return getPhoneResponseByPhone(phone.get());
+    }
+
+    public List<String> getUniqueVisibleBrands() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getPhoneModel().getBrand().getName())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Integer> getUniqueVisibleStorages() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getStorage())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<Integer> getUniqueVisibleRam() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getRam())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getUniqueVisibleColors() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getDimension().getColor())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getUniqueVisibleCameraResolutions() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getCamera().getResolution().toString())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getUniqueVisibleScreenSizes() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> String.format("%.1f", phone.getHardware().getScreenSize()))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getUniqueVisibleWaterResistanceRatings() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .filter(phone -> phone.getDimension().getIsWaterResistant())
+                .map(phone -> "IP" + (phone.getDimension().getIsWaterResistant() ? "68" : "67"))  // This is a placeholder logic - in a real implementation, you'd get the actual rating
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public boolean hasWaterResistantPhones() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .anyMatch(phone -> phone.getDimension().getIsWaterResistant());
+    }
+
+    public List<Integer> getUniqueVisibleBatteryCapacities() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+                .map(phone -> phone.getHardware().getBatteryCapacity())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<GetPhoneResponse> getFilteredPhones(List<String> brands, List<Integer> storages, 
+                                                  List<Integer> ram, Double minPrice, Double maxPrice,
+                                                  List<String> colors, List<String> cameraResolutions,
+                                                  List<String> screenSizes, Boolean waterResistant,
+                                                  List<Integer> batteryCapacities, Boolean discountedOnly) {
+        List<Phone> phones = phoneRepository.findAllByIsVisibleTrue();
+        
+        return phones.stream()
+                .filter(phone -> brands == null || brands.isEmpty() || 
+                        brands.contains(phone.getPhoneModel().getBrand().getName()))
+                .filter(phone -> storages == null || storages.isEmpty() || 
+                        storages.contains(phone.getHardware().getStorage()))
+                .filter(phone -> ram == null || ram.isEmpty() || 
+                        ram.contains(phone.getHardware().getRam()))
+                .filter(phone -> minPrice == null || 
+                        phone.getPrice().compareTo(BigDecimal.valueOf(minPrice)) >= 0)
+                .filter(phone -> maxPrice == null || 
+                        phone.getPrice().compareTo(BigDecimal.valueOf(maxPrice)) <= 0)
+                .filter(phone -> colors == null || colors.isEmpty() || 
+                        colors.contains(phone.getDimension().getColor()))
+                .filter(phone -> cameraResolutions == null || cameraResolutions.isEmpty() || 
+                        cameraResolutions.contains(phone.getHardware().getCamera().getResolution().toString()))
+                .filter(phone -> screenSizes == null || screenSizes.isEmpty() || 
+                        screenSizes.contains(String.format("%.1f", phone.getHardware().getScreenSize())))
+                .filter(phone -> waterResistant == null || 
+                        (!waterResistant || phone.getDimension().getIsWaterResistant()))
+                .filter(phone -> batteryCapacities == null || batteryCapacities.isEmpty() || 
+                        batteryCapacities.contains(phone.getHardware().getBatteryCapacity()))
+                .filter(phone -> discountedOnly == null || !discountedOnly || 
+                        (phone.getDiscountPercent() != null && phone.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0))
+                .map(this::initializeGetPhoneResponse)
+                .collect(Collectors.toList());
+    }
+
+    public double getMaxVisiblePhonePrice() {
+        return phoneRepository.findAllByIsVisibleTrue().stream()
+            .map(phone -> phone.getPrice().doubleValue())
+            .max(Double::compareTo)
+            .orElse(3000.0);
     }
 }

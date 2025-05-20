@@ -138,9 +138,26 @@ public class OrderService {
         return false;
     }
 
+    public List<OrderResponse> fetchAllOrdersForAdmin() {
+        List<Sale> sales = orderRepository.findAllByOrderByOrderDateDesc();
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        for (Sale sale : sales) {
+            OrderResponse orderResponse = initializeOrderResponseAdmin(sale);
+            orderResponse.setUserEmail(sale.getUser().getEmail());
+            orderResponse.setUserPhoneNumber(sale.getUser().getPhoneNumber());
+            orderResponses.add(orderResponse);
+        }
+        log.info("Initialized all order responses for admin visualization");
+        return orderResponses;
+    }
+
+    public User getUserByOrderNumber(String orderNumber) {
+        return getSaleByOrderNumber(orderNumber).getUser();
+    }
+
     public List<OrderResponse> getAllOrders(User user) {
         List<OrderResponse> orderResponses = new ArrayList<>();
-        List<Sale> sales = user.getSales();
+        List<Sale> sales = orderRepository.findAllByUserIdOrderByOrderDateDesc(user.getId());
 
         for (Sale sale : sales) {
             List<SaleItem> saleItems = sale.getSaleItems();
@@ -155,7 +172,7 @@ public class OrderService {
             OrderResponse orderResponse = initializeOrderResponse(sale, orderItemResponses);
             orderResponses.add(orderResponse);
         }
-        log.info("Initialized all order responses");
+        log.info("Initialized all order responses for user");
         return orderResponses;
     }
 
@@ -186,6 +203,21 @@ public class OrderService {
         return initializeOrderResponse(sale, orderItemResponses);
     }
 
+    public Sale getSaleByOrderNumber(String orderNumber) {
+        Optional<Sale> saleByOrderNumberOptional = orderRepository.getSaleByOrderNumber(orderNumber);
+        if (saleByOrderNumberOptional.isEmpty()) {
+            throw new DomainException(ExceptionMessages.ORDER_NUMBER_DOES_NOT_EXIST);
+        }
+        return saleByOrderNumberOptional.get();
+    }
+
+    public void updateOrderStatus(String orderNumber, SaleStatus saleStatus) {
+        Sale sale = getSaleByOrderNumber(orderNumber);
+        sale.setSaleStatus(saleStatus);
+        orderRepository.save(sale);
+        log.info("Updated order status for order {}", orderNumber);
+    }
+
     private ExtendedOrderResponse initializeExtendedOrderResponse(SaleDetails saleDetails) {
         return ExtendedOrderResponse.builder()
                 .city(saleDetails.getCity())
@@ -193,6 +225,15 @@ public class OrderService {
                 .zipCode(saleDetails.getZipCode())
                 .paymentMethod(saleDetails.getPaymentMethod())
                 .deliveryMethod(saleDetails.getDeliveryMethod())
+                .build();
+    }
+
+    private OrderResponse initializeOrderResponseAdmin(Sale sale) {
+        return OrderResponse.builder()
+                .orderNumber(sale.getOrderNumber())
+                .orderDate(sale.getOrderDate())
+                .status(sale.getSaleStatus())
+                .price(decimalFormat.format(sale.getTotalPrice()))
                 .build();
     }
 

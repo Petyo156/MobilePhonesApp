@@ -4,8 +4,8 @@
             <img class="logo" src="/images/logo.png" alt="logo.png">
         </a>
         <div class="search-bar" th:if="${hasHiddenElements == null}">
-            <form th:action="@{/search}" method="get">
-                <input type="text" name="result" placeholder="Search" required>
+            <form th:action="@{/display}" method="get">
+                <input type="text" name="search" placeholder="Search" required>
                 <button type="submit" class="search-button navbar-search-button">
                     <i class="fas fa-search"></i>
                 </button>
@@ -24,6 +24,7 @@
                     <li><a class="dropdown-item" th:href="@{/admin/products}">Manage products</a></li>
                     <li><a class="dropdown-item" th:href="@{/admin/codes}">Add promo codes</a></li>
                     <li><a class="dropdown-item" th:href="@{/admin/discounts}">Manage discounts</a></li>
+                    <li><a class="dropdown-item" th:href="@{/admin/orders}">Manage orders</a></li>
                 </ul>
             </div>
 
