@@ -46,7 +46,7 @@ public class ReviewService {
     @Transactional
     public void postReview(ReviewRequest reviewRequest, User user, String slug) {
         if (userHasAlreadyLeftAReview(slug, user)) {
-            throw new UserHasAlreadyLeftAReviewException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
+            throw new UserHasAlreadyLeftAReviewException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW, slug);
         }
         SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
         Review review = initializeReview(reviewRequest, saleItem, user);
