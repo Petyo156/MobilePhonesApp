@@ -5,7 +5,7 @@
 <div class="product-card">
     <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
         <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
-        <h3 th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB ' + phone.dimensions.color }">
+        <h3 class="card-title" th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB ' + phone.dimensions.color }">
             Brand</h3>
         <div class="rating">
             <div class="rating-stars">
@@ -16,10 +16,10 @@
         <div class="price-container">
             <div th:if="${phone.discountPrice != phone.price}">
                 <span class="discounted-price" th:text="${phone.price + ' лв.'}"></span>
-                <span class="price" th:text="${phone.discountPrice + ' лв.'}"></span>
+                <span class="price product-price" th:attr="data-price=${phone.discountPrice}" th:text="${phone.discountPrice + ' лв.'}"></span>
             </div>
             <div th:unless="${phone.discountPrice != phone.price}">
-                <span class="price" th:text="${phone.price + ' лв.'}"></span>
+                <span class="price product-price" th:attr="data-price=${phone.price}" th:text="${phone.price + ' лв.'}"></span>
             </div>
         </div>
     </a>
