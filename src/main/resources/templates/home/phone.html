@@ -77,11 +77,11 @@
         <div class="col-md-6">
             <h1 th:text="${phoneResponse.brandAndModelResponse.brand + ' ' + phoneResponse.brandAndModelResponse.model + ' ' + phoneResponse.hardwareResponse.storage + 'GB ' + phoneResponse.hardwareResponse.ram + 'GB RAM ' + phoneResponse.dimensions.color}"></h1>
             <div class="text-muted">
-                <a th:href="'/search?result=' + ${phoneResponse.brandAndModelResponse.brand}"
+                <a th:href="'/display?search=' + ${phoneResponse.brandAndModelResponse.brand}"
                    th:text="${phoneResponse.brandAndModelResponse.brand}" class="text-muted">Brand</a>
-                <a th:href="'/search?result=' + ${phoneResponse.brandAndModelResponse.model}"
+                <a th:href="'/display?search=' + ${phoneResponse.brandAndModelResponse.model}"
                    th:text="${phoneResponse.brandAndModelResponse.model}" class="text-muted">Model</a>
-                <a th:href="'/search?result=' + ${phoneResponse.hardwareResponse.storage}"
+                <a th:href="'/display?search=' + ${phoneResponse.hardwareResponse.storage}"
                    th:text="${phoneResponse.hardwareResponse.storage} + 'GB'" class="text-muted">Storage</a>
             </div>
 

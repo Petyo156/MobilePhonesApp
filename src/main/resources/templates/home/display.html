@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>MPH Phones</title>
-    <link rel="stylesheet" href="/css/search.css"/>
+    <title th:text="${searchQuery != null ? 'Search Results for ' + searchQuery : 'MPH Phones'}">MPH Phones</title>
+    <link rel="stylesheet" href="/css/display.css"/>
     <link rel="stylesheet" href="/css/fragments/navbar.css"/>
     <link rel="stylesheet" type="text/css" href="/css/fragments/categories.css">
     <link rel="stylesheet" type="text/css" href="/css/fragments/footer.css">
@@ -20,6 +20,7 @@
 <main class="flex-grow-1">
     <div th:insert="~{fragments/categories :: categories}"></div>
     <div class="containera mt-5">
+        <h2 class="mb-4" th:if="${searchQuery != null}">Search Results for: <span th:text="${searchQuery}" class="text-primary"></span></h2>
         <div class="row">
             <div class="col-md-3 mb-4">
                 <div th:insert="~{fragments/filters :: filters}"></div>

@@ -42,31 +42,9 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping("/search")
-    public ModelAndView getSearchPage(@RequestParam("result") String info,
-                                      @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("home/search");
-
-        User user = userService.getAuthenticatedUser(authenticationMetadata);
-        List<GetPhoneResponse> searchResult = phoneService.getSearchResult(info);
-
-        // Add filter data
-        modelAndView.addObject("brands", phoneService.getUniqueVisibleBrands());
-        modelAndView.addObject("storages", phoneService.getUniqueVisibleStorages());
-        modelAndView.addObject("ramOptions", phoneService.getUniqueVisibleRam());
-        modelAndView.addObject("colors", phoneService.getUniqueVisibleColors());
-        modelAndView.addObject("cameraResolutions", phoneService.getUniqueVisibleCameraResolutions());
-        modelAndView.addObject("searchKeyword", info);
-        modelAndView.addObject("maxPhonePrice", phoneService.getMaxVisiblePhonePrice());
-
-        modelAndView.addObject("searchResult", searchResult);
-        modelAndView.addObject("user", user);
-
-        return modelAndView;
-    }
-
     @GetMapping("/display")
-    public ModelAndView getDisplayPage(@RequestParam(value = "brands", required = false) List<String> brands,
+    public ModelAndView getDisplayPage(@RequestParam(value = "search", required = false) String searchQuery,
+                                       @RequestParam(value = "brands", required = false) List<String> brands,
                                        @RequestParam(value = "storages", required = false) List<Integer> storages,
                                        @RequestParam(value = "ram", required = false) List<Integer> ram,
                                        @RequestParam(value = "minPrice", required = false) Double minPrice,
@@ -77,7 +55,14 @@ public class IndexController {
         ModelAndView modelAndView = new ModelAndView("home/display");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-        List<GetPhoneResponse> filteredResults = phoneService.getFilteredPhones(brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions);
+        List<GetPhoneResponse> displayResults;
+        
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            displayResults = phoneService.getSearchResult(searchQuery);
+            modelAndView.addObject("searchQuery", searchQuery);
+        } else {
+            displayResults = phoneService.getFilteredPhones(brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions);
+        }
 
         modelAndView.addObject("brands", phoneService.getUniqueVisibleBrands());
         modelAndView.addObject("storages", phoneService.getUniqueVisibleStorages());
@@ -86,7 +71,7 @@ public class IndexController {
         modelAndView.addObject("cameraResolutions", phoneService.getUniqueVisibleCameraResolutions());
         modelAndView.addObject("maxPhonePrice", phoneService.getMaxVisiblePhonePrice());
 
-        modelAndView.addObject("searchResult", filteredResults);
+        modelAndView.addObject("searchResult", displayResults);
         modelAndView.addObject("user", user);
 
         return modelAndView;
