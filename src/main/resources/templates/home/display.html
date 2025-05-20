@@ -27,9 +27,15 @@
             </div>
             <div class="col-md-9">
                 <div class="d-flex justify-content-end mb-3">
-                    <div class="btn-group" role="group" aria-label="Sort options">
-                        <button type="button" class="btn btn-outline-secondary" disabled>Price: Low to High</button>
-                        <button type="button" class="btn btn-outline-secondary" disabled>Price: High to Low</button>
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-sort me-1"></i> Sort By: <span id="currentSort">Relevance</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item active" href="#" data-sort="relevance"><i class="fas fa-list me-2"></i>Relevance</a></li>
+                            <li><a class="dropdown-item" href="#" data-sort="price-asc"><i class="fas fa-sort-amount-down-alt me-2"></i>Price: Low to High</a></li>
+                            <li><a class="dropdown-item" href="#" data-sort="price-desc"><i class="fas fa-sort-amount-down me-2"></i>Price: High to Low</a></li>
+                        </ul>
                     </div>
                 </div>
 
