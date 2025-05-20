@@ -22,4 +22,5 @@ public class ExceptionMessages {
     public static final String USER_CANNOT_ACCESS_OTHER_USERS_ORDERS = "User cannot access other users orders";
     public static final String ORDER_NUMBER_DOES_NOT_EXIST = "Sale with this order number does not exist";
     public static final String SALE_ITEM_DOESNT_EXIST = "Sale item does not exist";
+    public static final String FAILED_TO_UPLOAD_IMAGE_TO_CLOUDINARY = "Failed to upload image to Cloudinary";
 }

@@ -1,7 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.order.service;
 
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.InvalidCounterIdException;
 import bg.tu_varna.sit.usp.phone_sales.order.model.SaleCounter;
 import bg.tu_varna.sit.usp.phone_sales.order.repository.SaleCounterRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class SaleCounterService {
 
     public String getFormattedOrderNumber() {
         SaleCounter counter = saleCounterRepository.findById(1L)
-                .orElseThrow(() -> new DomainException(ExceptionMessages.INVALID_COUNTER_ID));
+                .orElseThrow(() -> new InvalidCounterIdException(ExceptionMessages.INVALID_COUNTER_ID));
 
         long nextNumber = counter.getLastOrderNumber() + 1;
         counter.setLastOrderNumber(nextNumber);

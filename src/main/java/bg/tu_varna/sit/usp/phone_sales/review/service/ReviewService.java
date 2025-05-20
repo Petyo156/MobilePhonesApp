@@ -1,7 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.review.service;
 
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.UserHasAlreadyLeftAReviewException;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.service.SaleItemService;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
@@ -46,7 +46,7 @@ public class ReviewService {
     @Transactional
     public void postReview(ReviewRequest reviewRequest, User user, String slug) {
         if (userHasAlreadyLeftAReview(slug, user)) {
-            throw new DomainException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
+            throw new UserHasAlreadyLeftAReviewException(ExceptionMessages.USER_HAS_ALREADY_LEFT_A_REVIEW);
         }
         SaleItem saleItem = saleItemService.getSaleItemReviewForUser(user, slug);
         Review review = initializeReview(reviewRequest, saleItem, user);

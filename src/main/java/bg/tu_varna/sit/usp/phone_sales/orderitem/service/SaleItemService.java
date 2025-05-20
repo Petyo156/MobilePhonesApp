@@ -1,8 +1,8 @@
 package bg.tu_varna.sit.usp.phone_sales.orderitem.service;
 
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.SaleItemDoesNotExistException;
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.repository.SaleItemRepository;
@@ -50,7 +50,7 @@ public class SaleItemService {
     public SaleItem getSaleItemReviewForUser(User user, String slug) {
         Optional<SaleItem> saleItemOptional = saleItemRepository.findFirstSaleItemByPhone_SlugAndSale_User(slug, user);
         if(saleItemOptional.isEmpty()) {
-            throw new DomainException(ExceptionMessages.SALE_ITEM_DOESNT_EXIST);
+            throw new SaleItemDoesNotExistException(ExceptionMessages.SALE_ITEM_DOESNT_EXIST);
         }
         return saleItemOptional.get();
     }

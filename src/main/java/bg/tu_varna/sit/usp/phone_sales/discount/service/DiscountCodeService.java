@@ -2,8 +2,9 @@ package bg.tu_varna.sit.usp.phone_sales.discount.service;
 
 import bg.tu_varna.sit.usp.phone_sales.discount.model.DiscountCode;
 import bg.tu_varna.sit.usp.phone_sales.discount.repository.DiscountCodeRepository;
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.InvalidDiscountCodeException;
+import bg.tu_varna.sit.usp.phone_sales.exception.InvalidDiscountCodePercentInputException;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.order.DiscountCodeResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class DiscountCodeService {
                 return all.get(key);
             }
         }
-        throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_CODE);
+        throw new InvalidDiscountCodeException(ExceptionMessages.INVALID_DISCOUNT_CODE);
     }
 
     public BigDecimal calculateDiscountPrice(BigDecimal totalPrice, BigDecimal discountCodePercent) {
@@ -85,7 +86,7 @@ public class DiscountCodeService {
 
     public DiscountCode findByName(String name) {
         return discountCodeRepository.findByName(name)
-                .orElseThrow(() -> new DomainException(ExceptionMessages.INVALID_DISCOUNT_CODE));
+                .orElseThrow(() -> new InvalidDiscountCodeException(ExceptionMessages.INVALID_DISCOUNT_CODE));
     }
 
     public DiscountCode getDiscountCodeForSaleCreation(String discountCode) {
@@ -101,13 +102,13 @@ public class DiscountCodeService {
         try {
             BigDecimal percent = new BigDecimal(discountPercent);
             if (percent.compareTo(BigDecimal.ZERO) <= 0 || percent.compareTo(BigDecimal.valueOf(100)) >= 0) {
-                throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_CODE_PERCENT_INPUT);
+                throw new InvalidDiscountCodePercentInputException(ExceptionMessages.INVALID_DISCOUNT_CODE_PERCENT_INPUT);
             }
             DiscountCode discountCode = initializeDiscountCode(name, percent);
             discountCodeRepository.save(discountCode);
             log.info("Code added successfully");
         } catch (NumberFormatException e) {
-            throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_CODE_PERCENT_INPUT);
+            throw new InvalidDiscountCodePercentInputException(ExceptionMessages.INVALID_DISCOUNT_CODE_PERCENT_INPUT);
         }
     }
 

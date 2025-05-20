@@ -1,9 +1,9 @@
 package bg.tu_varna.sit.usp.phone_sales.phone.service;
 
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
+import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.FailedToUploadImageToCloudinaryException;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
-import bg.tu_varna.sit.usp.phone_sales.phone.repository.ImageRepository;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +57,7 @@ public class ImageService {
             log.info("Uploaded image to Cloudinary: {}", secureUrl);
             return image;
         } catch (IOException e) {
-            throw new DomainException("Failed to upload image to Cloudinary: " + e.getMessage());
+            throw new FailedToUploadImageToCloudinaryException(ExceptionMessages.FAILED_TO_UPLOAD_IMAGE_TO_CLOUDINARY);
         }
     }
 

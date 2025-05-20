@@ -4,8 +4,9 @@ import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.service.CartItemService;
 import bg.tu_varna.sit.usp.phone_sales.discount.service.DiscountCodeService;
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.OrderNumberDoesNotExistException;
+import bg.tu_varna.sit.usp.phone_sales.exception.UserCannotAccessOtherUsersOrdersException;
 import bg.tu_varna.sit.usp.phone_sales.order.model.Sale;
 import bg.tu_varna.sit.usp.phone_sales.order.model.SaleStatus;
 import bg.tu_varna.sit.usp.phone_sales.order.repository.OrderRepository;
@@ -161,7 +162,7 @@ public class OrderService {
     public ExtendedOrderResponse getExtendedInformationForOrder(String orderNumber, User user) {
         SaleDetails saleDetails = saleDetailsService.getSaleDetailsForOrderNumber(orderNumber);
         if (saleDetails.getSale().getUser() != user) {
-            throw new DomainException(ExceptionMessages.USER_CANNOT_ACCESS_OTHER_USERS_ORDERS);
+            throw new UserCannotAccessOtherUsersOrdersException(ExceptionMessages.USER_CANNOT_ACCESS_OTHER_USERS_ORDERS);
         }
 
         log.info("Initialized information for order with number {}", orderNumber);
@@ -171,7 +172,7 @@ public class OrderService {
     public OrderResponse getInformationForOrder(String orderNumber) {
         Optional<Sale> saleByOrderNumberOptional = orderRepository.getSaleByOrderNumber(orderNumber);
         if (saleByOrderNumberOptional.isEmpty()) {
-            throw new DomainException(ExceptionMessages.ORDER_NUMBER_DOES_NOT_EXIST);
+            throw new OrderNumberDoesNotExistException(ExceptionMessages.ORDER_NUMBER_DOES_NOT_EXIST);
         }
 
         Sale sale = saleByOrderNumberOptional.get();

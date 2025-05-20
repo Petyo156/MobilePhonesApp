@@ -1,7 +1,7 @@
 package bg.tu_varna.sit.usp.phone_sales.aspect;
 
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.UserMustBeLoggedInException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,7 +17,7 @@ public class RequireAuthenticatedUserAspect {
     public void checkAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            throw new DomainException(ExceptionMessages.USER_MUST_BE_LOGGED_IN);
+            throw new UserMustBeLoggedInException(ExceptionMessages.USER_MUST_BE_LOGGED_IN);
         }
     }
 }

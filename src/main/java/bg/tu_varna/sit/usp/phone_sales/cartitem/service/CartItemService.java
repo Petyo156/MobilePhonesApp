@@ -3,8 +3,8 @@ package bg.tu_varna.sit.usp.phone_sales.cartitem.service;
 import bg.tu_varna.sit.usp.phone_sales.cart.model.Cart;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.repository.CartItemRepository;
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
 import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.PhoneWithThisSlugDoesntExistInUsersCartException;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import jakarta.transaction.Transactional;
@@ -86,7 +86,7 @@ public class CartItemService {
         return user.getCart().getCartItems().stream()
                 .filter(cartItem -> cartItem.getPhone().getSlug().equals(slug))
                 .findFirst()
-                .orElseThrow(() -> new DomainException(ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST_IN_USERS_CART));
+                .orElseThrow(() -> new PhoneWithThisSlugDoesntExistInUsersCartException(ExceptionMessages.PHONE_WITH_THIS_SLUG_DOESNT_EXIST_IN_USERS_CART));
     }
 
     private void deleteItem(CartItem item) {

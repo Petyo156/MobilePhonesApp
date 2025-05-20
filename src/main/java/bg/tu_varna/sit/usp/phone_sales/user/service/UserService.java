@@ -2,8 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.user.service;
 
 import bg.tu_varna.sit.usp.phone_sales.cart.model.Cart;
 import bg.tu_varna.sit.usp.phone_sales.cart.service.CartService;
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
-import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.*;
 import bg.tu_varna.sit.usp.phone_sales.security.AuthenticationMetadata;
 import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.model.UserRole;
@@ -64,7 +63,7 @@ public class UserService implements UserDetailsService {
 
             log.error("User with email '{}' does not exist", email);
 
-            return new UsernameNotFoundException(ExceptionMessages.USER_WITH_EMAIL_DOESNT_EXIST);
+            return new UserWithEmailDoesntExistException(ExceptionMessages.USER_WITH_EMAIL_DOESNT_EXIST);
         });
     }
 
@@ -95,7 +94,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (userRepository.findByPhoneNumber(phoneNumber).isPresent() && !Objects.equals(phoneNumber, user.getPhoneNumber())) {
-            throw new DomainException(ExceptionMessages.USER_WITH_THIS_PHONE_NUMBER_ALREADY_EXISTS);
+            throw new UserWithThisPhoneNumberAlreadyExistsException(ExceptionMessages.USER_WITH_THIS_PHONE_NUMBER_ALREADY_EXISTS);
         }
 
         user.setAddress(address);
@@ -132,7 +131,7 @@ public class UserService implements UserDetailsService {
                 return;
             }
         }
-        throw new DomainException(ExceptionMessages.INVALID_CHANGE_PASSWORD_REQUEST);
+        throw new InvalidChangePasswordRequestException(ExceptionMessages.INVALID_CHANGE_PASSWORD_REQUEST);
     }
 
     public void insertAdmin() {
@@ -186,14 +185,14 @@ public class UserService implements UserDetailsService {
 
     private void checkIfPasswordsMatch(String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
-            throw new DomainException(ExceptionMessages.PASSWORDS_DO_NOT_MATCH);
+            throw new PasswordsDoNotMatchException(ExceptionMessages.PASSWORDS_DO_NOT_MATCH);
         }
         log.info("Passwords match");
     }
 
     private void checkIfEmailAlreadyExists(String email) {
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new DomainException(ExceptionMessages.USER_WITH_EMAIL_ALREADY_EXISTS);
+            throw new UserWithEmailAlreadyExistsException(ExceptionMessages.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
         log.info("Email is valid");
     }

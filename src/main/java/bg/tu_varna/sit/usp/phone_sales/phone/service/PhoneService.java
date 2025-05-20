@@ -3,8 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.phone.service;
 import bg.tu_varna.sit.usp.phone_sales.camera.model.Camera;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.dimension.service.DimensionService;
-import bg.tu_varna.sit.usp.phone_sales.exception.DomainException;
-import bg.tu_varna.sit.usp.phone_sales.exception.ExceptionMessages;
+import bg.tu_varna.sit.usp.phone_sales.exception.*;
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.Hardware;
 import bg.tu_varna.sit.usp.phone_sales.hardware.service.HardwareService;
 import bg.tu_varna.sit.usp.phone_sales.model.model.PhoneModel;
@@ -58,7 +57,7 @@ public class PhoneService {
     @Transactional
     public Phone submitPhone(SubmitPhoneRequest submitPhoneRequest, List<MultipartFile> files, int thumbnailIndex) {
         if (files == null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
-            throw new DomainException(ExceptionMessages.SET_AT_LEAST_ONE_PHONE_PICTURE);
+            throw new SetAtLeastOnePhonePictureException(ExceptionMessages.SET_AT_LEAST_ONE_PHONE_PICTURE);
         }
 
         SubmitPhoneDimensions dimensions = submitPhoneRequest.getDimensions();
@@ -164,7 +163,7 @@ public class PhoneService {
     public Phone getPhoneBySlug(String slug) {
         Optional<Phone> phone = phoneRepository.getPhoneBySlug(slug);
         if (phone.isEmpty()) {
-            throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
+            throw new PhoneWithThisSlugDoesntExistException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }
         return phone.get();
     }
@@ -172,7 +171,7 @@ public class PhoneService {
     public Phone getVisiblePhoneBySlug(String slug) {
         Optional<Phone> phone = phoneRepository.getPhoneBySlugAndIsVisibleTrue(slug);
         if (phone.isEmpty()) {
-            throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
+            throw new PhoneWithThisSlugDoesntExistException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }
         return phone.get();
     }
@@ -201,14 +200,14 @@ public class PhoneService {
         try {
             BigDecimal fullPercent = new BigDecimal(discountPercent);
             if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
-                throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+                throw new InvalidDiscountPercentException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
             }
             phone.setDiscountPercent(fullPercent);
             phoneRepository.save(phone);
 
             log.info("Discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
         } catch (NumberFormatException e) {
-            throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+            throw new InvalidDiscountPercentException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
         }
     }
 
@@ -216,7 +215,7 @@ public class PhoneService {
         try {
             BigDecimal fullPercent = new BigDecimal(discountPercent);
             if (fullPercent.compareTo(BigDecimal.ZERO) < 0 || fullPercent.compareTo(BigDecimal.valueOf(100)) > 0) {
-                throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+                throw new InvalidDiscountPercentException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
             }
 
             for (String slug : slugs) {
@@ -226,7 +225,7 @@ public class PhoneService {
                 log.info("Bulk discount for {} set to {}%", phone.getPhoneModel().getName(), fullPercent);
             }
         } catch (NumberFormatException e) {
-            throw new DomainException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
+            throw new InvalidDiscountPercentException(ExceptionMessages.INVALID_DISCOUNT_PERCENT);
         }
     }
 
@@ -539,7 +538,7 @@ public class PhoneService {
 
         String slug = generateSlug(builtPhone);
         if (phoneRepository.getPhoneBySlug(slug).isPresent()) {
-            throw new DomainException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
+            throw new PhoneWithThisSlugAlreadyExistsException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
         }
 
         return builtPhone.toBuilder()
@@ -651,7 +650,7 @@ public class PhoneService {
         if (!newSlug.equals(phone.getSlug())) {
             phoneRepository.getPhoneBySlug(newSlug).ifPresent(existing -> {
                 if (!existing.getId().equals(phone.getId())) {
-                    throw new DomainException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
+                    throw new PhoneWithThisSlugAlreadyExistsException(ExceptionMessages.PHONE_WITH_THIS_SLUG_ALREADY_EXISTS);
                 }
             });
             phone.setSlug(newSlug);
@@ -661,7 +660,7 @@ public class PhoneService {
     public GetPhoneResponse getPhoneResponseByReviewId(UUID reviewId) {
         Optional<Phone> phone = phoneRepository.findBySaleItems_Review_Id(reviewId);
         if (phone.isEmpty()) {
-            throw new DomainException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
+            throw new PhoneWithThisSlugDoesntExistException(PHONE_WITH_THIS_SLUG_DOESNT_EXIST);
         }
         return getPhoneResponseByPhone(phone.get());
     }
