@@ -45,4 +45,6 @@ public class GetPhoneResponse {
     private Boolean isVisible;
 
     private BigDecimal rating;
+
+    private String description;
 }

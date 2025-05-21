@@ -2,6 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -49,4 +50,8 @@ public class SubmitPhoneRequest {
 
     @Nullable
     private String modelUrl;
+
+    @Nullable
+    @Max(5000)
+    private String description;
 }

@@ -3,6 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.phone.model;
 import bg.tu_varna.sit.usp.phone_sales.cartitem.model.CartItem;
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import bg.tu_varna.sit.usp.phone_sales.dimension.model.Dimension;
 import bg.tu_varna.sit.usp.phone_sales.hardware.model.Hardware;
@@ -74,4 +75,8 @@ public class Phone {
 
     @Column
     private BigDecimal rating;
+
+    @Column
+    @Size(max = 5000)
+    private String description;
 }

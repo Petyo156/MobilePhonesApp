@@ -171,6 +171,14 @@
     <h2 class="form-section-title">🧪 Optional Specifications</h2>
     <div class="form-section optional">
         <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" id="description" step="0.5" th:field="*{description}" class="form-input"
+                   placeholder="Enter description"/>
+            <p class="form-error" th:if="${#fields.hasErrors('description')}"
+               th:errors="*{description}"></p>
+        </div>
+
+        <div class="form-group">
             <label for="height">Height:</label>
             <input type="number" id="height" step="0.5" th:field="*{dimensions.height}" class="form-input"
                    placeholder="Enter height"/>

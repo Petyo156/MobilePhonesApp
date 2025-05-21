@@ -96,9 +96,10 @@ h1 {
 }
 
 .phone-specifications {
-    background: #f8f9fa;
+    background: #fff;
     padding: 2rem;
     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin: 2rem 0;
 }
 
@@ -121,9 +122,9 @@ h1 {
     align-items: center;
     gap: 1rem;
     padding: 0.75rem;
-    background: #fff;
+    background: #f8f9fa;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 15%);
 }
 
 .spec-icon {
@@ -974,7 +975,6 @@ input[type="range"]::-webkit-slider-thumb {
     border-color: var(--accent);
     background: #f8f9fa;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
     color: var(--accent);
     font-weight: 600;
 }
@@ -1220,4 +1220,116 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .delete-review-btn:hover {
     color: #e74c3c;
+}
+
+.phone-description{
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+}
+
+.phone-description h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.description-item {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Rating Styles - Enhanced */
+.rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1.2rem 0;
+    padding: 0.8rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.product-rating {
+    position: relative;
+    max-width: 200px;
+    /*margin: 1.5rem auto;*/
+    /*padding: 0.6rem 1rem;*/
+    background: linear-gradient(to right, rgba(255, 247, 214, 0.7), rgba(255, 241, 184, 0.7));
+    border-left: 3px solid #ffc107;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+}
+
+.rating-stars i {
+    color: #ffc107;
+    font-size: 1.2rem;
+    margin: 0 2px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.rating-stars i:hover {
+    transform: scale(1.2);
+}
+
+.rating-stars i.far {
+    color: #e0e0e0;
+}
+
+.rating-stars i.fas.fa-star-half-alt {
+    background: linear-gradient(90deg, #ffc107 50%, #e0e0e0 50%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rating-count {
+    color: #666;
+    font-size: 0.95rem;
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+.review-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    font-size: 2rem;
+    cursor: pointer;
+    margin-bottom: 0.8rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.star-rating .star {
+    color: #e0e0e0;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.star-rating .star:hover {
+    transform: scale(1.15);
+}
+
+.star-rating .star.selected,
+.star-rating .star.hovered {
+    color: #ffc107;
+    text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 }

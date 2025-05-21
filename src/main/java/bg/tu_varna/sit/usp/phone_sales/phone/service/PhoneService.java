@@ -418,6 +418,7 @@ public class PhoneService {
         Integer releaseYear = phone.getReleaseYear();
         String slug = phone.getSlug();
         BigDecimal rating = phone.getRating();
+        String description = phone.getDescription();
 
         return GetPhoneResponse.builder()
                 .slug(slug)
@@ -436,6 +437,7 @@ public class PhoneService {
                 .createdAt(phone.getCreatedAt())
                 .isVisible(phone.getIsVisible())
                 .rating(rating)
+                .description(description)
                 .build();
     }
 
@@ -534,6 +536,7 @@ public class PhoneService {
                 .discountPercent(BigDecimal.ZERO)
                 .modelUrl(submitPhoneRequest.getModelUrl())
                 .rating(BigDecimal.ZERO)
+                .description(submitPhoneRequest.getDescription())
                 .build();
 
         String slug = generateSlug(builtPhone);
@@ -705,14 +708,6 @@ public class PhoneService {
     public List<String> getUniqueVisibleScreenSizes() {
         return phoneRepository.findAllByIsVisibleTrue().stream()
                 .map(phone -> String.format("%.1f", phone.getHardware().getScreenSize()))
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    public List<String> getUniqueVisibleWaterResistanceRatings() {
-        return phoneRepository.findAllByIsVisibleTrue().stream()
-                .filter(phone -> phone.getDimension().getIsWaterResistant())
-                .map(phone -> "IP" + (phone.getDimension().getIsWaterResistant() ? "68" : "67"))  // This is a placeholder logic - in a real implementation, you'd get the actual rating
                 .distinct()
                 .collect(Collectors.toList());
     }

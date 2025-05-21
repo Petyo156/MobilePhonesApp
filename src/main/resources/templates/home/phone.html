@@ -100,13 +100,13 @@
                     <form th:action="@{'/cart/' + ${phoneResponse.slug}}" method="post">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="add-to-cart-btn">
-                            <i class="fas fa-shopping-cart"></i>Add to Cart
+                            <i class="fas fa-cart-plus"></i>Add to Cart
                         </button>
                     </form>
                 </div>
                 <div th:if="${user == null}">
                     <a th:href="@{/login}" class="add-to-cart-btn">
-                        <i class="fas fa-sign-in-alt"></i>Add to Cart
+                        <i class="fas fa-cart-plus"></i>Add to Cart
                     </a>
                 </div>
             </div>
@@ -285,10 +285,28 @@
                 </div>
             </div>
 
+            <div class="col-md-12">
+                <div class="phone-description">
+                    <h3>Описание</h3>
+
+                    <p class="description-item"
+                       th:text="${#strings.isEmpty(phoneResponse.description)} ? 'Този продукт няма описание.' : ${phoneResponse.description} "></p>
+                </div>
+            </div>
+
             <!-- reviews-->
             <div class="user-reviews">
-                <h3>Потребителски отзиви</h3>
-
+                <h3>Потребителски отзиви
+                <div class="rating product-rating"
+                     th:attr="data-rating=${phoneResponse.rating != null ? phoneResponse.rating : 0}">
+                    <div class="rating-stars">
+                        <i th:each="i : ${#numbers.sequence(1, 5)}"
+                           th:class="${phoneResponse.rating != null && phoneResponse.rating.doubleValue() >= i - 0.5 && phoneResponse.rating.doubleValue() < i ? 'fas fa-star-half-alt' : (phoneResponse.rating != null && phoneResponse.rating.doubleValue() >= i ? 'fas fa-star' : 'far fa-star')}"></i>
+                    </div>
+                    <span class="rating-count"
+                          th:text="${phoneResponse.rating != null ? '(' + phoneResponse.rating + ')' : '(0.0)'}"></span>
+                </div>
+                </h3>
                 <div th:if="${reviewError}" class="alert alert-danger"><p th:text="${reviewError}"></p></div>
 
                 <div th:if="${hasBoughtItem} and ${user != null}" class="review-form-container">
@@ -307,7 +325,9 @@
                                         <span class="star" data-value="5">&#9733;</span>
                                     </div>
                                     <input type="hidden" th:field="*{rating}" id="ratingInput" required>
-                                    <div id="ratingError" class="emp-error-msg" style="display:none;">Моля, изберете оценка.</div>
+                                    <div id="ratingError" class="emp-error-msg" style="display:none;">Моля, изберете
+                                        оценка.
+                                    </div>
                                 </div>
                                 <div class="form-group name-group">
                                     <div class="anonymous-toggle">
@@ -317,14 +337,18 @@
                                     <input type="text" id="name" th:field="*{name}" class="form-control" required
                                            minlength="2"
                                            maxlength="50" placeholder="Вашето име">
-                                    <div id="nameError" class="emp-error-msg" style="display:none;">Моля, въведете име с поне 2 символа.</div>
+                                    <div id="nameError" class="emp-error-msg" style="display:none;">Моля, въведете име с
+                                        поне 2 символа.
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <textarea id="comment" th:field="*{comment}" class="form-control" rows="3"
                                           maxlength="200"
                                           placeholder="Вашият отзив (незадължително)"></textarea>
-                                <div id="commentError" class="emp-error-msg" style="display:none;">Моля, въведете отзив с поне 3 символа.</div>
+                                <div id="commentError" class="emp-error-msg" style="display:none;">Моля, въведете отзив
+                                    с поне 3 символа.
+                                </div>
                             </div>
                             <button type="submit" class="review-button">Submit Review</button>
                         </form>
@@ -332,9 +356,10 @@
                 </div>
 
                 <div class="review-list">
-                    <div th:if="${reviews.empty}" class="review-item">
+                    <div th:if="${reviews.isEmpty()}" class="review-item">
                         <p class="review-content">Този продукт все още няма отзиви.</p>
                     </div>
+
                     <div th:each="review : ${reviews}" class="review-item review-item-has-delete">
                         <div class="review-header-flex">
                             <div class="review-header-left">
@@ -689,7 +714,7 @@
             }
         });
 
-        document.querySelector('.review-form').addEventListener('submit', function(e) {
+        document.querySelector('.review-form').addEventListener('submit', function (e) {
             let valid = true;
             const ratingInput = document.getElementById('ratingInput');
             const ratingError = document.getElementById('ratingError');
