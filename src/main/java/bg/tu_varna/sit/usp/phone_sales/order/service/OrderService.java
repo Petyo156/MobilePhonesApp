@@ -206,7 +206,7 @@ public class OrderService {
     public Sale getSaleByOrderNumber(String orderNumber) {
         Optional<Sale> saleByOrderNumberOptional = orderRepository.getSaleByOrderNumber(orderNumber);
         if (saleByOrderNumberOptional.isEmpty()) {
-            throw new DomainException(ExceptionMessages.ORDER_NUMBER_DOES_NOT_EXIST);
+            throw new OrderNumberDoesNotExistException(ExceptionMessages.ORDER_NUMBER_DOES_NOT_EXIST);
         }
         return saleByOrderNumberOptional.get();
     }
