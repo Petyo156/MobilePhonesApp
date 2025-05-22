@@ -258,7 +258,7 @@ public class AdminController {
     @GetMapping("/order/{orderNumber}")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getOrderPage(@PathVariable String orderNumber) {
-        ModelAndView modelAndView = new ModelAndView("home/order");
+        ModelAndView modelAndView = new ModelAndView("user/order");
         User user = orderService.getUserByOrderNumber(orderNumber);
         ExtendedOrderResponse extendedOrderResponse = orderService.getExtendedInformationForOrder(orderNumber, user);
         OrderResponse orderResponse = orderService.getInformationForOrder(orderNumber);
