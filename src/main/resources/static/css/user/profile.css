@@ -16,7 +16,6 @@ body {
     background-color: #f4f6fb;
     color: var(--dark);
     margin: 0;
-    padding-top: var(--navbar-height);
     line-height: 1.6;
 }
 
@@ -26,7 +25,6 @@ main.container {
     padding: 0 1rem;
 }
 
-/* Profile Header */
 .profile-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -42,7 +40,6 @@ main.container {
     display: inline-block;
 }
 
-/* Tab Navigation */
 .profile-tabs {
     background-color: var(--light);
     border-radius: var(--border-radius);
@@ -83,7 +80,6 @@ main.container {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Tab Content */
 .tab-content {
     display: none;
     padding: 2rem;
@@ -99,7 +95,6 @@ main.container {
     border-radius: var(--border-radius);
 }
 
-/* Profile Form */
 .profile-form,
 .password-form {
     display: flex;
@@ -158,7 +153,6 @@ input:focus {
     transform: translateY(-2px);
 }
 
-/* Alerts */
 .alert {
     padding: 1rem;
     border-radius: 0.5rem;
@@ -225,7 +219,6 @@ input:focus {
     display: inline-block;
 }
 
-/* Order Status */
 .order-status {
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -235,9 +228,9 @@ input:focus {
     display: inline-block;
 }
 
-.order-status.TRAVELING {
-    background-color: #eec94c;
-    color: #b68200;
+.order-status.DISPATCHED {
+    background-color: #f5d271;
+    color: #775500;
 }
 
 .order-status.PENDING {
@@ -255,12 +248,10 @@ input:focus {
     color: #0e7200;
 }
 
-/* Price */
 .price {
     font-weight: 600;
 }
 
-/* Items Preview */
 .items-preview {
     position: relative;
     cursor: pointer;
@@ -293,7 +284,6 @@ input:focus {
     margin-bottom: 0.3rem;
 }
 
-/* View Details Button */
 .view-details-btn {
     display: inline-flex;
     align-items: center;
@@ -312,7 +302,6 @@ input:focus {
     transform: translateY(-2px);
 }
 
-/* Responsive */
 @media (max-width: 992px) {
     .tab-link {
         padding: 1rem 0.5rem;
