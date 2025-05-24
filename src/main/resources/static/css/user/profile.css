@@ -235,19 +235,14 @@ input:focus {
     display: inline-block;
 }
 
-.order-status.PROCESSED {
-    background-color: #c8e6c9;
-    color: #2e7d32;
+.order-status.TRAVELING {
+    background-color: #eec94c;
+    color: #b68200;
 }
 
 .order-status.PENDING {
-    background-color: #fff3e0;
-    color: #e65100;
-}
-
-.order-status.SHIPPED {
-    background-color: #bbdefb;
-    color: #1565c0;
+    background-color: #ffbaba;
+    color: #ff0000;
 }
 
 .order-status.DELIVERED {
@@ -255,9 +250,9 @@ input:focus {
     color: #0d47a1;
 }
 
-.order-status.CANCELLED {
-    background-color: #ffcdd2;
-    color: #b71c1c;
+.order-status.ACCEPTED {
+    background-color: #96ff8e;
+    color: #0e7200;
 }
 
 /* Price */
