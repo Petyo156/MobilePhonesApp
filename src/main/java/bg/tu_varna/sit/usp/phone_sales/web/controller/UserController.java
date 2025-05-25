@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping()
     @RequireAuthenticatedUser
     public ModelAndView getProfilePage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("home/profile");
+        ModelAndView modelAndView = new ModelAndView("user/profile");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         List<OrderResponse> orders = orderService.getAllOrders(user);
@@ -50,7 +50,7 @@ public class UserController {
     @RequireAuthenticatedUser
     public ModelAndView getOrderPage(@PathVariable String orderNumber,
                                      @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("home/order");
+        ModelAndView modelAndView = new ModelAndView("user/order");
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         ExtendedOrderResponse extendedOrderResponse = orderService.getExtendedInformationForOrder(orderNumber, user);
         OrderResponse orderResponse = orderService.getInformationForOrder(orderNumber);

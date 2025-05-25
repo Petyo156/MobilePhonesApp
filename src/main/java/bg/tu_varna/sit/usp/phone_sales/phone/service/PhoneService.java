@@ -764,4 +764,43 @@ public class PhoneService {
             .max(Double::compareTo)
             .orElse(3000.0);
     }
+
+    public List<GetPhoneResponse> getSimilarPhones(String slug, int limit) {
+        Phone currentPhone = getVisiblePhoneBySlug(slug);
+        String brandName = currentPhone.getPhoneModel().getBrand().getName();
+        Integer storage = currentPhone.getHardware().getStorage();
+        Integer ram = currentPhone.getHardware().getRam();
+        BigDecimal price = currentPhone.getPrice();
+        
+        BigDecimal minPrice = price.multiply(new BigDecimal("0.7")).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal maxPrice = price.multiply(new BigDecimal("1.3")).setScale(2, RoundingMode.HALF_UP);
+        
+        List<Phone> similarPhones = phoneRepository.findAllByIsVisibleTrue().stream()
+                .filter(phone -> !phone.getSlug().equals(slug))
+                .filter(phone -> phone.getPhoneModel().getBrand().getName().equals(brandName) ||
+                        (phone.getHardware().getStorage().equals(storage) && 
+                         phone.getHardware().getRam().equals(ram)))
+                .filter(phone -> phone.getPrice().compareTo(minPrice) >= 0 && 
+                                 phone.getPrice().compareTo(maxPrice) <= 0)
+                .sorted(Comparator.comparing(
+                    phone -> (phone.getPhoneModel().getBrand().getName().equals(brandName) ? 2 : 0) +
+                            (phone.getHardware().getStorage().equals(storage) ? 1 : 0) +
+                            (phone.getHardware().getRam().equals(ram) ? 1 : 0),
+                    Comparator.reverseOrder()))
+                .limit(limit)
+                .collect(Collectors.toList());
+        
+        if (similarPhones.size() < limit) {
+            phoneRepository.findAllByIsVisibleTrue().stream()
+                    .filter(phone -> !phone.getSlug().equals(slug))
+                    .filter(phone -> !similarPhones.contains(phone))
+                    .sorted(Comparator.comparing(
+                        phone -> Math.abs(phone.getPrice().subtract(price).doubleValue())))
+                    .limit(limit - similarPhones.size())
+                    .forEach(similarPhones::add);
+        }
+        
+        log.info("Found {} similar phones for {}", similarPhones.size(), slug);
+        return initializeGetPhoneListResponse(similarPhones);
+    }
 }

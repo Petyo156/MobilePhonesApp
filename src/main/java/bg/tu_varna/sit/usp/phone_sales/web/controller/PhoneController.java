@@ -45,6 +45,7 @@ public class PhoneController {
 
         List<DifferentColorPhoneResponse> differentColorPhones = phoneService.getPhonesWithDifferentColor(slug);
         List<DifferentStoragePhoneResponse> differentStoragePhones = phoneService.getPhonesWithDifferentStorage(slug);
+        List<GetPhoneResponse> similarPhones = phoneService.getSimilarPhones(slug, 10);
 
         if(orderService.userHasBoughtItem(slug, user) && !reviewService.userHasAlreadyLeftAReview(slug, user)){
             modelAndView.addObject("reviewRequest", new ReviewRequest());
@@ -57,6 +58,7 @@ public class PhoneController {
         modelAndView.addObject("modelUrl", phoneResponse.getModelUrl());
         modelAndView.addObject("differentColorPhones", differentColorPhones);
         modelAndView.addObject("differentStoragePhones", differentStoragePhones);
+        modelAndView.addObject("similarPhones", similarPhones);
         modelAndView.addObject("user", user);
 
         return modelAndView;

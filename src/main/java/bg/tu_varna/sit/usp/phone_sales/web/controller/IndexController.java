@@ -102,7 +102,7 @@ public class IndexController {
     @PostMapping("/register")
     public ModelAndView register(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("index/register");
+            return new ModelAndView("auth/register");
         }
 
         userService.register(registerRequest);

@@ -2,24 +2,24 @@
     <img src="/images/discount-sticker.png" alt="discount sticker" class="sticker-bg">
     <span class="discount-text" th:text="'-' + ${phone.discountPercent +'%'}"></span>
 </div>
-<div class="product-card">
-    <a th:href="@{'/phone/' + ${phone.slug}}" class="product-link">
+<div class="pc-product-card">
+    <a th:href="@{'/phone/' + ${phone.slug}}" class="pc-product-link">
         <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
-        <h3 class="card-title" th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB ' + phone.dimensions.color }">
+        <h3 class="pc-card-title" th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB ' + phone.dimensions.color }">
             Brand</h3>
-        <div class="rating product-rating" th:attr="data-rating=${phone.rating != null ? phone.rating : 0}">
-            <div class="rating-stars">
+        <div class="pc-rating pc-product-rating" th:attr="data-rating=${phone.rating != null ? phone.rating : 0}">
+            <div class="pc-rating-stars">
                 <i th:each="i : ${#numbers.sequence(1, 5)}" th:class="${phone.rating != null && phone.rating.doubleValue() >= i - 0.5 && phone.rating.doubleValue() < i ? 'fas fa-star-half-alt' : (phone.rating != null && phone.rating.doubleValue() >= i ? 'fas fa-star' : 'far fa-star')}"></i>
             </div>
-            <span class="rating-count" th:text="${phone.rating != null ? '(' + phone.rating + ')' : '(0.0)'}"></span>
+            <span class="pc-rating-count" th:text="${phone.rating != null ? '(' + phone.rating + ')' : '(0.0)'}"></span>
         </div>
-        <div class="price-container">
+        <div class="pc-price-container">
             <div th:if="${phone.discountPrice != phone.price}">
-                <span class="discounted-price" th:text="${phone.price + ' лв.'}"></span>
-                <span class="price product-price" th:attr="data-price=${phone.discountPrice}" th:text="${phone.discountPrice + ' лв.'}"></span>
+                <span class="pc-discounted-price" th:text="${phone.price + ' лв.'}"></span>
+                <span class="pc-price pc-product-price" th:attr="data-price=${phone.discountPrice}" th:text="${phone.discountPrice + ' лв.'}"></span>
             </div>
             <div th:unless="${phone.discountPrice != phone.price}">
-                <span class="price product-price" th:attr="data-price=${phone.price}" th:text="${phone.price + ' лв.'}"></span>
+                <span class="pc-price product-price" th:attr="data-price=${phone.price}" th:text="${phone.price + ' лв.'}"></span>
             </div>
         </div>
     </a>
