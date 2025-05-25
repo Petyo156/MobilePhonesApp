@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productContainer = document.querySelector('.product-container');
     // const sortDropdown = document.querySelector('#sortDropdown');
-    const sortOptions = document.querySelectorAll('.dropdown-menu .dropdown-item');
+    const sortOptions = document.querySelectorAll('#sortDropdown + .dropdown-menu .dropdown-item');
     const currentSortText = document.querySelector('#currentSort');
     
     if (!productContainer || !sortOptions.length) {
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (products.length > 0) {
             products.sort((a, b) => {
-                const priceElementA = a.querySelector('.product-price');
-                const priceElementB = b.querySelector('.product-price');
+                const priceElementA = a.querySelector('.product-price, .pc-product-price');
+                const priceElementB = b.querySelector('.product-price, .pc-product-price');
                 
                 if (!priceElementA || !priceElementB) {
                     console.warn('Price elements not found');
@@ -42,11 +42,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const priceA = parseFloat(priceElementA.getAttribute('data-price'));
                 const priceB = parseFloat(priceElementB.getAttribute('data-price'));
                 
-                const ratingElementA = a.querySelector('.product-rating');
-                const ratingElementB = b.querySelector('.product-rating');
+                const ratingElementA = a.querySelector('.pc-product-rating');
+                const ratingElementB = b.querySelector('.pc-product-rating');
                 
                 const ratingA = ratingElementA ? parseFloat(ratingElementA.getAttribute('data-rating') || 0) : 0;
                 const ratingB = ratingElementB ? parseFloat(ratingElementB.getAttribute('data-rating') || 0) : 0;
+                
+                console.log('Sorting:', sortType, 'ratingA:', ratingA, 'ratingB:', ratingB, 'priceA:', priceA, 'priceB:', priceB);
                 
                 switch(sortType) {
                     case 'price-asc':
