@@ -90,19 +90,6 @@ public class AdminController {
         return modelAndView;
     }
 
-    @GetMapping("/discounts")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView getDiscountsPage() {
-        ModelAndView modelAndView = new ModelAndView("admin/add-promotion");
-        List<GetPhoneResponse> allVisiblePhones = phoneService.getAllVisiblePhones();
-        List<GetPhoneResponse> allHiddenPhones = phoneService.getAllHiddenPhones();
-
-        modelAndView.addObject("allVisiblePhones", allVisiblePhones);
-        modelAndView.addObject("allHiddenPhones", allHiddenPhones);
-
-        return modelAndView;
-    }
-
     @PostMapping("/discounts/bulk")
     @PreAuthorize("hasRole('ADMIN')")
     public String setBulkDiscount(@RequestParam List<String> slugs,
@@ -265,6 +252,7 @@ public class AdminController {
 
         modelAndView.addObject("orderResponse", orderResponse);
         modelAndView.addObject("extendedOrderResponse", extendedOrderResponse);
+        modelAndView.addObject("user", user);
 
         return modelAndView;
     }
