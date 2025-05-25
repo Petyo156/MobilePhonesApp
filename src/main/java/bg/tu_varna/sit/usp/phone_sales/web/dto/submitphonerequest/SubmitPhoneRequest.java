@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -52,6 +53,6 @@ public class SubmitPhoneRequest {
     private String modelUrl;
 
     @Nullable
-    @Max(5000)
+    @Size(max = 5000)
     private String description;
 }
