@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Политика за поверителност | MPH Phones</title>
+    <link rel="stylesheet" type="text/css" href="/css/info.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/categories.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/footer.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: header}">
+    <header></header>
+</div>
+<div class="filter-section" th:replace="~{fragments/categories :: categories}"></div>
+
+<div class="container">
+        <main class="privacy-page">
+            <h1>Политика за поверителност</h1>
+            
+            <div class="privacy-content">
+                <section>
+                    <h2>Въведение</h2>
+                    <p>Вашата поверителност е от първостепенно значение за нас. Тази политика за поверителност обяснява как събираме, използваме и защитаваме вашата лична информация при използване на нашия уебсайт и услуги.</p>
+                </section>
+
+                <section>
+                    <h2>Каква информация събираме</h2>
+                    <p>Ние събираме следните видове информация:</p>
+                    <ul>
+                        <li>Лична информация (име, адрес, телефон, имейл)</li>
+                        <li>Информация за плащане</li>
+                        <li>История на поръчките</li>
+                        <li>Информация за устройството и браузъра</li>
+                        <li>Бисквитки и подобни технологии</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Как използваме информацията</h2>
+                    <p>Използваме събраната информация за:</p>
+                    <ul>
+                        <li>Обработка на вашите поръчки</li>
+                        <li>Комуникация относно вашите поръчки</li>
+                        <li>Подобряване на нашите услуги</li>
+                        <li>Изпращане на маркетингови съобщения (с ваше съгласие)</li>
+                        <li>Спазване на законови задължения</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Защита на информацията</h2>
+                    <p>Прилагаме строги мерки за сигурност за защита на вашата информация, включително:</p>
+                    <ul>
+                        <li>Криптиране на данните</li>
+                        <li>Защитени сървъри</li>
+                        <li>Редовни проверки за сигурност</li>
+                        <li>Ограничен достъп на персонала</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Вашите права</h2>
+                    <p>Имате право да:</p>
+                    <ul>
+                        <li>Достъпвате вашата лична информация</li>
+                        <li>Коригирате неточна информация</li>
+                        <li>Поискате изтриване на информацията</li>
+                        <li>Оттеглите съгласието си за обработка</li>
+                        <li>Получите копие от вашите данни</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Контакт</h2>
+                    <p>За въпроси относно нашата политика за поверителност, моля свържете се с нас на:</p>
+                    <ul>
+                        <li>Имейл: privacy@mphstore.bg</li>
+                        <li>Телефон: +359 2 123 4567</li>
+                        <li>Адрес: бул. "Сливница" 153, Варна 9000, България</li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html> 
