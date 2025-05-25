@@ -11,13 +11,16 @@
 <a href="/" class="form-back">← Back to Main Page</a>
 <h1>Edit Phone</h1>
 <div class="original-phone-info">
-    <h2>Editing: <span th:text="${phoneToEdit.brandAndModelResponse.brand + ' ' + phoneToEdit.brandAndModelResponse.model + ' ' + phoneToEdit.hardwareResponse.storage + 'GB ' + phoneToEdit.dimensions.color}"></span></h2>
+    <h2>Editing: <span
+            th:text="${phoneToEdit.brandAndModelResponse.brand + ' ' + phoneToEdit.brandAndModelResponse.model + ' ' + phoneToEdit.hardwareResponse.storage + 'GB ' + phoneToEdit.dimensions.color}"></span>
+    </h2>
     <div class="original-phone-image">
         <img th:src="${phoneToEdit.images[0].imageUrl}" alt="Phone image">
     </div>
 </div>
 
-<form action="#" th:action="@{'/admin/' + ${phoneToEdit.slug} + '/edit'}" th:object="${submitPhoneRequest}" method="post" class="phone-add-form">
+<form action="#" th:action="@{'/admin/' + ${phoneToEdit.slug} + '/edit'}" th:object="${submitPhoneRequest}"
+      method="post" class="phone-add-form">
     <h2 class="form-section-title">📌 Required Information</h2>
 
     <div class="form-section">
@@ -159,6 +162,14 @@
 
     <h2 class="form-section-title">🧪 Optional Specifications</h2>
     <div class="form-section optional">
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" id="description" step="0.5" th:field="*{description}" class="form-input"
+                   placeholder="Enter description"/>
+            <p class="form-error" th:if="${#fields.hasErrors('description')}"
+               th:errors="*{description}"></p>
+        </div>
+
         <div class="form-group">
             <label for="height">Height:</label>
             <input type="number" id="height" step="0.5" th:field="*{dimensions.height}" class="form-input"
