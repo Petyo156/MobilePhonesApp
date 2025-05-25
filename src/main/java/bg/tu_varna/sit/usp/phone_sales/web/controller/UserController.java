@@ -46,6 +46,27 @@ public class UserController {
         return modelAndView;
     }
 
+    @PostMapping("/update")
+    @RequireAuthenticatedUser
+    public String updateProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                              @RequestParam String fullName,
+                              @RequestParam String city,
+                              @RequestParam String address,
+                              @RequestParam String phoneNumber,
+                              RedirectAttributes redirectAttributes) {
+        User user = userService.getAuthenticatedUser(authenticationMetadata);
+        
+        String[] nameParts = fullName.split(" ", 2);
+        String firstName = nameParts[0];
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";
+        
+        userService.updateUserFirstAndLastNamePreference(firstName, lastName, user);
+        userService.updateUserPersonalInformationPreference(user.getZipCode(), address, city, phoneNumber, user);
+        
+        redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully");
+        return "redirect:/profile";
+    }
+
     @GetMapping("/order/{orderNumber}")
     @RequireAuthenticatedUser
     public ModelAndView getOrderPage(@PathVariable String orderNumber,
@@ -57,6 +78,7 @@ public class UserController {
 
         modelAndView.addObject("orderResponse", orderResponse);
         modelAndView.addObject("extendedOrderResponse", extendedOrderResponse);
+        modelAndView.addObject("user", user);
 
         return modelAndView;
     }
