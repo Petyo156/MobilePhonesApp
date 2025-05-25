@@ -44,8 +44,8 @@
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Full Name</label>
                         <input type="text" class="form-control" name="fullName" required
-                               th:value="|${user.firstName} ${user.lastName}|"
-                               th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}"/>
+                               th:value="${user.firstName != null || user.lastName != null} ? |${user.firstName != null ? user.firstName : ''} ${user.lastName != null ? user.lastName : ''}| : ''"
+                               placeholder="Full name"/>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-envelope"></i> Email</label>
