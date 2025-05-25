@@ -40,7 +40,7 @@
                     <option th:each="status : ${T(bg.tu_varna.sit.usp.phone_sales.order.model.SaleStatus).values()}"
                             th:value="${status}"
                             th:text="${status}"
-                            th:selected="${status} == ${order.status}">
+                            th:selected="${status.toString() == #strings.toString(order.status)}">
                     </option>
                 </select>
                 <button type="submit">Update</button>
