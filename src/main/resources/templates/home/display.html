@@ -61,6 +61,17 @@
         crossorigin="anonymous"></script>
 <script th:src="@{/js/product-sort.js}"></script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbarDropdowns = document.querySelectorAll('.navbar .dropdown');
+        navbarDropdowns.forEach(dropdown => {
+            dropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+</script>
+
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

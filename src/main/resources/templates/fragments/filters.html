@@ -7,116 +7,151 @@
             <h6 class="mb-3">Active Filters:
 
                 <a th:if="${param.brands != null || param.storages != null || param.colors != null || param.ram != null || param.maxPrice != null || param.screenSizes != null || param.waterResistant != null || param.batteryCapacities != null || param.discountedOnly != null}"
-                   th:href="@{/display}"
+                   th:href="@{/phones}"
                    class="btn btn-outline-danger btn-sm ms-2">Clear All</a>
             </h6>
             <div>
                 <span th:each="brand : ${param.brands}" class="filter-tag">
                     <span th:text="${brand}"></span>
-                    <a th:href="@{/display(brands=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.brands, ',').replace(brand + ',', '').replace(',' + brand, '').replace(brand, ''), ','), ',')}, 
-                                   storages=${param.storages}, 
-                                   colors=${param.colors},
-                                   ram=${param.ram}, 
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:with="remainingBrands=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.brands, ',').replace(brand + ',', '').replace(',' + brand, '').replace(brand, ''), ','), ',')}"
+                       th:href="@{/phones(
+                           brands=${!#strings.isEmpty(remainingBrands) ? remainingBrands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null}, 
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null}, 
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:each="storage : ${param.storages}" class="filter-tag">
                     <span th:text="${storage + ' GB'}"></span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.storages, ',').replace(storage + ',', '').replace(',' + storage, '').replace(storage, ''), ','), ',')},
-                                   colors=${param.colors},
-                                   ram=${param.ram}, 
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:with="remainingStorages=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.storages, ',').replace(storage + ',', '').replace(',' + storage, '').replace(storage, ''), ','), ',')}"
+                       th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${!#strings.isEmpty(remainingStorages) ? remainingStorages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null}, 
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:each="color : ${param.colors}" class="filter-tag">
                     <span th:text="${color}"></span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${param.storages},
-                                   colors=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.colors, ',').replace(color + ',', '').replace(',' + color, '').replace(color, ''), ','), ',')},
-                                   ram=${param.ram},
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:with="remainingColors=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.colors, ',').replace(color + ',', '').replace(',' + color, '').replace(color, ''), ','), ',')}"
+                       th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${!#strings.isEmpty(remainingColors) ? remainingColors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null},
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:each="ram : ${param.ram}" class="filter-tag">
                     <span th:text="${ram + ' GB'}"></span>
-                    <a th:href="@{/display(brands=${param.brands},
-                                   storages=${param.storages},
-                                   colors=${param.colors},
-                                   ram=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.ram, ',').replace(ram + ',', '').replace(',' + ram, '').replace(ram, ''), ','), ',')},
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:with="remainingRam=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.ram, ',').replace(ram + ',', '').replace(',' + ram, '').replace(ram, ''), ','), ',')}"
+                       th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${!#strings.isEmpty(remainingRam) ? remainingRam : null},
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:if="${param.maxPrice != null && param.maxPrice[0] != '3000'}" class="filter-tag">
                     Max Price: <span th:text=" ${param.maxPrice[0] + ' лв.'}"></span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${param.storages},
-                                   colors=${param.colors},
-                                   ram=${param.ram})}"
-                       class="remove-filter">×</a>
+                    <a th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:each="screenSize : ${param.screenSizes}" class="filter-tag">
                     Screen: <span th:text="${screenSize + ' inches'}"></span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${param.storages},
-                                   colors=${param.colors},
-                                   ram=${param.ram},
-                                   screenSizes=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.screenSizes, ',').replace(screenSize + ',', '').replace(',' + screenSize, '').replace(screenSize, ''), ','), ',')},
-                                   waterResistance=${param.waterResistance},
-                                   batteryCapacities=${param.batteryCapacities},
-                                   discountedOnly=${param.discountedOnly},
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:with="remainingScreenSizes=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.screenSizes, ',').replace(screenSize + ',', '').replace(',' + screenSize, '').replace(screenSize, ''), ','), ',')}"
+                       th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null},
+                           screenSizes=${!#strings.isEmpty(remainingScreenSizes) ? remainingScreenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null},
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:if="${param.waterResistant != null && param.waterResistant[0] == 'true'}" class="filter-tag">
                     <span>Water Resistant</span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${param.storages},
-                                   colors=${param.colors},
-                                   ram=${param.ram},
-                                   screenSizes=${param.screenSizes},
-                                   batteryCapacities=${param.batteryCapacities},
-                                   discountedOnly=${param.discountedOnly},
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null},
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:each="capacity : ${param.batteryCapacities}" class="filter-tag">
                     Battery: <span th:text="${capacity + ' mAh'}"></span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${param.storages},
-                                   colors=${param.colors},
-                                   ram=${param.ram},
-                                   screenSizes=${param.screenSizes},
-                                   waterResistance=${param.waterResistance},
-                                   batteryCapacities=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.batteryCapacities, ',').replace(capacity + ',', '').replace(',' + capacity, '').replace(capacity, ''), ','), ',')},
-                                   discountedOnly=${param.discountedOnly},
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:with="remainingCapacities=${#strings.listJoin(#strings.arraySplit(#strings.arrayJoin(param.batteryCapacities, ',').replace(capacity + ',', '').replace(',' + capacity, '').replace(capacity, ''), ','), ',')}"
+                       th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${!#strings.isEmpty(remainingCapacities) ? remainingCapacities : null},
+                           discountedOnly=${param.discountedOnly != null ? param.discountedOnly[0] : null},
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
 
                 <span th:if="${param.discountedOnly != null && param.discountedOnly[0] == 'true'}" class="filter-tag">
                     <span>On Sale Only</span>
-                    <a th:href="@{/display(brands=${param.brands}, 
-                                   storages=${param.storages},
-                                   colors=${param.colors},
-                                   ram=${param.ram},
-                                   screenSizes=${param.screenSizes},
-                                   waterResistance=${param.waterResistance},
-                                   batteryCapacities=${param.batteryCapacities},
-                                   maxPrice=${param.maxPrice})}"
-                       class="remove-filter">×</a>
+                    <a th:href="@{/phones(
+                           brands=${param.brands != null and #arrays.length(param.brands) > 0 ? param.brands : null},
+                           storages=${param.storages != null and #arrays.length(param.storages) > 0 ? param.storages : null},
+                           colors=${param.colors != null and #arrays.length(param.colors) > 0 ? param.colors : null},
+                           ram=${param.ram != null and #arrays.length(param.ram) > 0 ? param.ram : null},
+                           screenSizes=${param.screenSizes != null and #arrays.length(param.screenSizes) > 0 ? param.screenSizes : null},
+                           waterResistant=${param.waterResistant != null ? param.waterResistant[0] : null},
+                           batteryCapacities=${param.batteryCapacities != null and #arrays.length(param.batteryCapacities) > 0 ? param.batteryCapacities : null},
+                           maxPrice=${param.maxPrice != null ? param.maxPrice[0] : null})}"
+                       class="filter-remove-link remove-filter">×</a>
                 </span>
             </div>
         </div>
 
-        <form id="filterForm" action="/display" method="get">
+        <form id="filterForm" action="/phones" method="get">
             <div class="mb-4">
                 <h6>Brand</h6>
                 <div>
@@ -395,7 +430,26 @@
                 if (discountedOnly) params.append('discountedOnly', discountedOnly);
                 if (minPrice > 0) params.append('minPrice', minPrice);
                 if (maxPrice < maxPhonePrice) params.append('maxPrice', maxPrice);
-                window.location.href = '/display?' + params.toString();
+                window.location.href = '/phones?' + params.toString();
+            });
+
+            // Fix the filter removal links to remove empty parameters
+            document.querySelectorAll('.filter-remove-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    let url = new URL(this.href);
+                    let params = new URLSearchParams(url.search);
+                    
+                    // Remove any empty parameters
+                    for (let key of [...params.keys()]) {
+                        if (params.get(key) === '' || params.get(key) === null) {
+                            params.delete(key);
+                        }
+                    }
+                    
+                    // Redirect to the cleaned URL
+                    window.location.href = url.pathname + (params.toString() ? '?' + params.toString() : '');
+                });
             });
         });
     </script>
