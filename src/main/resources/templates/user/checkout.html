@@ -23,22 +23,22 @@
 
 <div class="container cart-container">
     <div class="row">
-        <!-- Checkout form section -->
         <div class="col-md-8">
             <form th:action="@{/checkout}" th:object="${orderRequest}" method="post" class="checkout-form">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                <!-- Delivery Method -->
                 <section class="shipping-method">
                     <h2>1. Shipping Method</h2>
                     <div class="shipping-options">
                         <label class="shipping-option">
-                            <input type="radio" th:field="*{deliveryMethod}" value="STANDARD" name="deliveryMethod" required>
+                            <input type="radio" th:field="*{deliveryMethod}" value="STANDARD" name="deliveryMethod"
+                                   required>
                             <span class="option-details">
                                 <span class="option-title">Econt Express</span>
                                 <span class="option-subtitle">1-2 работни дни</span>
                             </span>
-                           <span><span class="price" th:text="${deliveryMethodValues != null and deliveryMethodValues[0] != null ? (deliveryMethodValues[0].price == '0.00' ? 'Free' : deliveryMethodValues[0].price) : 'Free'}">Free</span> лв.</span>
+                            <span><span class="price"
+                                        th:text="${deliveryMethodValues != null and deliveryMethodValues[0] != null ? (deliveryMethodValues[0].price == '0.00' ? 'Free' : deliveryMethodValues[0].price) : 'Free'}">Free</span> лв.</span>
                         </label>
                         <label class="shipping-option">
                             <input type="radio" th:field="*{deliveryMethod}" value="PICKUP" name="deliveryMethod">
@@ -46,65 +46,118 @@
                                 <span class="option-title">Вземане от склад</span>
                                 <span class="option-subtitle">Вземане от нашия склад в същия ден</span>
                             </span>
-                            <span class="price" th:text="${deliveryMethodValues != null and deliveryMethodValues[1] != null ? (deliveryMethodValues[1].price == '0.00' ? 'Free' : deliveryMethodValues[1].price) : 'Free'}">Free</span>
+                            <span class="price"
+                                  th:text="${deliveryMethodValues != null and deliveryMethodValues[1] != null ? (deliveryMethodValues[1].price == '0.00' ? 'Free' : deliveryMethodValues[1].price) : 'Free'}">Free</span>
                         </label>
-                        <div class="validation-message" id="shipping-validation" style="display: none; color: #dc3545; margin-top: 5px;">
+                        <div class="validation-message" id="shipping-validation"
+                             style="display: none; color: #dc3545; margin-top: 5px;">
                             Моля, изберете метод на доставка
                         </div>
                     </div>
                 </section>
 
-                <!-- Address -->
                 <section class="shipping-address">
                     <h2>2. Shipping Address</h2>
 
-                    <div class="form-row">
-                        <input type="text" name="firstName"
-                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.firstName} : ''"
-                               placeholder="Име" required>
+                    <div class="address-options">
+                        <label class="address-option" id="saved-address-option"
+                               th:if="${personalInformationResponse != null and 
+                                       personalInformationResponse.firstName != null and personalInformationResponse.firstName != '' and
+                                       personalInformationResponse.lastName != null and personalInformationResponse.lastName != '' and
+                                       personalInformationResponse.address != null and personalInformationResponse.address != '' and
+                                       personalInformationResponse.city != null and personalInformationResponse.city != '' and
+                                       personalInformationResponse.zipCode != null and personalInformationResponse.zipCode != ''}">
+                            <input type="radio" name="addressChoice" value="saved" id="use-saved-address" checked>
+                            <span class="option-details">
+                                <span class="option-title">Използвай запазения адрес</span>
+                                <span class="option-subtitle"
+                                      th:text="${personalInformationResponse.address + ', ' + personalInformationResponse.city}">
+                                    Запазен адрес
+                                </span>
+                            </span>
+                        </label>
 
-                        <input type="text" name="lastName"
-                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.lastName} : ''"
-                               placeholder="Фамилия" required>
+                        <label class="address-option" id="new-address-option">
+                            <input type="radio" name="addressChoice" value="new" id="use-new-address"
+                                   th:checked="${!(personalInformationResponse != null and 
+                                         personalInformationResponse.firstName != null and personalInformationResponse.firstName != '' and
+                                         personalInformationResponse.lastName != null and personalInformationResponse.lastName != '' and
+                                         personalInformationResponse.address != null and personalInformationResponse.address != '' and
+                                         personalInformationResponse.city != null and personalInformationResponse.city != '' and
+                                         personalInformationResponse.zipCode != null and personalInformationResponse.zipCode != '')}">
+                            <span class="option-details">
+                                <span class="option-title">Въведи адрес</span>
+                                <span class="option-subtitle"
+                                      th:text="${(personalInformationResponse != null and 
+                                         personalInformationResponse.firstName != null and personalInformationResponse.firstName != '' and
+                                         personalInformationResponse.lastName != null and personalInformationResponse.lastName != '' and
+                                         personalInformationResponse.address != null and personalInformationResponse.address != '' and
+                                         personalInformationResponse.city != null and personalInformationResponse.city != '' and
+                                         personalInformationResponse.zipCode != null and personalInformationResponse.zipCode != '') ? 
+                                         'Въведи нов адрес' : 'Въведи адрес за доставка'}">
+                                    Попълни всички необходими полета
+                                </span>
+                            </span>
+                        </label>
                     </div>
 
-                    <input type="text" placeholder="Булстат ЕИК (незадължително)" class="full-width">
+                    <div id="address-container" class="address-form-container active">
+                        <div class="address-heading" th:if="${!(personalInformationResponse != null and
+                                        personalInformationResponse.firstName != null and personalInformationResponse.firstName != '' and
+                                        personalInformationResponse.lastName != null and personalInformationResponse.lastName != '' and
+                                        personalInformationResponse.address != null and personalInformationResponse.address != '' and
+                                        personalInformationResponse.city != null and personalInformationResponse.city != '' and
+                                        personalInformationResponse.zipCode != null and personalInformationResponse.zipCode != '')}">
+                            <h4>Въведете данни за доставка</h4>
+                        </div>
 
-                    <div class="form-row">
-                        <input type="text" name="address"
-                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.address} : ''"
-                               placeholder="Въведете адрес" required class="address-input">
-                        <div id="address-validation" class="validation-message" style="display: none;"></div>
-                    </div>
+                        <div class="form-row">
+                            <input type="text" name="firstName" id="firstName"
+                                   th:value="${personalInformationResponse != null ? personalInformationResponse.firstName : ''}"
+                                   placeholder="Име" required>
 
-                    <div class="form-row">
-                        <input type="tel" name="phoneNumber"
-                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.phoneNumber} : ''"
-                               placeholder="Phone Number" required>
+                            <input type="text" name="lastName" id="lastName"
+                                   th:value="${personalInformationResponse != null ? personalInformationResponse.lastName : ''}"
+                                   placeholder="Фамилия" required>
+                        </div>
 
-                        <input type="text" name="city"
-                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.city} : ''"
-                               placeholder="Град" required id="city-input">
+                        <input type="text" placeholder="Булстат ЕИК (незадължително)" class="full-width">
 
-                        <input type="text" name="zipCode"
-                               th:value="${personalInformationResponse != null} ? ${personalInformationResponse.zipCode} : ''"
-                               placeholder="Пощенски код" required id="zip-input">
+                        <div class="form-row">
+                            <input type="text" name="address" id="address"
+                                   th:value="${personalInformationResponse != null ? personalInformationResponse.address : ''}"
+                                   placeholder="Въведете адрес" required class="address-input">
+                            <div id="address-validation" class="validation-message" style="display: none;"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <input type="tel" name="phoneNumber" id="phoneNumber"
+                                   th:value="${personalInformationResponse != null ? personalInformationResponse.phoneNumber : ''}"
+                                   placeholder="Phone Number" required>
+
+                            <input type="text" name="city" id="city"
+                                   th:value="${personalInformationResponse != null ? personalInformationResponse.city : ''}"
+                                   placeholder="Град" required>
+
+                            <input type="text" name="zipCode" id="zipCode"
+                                   th:value="${personalInformationResponse != null ? personalInformationResponse.zipCode : ''}"
+                                   placeholder="Пощенски код" required>
+                        </div>
                     </div>
                 </section>
 
-                <!-- Payment -->
                 <section class="payment-method">
                     <h2>3. Payment Method</h2>
                     <div class="payment-options">
                         <div class="payment-option-container">
-                        <label class="payment-option">
-                                <input type="radio" th:field="*{paymentMethod}" value="CARD" name="paymentMethod" required id="card-payment">
+                            <label class="payment-option">
+                                <input type="radio" th:field="*{paymentMethod}" value="CARD" name="paymentMethod"
+                                       required id="card-payment">
                                 <span class="option-details">
                                     <span class="option-title">Плащане с карта</span>
                                     <span class="option-subtitle">Плати сигурно с банкова карта</span>
                                 </span>
-                        </label>
-                            <!-- Card info -->
+                            </label>
                             <div class="payment-details" id="card-info">
                                 <div class="card-section">
                                     <div class="card-header">
@@ -116,10 +169,10 @@
                                         <span class="secure-badge">
                                             <i class="fas fa-lock"></i> Secure payment
                                         </span>
-                    </div>
-                        <div id="card-element" class="form-control"></div>
-                        <div id="card-errors" class="text-danger mt-2" role="alert"></div>
-                                    
+                                    </div>
+                                    <div id="card-element" class="form-control"></div>
+                                    <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+
                                     <div class="card-additional-info">
                                         <div class="form-row">
                                             <div class="form-group full-width">
@@ -134,17 +187,17 @@
                                     </div>
                                 </div>
                             </div>
-                    </div>
+                        </div>
 
                         <div class="payment-option-container">
                             <label class="payment-option">
-                                <input type="radio" th:field="*{paymentMethod}" value="CASH" name="paymentMethod" id="cash-payment">
+                                <input type="radio" th:field="*{paymentMethod}" value="CASH" name="paymentMethod"
+                                       id="cash-payment">
                                 <span class="option-details">
                                     <span class="option-title">Наложен платеж</span>
                                     <span class="option-subtitle">Плати при получаване на поръчката</span>
                                 </span>
                             </label>
-                    <!-- Cash info -->
                             <div class="payment-details" id="cash-info">
                                 <div class="cash-section">
                                     <div class="cash-header">
@@ -156,10 +209,10 @@
                                         </span>
                                     </div>
                                     <div class="cash-content">
-                        <div class="alert alert-info">
+                                        <div class="alert alert-info">
                                             <div class="info-header">
                                                 <i class="fas fa-info-circle"></i>
-                            <strong>Наложен платеж</strong>
+                                                <strong>Наложен платеж</strong>
                                             </div>
                                             <div class="info-details">
                                                 <p>Ще платите на място при получаване на поръчката.</p>
@@ -177,7 +230,8 @@
 
                         <div class="payment-option-container">
                             <label class="payment-option">
-                                <input type="radio" th:field="*{paymentMethod}" value="FINANCE" name="paymentMethod" id="installment-payment">
+                                <input type="radio" th:field="*{paymentMethod}" value="FINANCE" name="paymentMethod"
+                                       id="installment-payment">
                                 <span class="option-details">
                                     <span class="option-title">Вземи на изплащане</span>
                                     <span class="option-subtitle">Плати на равни месечни вноски</span>
@@ -205,22 +259,27 @@
                                                 <div class="installment-calculator">
                                                     <div class="form-group">
                                                         <label for="downPayment">Първоначална вноска</label>
-                                                        <input type="number" id="downPayment" class="form-control" placeholder="0.00 лв.">
+                                                        <input type="number" id="downPayment" class="form-control"
+                                                               placeholder="0.00 лв.">
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Срок на изплащане</label>
                                                         <div class="leasing-options-panel">
                                                             <div class="leasing-options">
-                                                                <strong class="range-tooltip" id="paymentMonths">6 вноски</strong>
-                                                                <input type="range" id="installmentPeriod" min="6" max="36" step="6" value="6">
+                                                                <strong class="range-tooltip" id="paymentMonths">6
+                                                                    вноски</strong>
+                                                                <input type="range" id="installmentPeriod" min="6"
+                                                                       max="36" step="6" value="6">
                                                                 <div class="labels">
                                                                     <span>6 вноски</span>
                                                                     <span>36 вноски</span>
                                                                 </div>
                                                             </div>
                                                             <div class="credit-summary">
-                                                                <p class="m-0">Годишен лихвен процент: <strong id="interestValue">6.9%</strong></p>
-                                                                <p class="m-0">Годишен процент на разходите: <strong id="aprValue">7.9%</strong></p>
+                                                                <p class="m-0">Годишен лихвен процент: <strong
+                                                                        id="interestValue">6.9%</strong></p>
+                                                                <p class="m-0">Годишен процент на разходите: <strong
+                                                                        id="aprValue">7.9%</strong></p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -246,7 +305,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="validation-message" id="payment-validation" style="display: none; color: #dc3545; margin-top: 5px;">
+                        <div class="validation-message" id="payment-validation"
+                             style="display: none; color: #dc3545; margin-top: 5px;">
                             Моля, изберете метод на плащане
                         </div>
                     </div>
@@ -288,16 +348,17 @@
                      th:text="${error}">
                 </div>
 
-            <!-- Total -->
-            <div class="summary-total">
-                <span>Total</span>
-                <span>
-                    <span id="total-price" th:text="${checkoutResponse.discountPrice != null ? checkoutResponse.discountPrice : checkoutResponse.totalPrice}">0.00</span> лв.
+                <!-- Total -->
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>
+                    <span id="total-price"
+                          th:text="${checkoutResponse.discountPrice != null ? checkoutResponse.discountPrice : checkoutResponse.totalPrice}">0.00</span> лв.
                 </span>
-            </div>
-            <div class="text-end mt-4">
-                <button type="submit" class="checkout-btn">Place Order</button>
-            </div>
+                </div>
+                <div class="text-end mt-4">
+                    <button type="submit" class="checkout-btn">Place Order</button>
+                </div>
             </div>
         </div>
         </form>

@@ -37,7 +37,6 @@ h2 {
     font-weight: 500;
 }
 
-/* Form styles */
 .checkout-form {
     background: white;
     padding: 1.5rem;
@@ -51,7 +50,6 @@ section {
     border-bottom: 1px solid #eee;
 }
 
-/* Shipping options */
 .shipping-options {
     display: flex;
     flex-direction: column;
@@ -137,7 +135,6 @@ input[type="tel"]::placeholder {
     flex: 1;
 }
 
-/* Payment options */
 .payment-options {
     display: flex;
     flex-direction: column;
@@ -794,4 +791,115 @@ input[type="range"]::-moz-range-thumb:hover {
 .credit-summary strong {
     color: #28a745;
     font-weight: 600;
+}
+
+.address-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.address-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background-color: white;
+}
+
+.address-option input[type="radio"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+}
+
+.address-option.selected {
+    border-color: #007bff;
+    background-color: #f8f9ff;
+    box-shadow: 0 0 0 1px #007bff;
+}
+
+.address-option .option-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.address-option .option-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.address-option .option-subtitle {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.address-form-container {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.address-form-container.active {
+    display: block;
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 15px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
+input[readonly] {
+    background-color: #f8f9fa;
+    border-color: #e0e0e0;
+    cursor: not-allowed;
+    color: #495057;
+    opacity: 0.9;
+}
+
+.saved-address-toggle {
+    display: none;
+}
+
+.address-heading {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.address-heading h4 {
+    font-size: 1.1em;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+.readonly-style {
+    background-color: #f8f9fa;
+    border-color: #e0e0e0;
+    cursor: not-allowed;
+    color: #495057;
+    opacity: 0.9;
 }

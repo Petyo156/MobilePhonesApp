@@ -38,6 +38,110 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    const useSavedAddressRadio = document.getElementById('use-saved-address');
+    const useNewAddressRadio = document.getElementById('use-new-address');
+    const savedAddressOption = document.getElementById('saved-address-option');
+    const newAddressOption = document.getElementById('new-address-option');
+    const addressContainer = document.getElementById('address-container');
+    
+    let savedData = {};
+    
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const addressInput = document.getElementById('address');
+    const phoneNumberInput = document.getElementById('phoneNumber');
+    const cityInput = document.getElementById('city');
+    const zipCodeInput = document.getElementById('zipCode');
+    
+    if (firstNameInput) savedData.firstName = firstNameInput.value;
+    if (lastNameInput) savedData.lastName = lastNameInput.value;
+    if (addressInput) savedData.address = addressInput.value;
+    if (phoneNumberInput) savedData.phoneNumber = phoneNumberInput.value;
+    if (cityInput) savedData.city = cityInput.value;
+    if (zipCodeInput) savedData.zipCode = zipCodeInput.value;
+    
+    function toggleAddressFields() {
+        if (!savedAddressOption || !useSavedAddressRadio) {
+            return;
+        }
+        
+        if (!useNewAddressRadio) return;
+        
+        if (savedAddressOption) {
+            savedAddressOption.classList.toggle('selected', useSavedAddressRadio.checked);
+        }
+        if (newAddressOption) {
+            newAddressOption.classList.toggle('selected', useNewAddressRadio.checked);
+        }
+        
+        const formFields = [
+            firstNameInput, 
+            lastNameInput, 
+            addressInput, 
+            phoneNumberInput, 
+            cityInput, 
+            zipCodeInput
+        ];
+        
+        if (useSavedAddressRadio.checked) {
+            if (firstNameInput) firstNameInput.value = savedData.firstName || '';
+            if (lastNameInput) lastNameInput.value = savedData.lastName || '';
+            if (addressInput) addressInput.value = savedData.address || '';
+            if (phoneNumberInput) phoneNumberInput.value = savedData.phoneNumber || '';
+            if (cityInput) cityInput.value = savedData.city || '';
+            if (zipCodeInput) zipCodeInput.value = savedData.zipCode || '';
+            
+            formFields.forEach(field => {
+                if (!field) return;
+                field.classList.add('readonly-style');
+                field.setAttribute('readonly', 'readonly');
+            });
+        } else {
+            formFields.forEach(field => {
+                if (!field) return;
+                field.value = '';
+                field.classList.remove('readonly-style');
+                field.removeAttribute('readonly');
+            });
+            
+            setTimeout(() => {
+                if (firstNameInput) {
+                    firstNameInput.focus();
+                }
+            }, 300);
+        }
+    }
+    
+    if ((useSavedAddressRadio || useNewAddressRadio)) {
+        if (useSavedAddressRadio) {
+            useSavedAddressRadio.addEventListener('change', toggleAddressFields);
+        }
+        
+        if (useNewAddressRadio) {
+            useNewAddressRadio.addEventListener('change', toggleAddressFields);
+        }
+        
+        toggleAddressFields();
+    }
+    
+    if (savedAddressOption) {
+        savedAddressOption.addEventListener('click', function(e) {
+            if (e.target !== useSavedAddressRadio) {
+                useSavedAddressRadio.checked = true;
+                toggleAddressFields();
+            }
+        });
+    }
+    
+    if (newAddressOption) {
+        newAddressOption.addEventListener('click', function(e) {
+            if (e.target !== useNewAddressRadio) {
+                useNewAddressRadio.checked = true;
+                toggleAddressFields();
+            }
+        });
+    }
+
     const totalPriceElement = document.getElementById('total-price');
     const shippingPriceDisplay = document.getElementById('shipping-price-display');
     
@@ -92,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             shippingPriceDisplay.innerHTML = '<span>-</span>';
         }
     });
-
+    
     const paymentOptions = document.querySelectorAll('.payment-option');
     const cardInfo = document.getElementById('card-info');
     const cashInfo = document.getElementById('cash-info');
@@ -130,9 +234,66 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
+    const form = document.querySelector('.checkout-form');
+    if (form) {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-    initAutocomplete();
+            const selectedShipping = document.querySelector('input[name="deliveryMethod"]:checked');
+            const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+            const shippingValidation = document.getElementById('shipping-validation');
+            const paymentValidation = document.getElementById('payment-validation');
+            const useSavedAddressRadio = document.getElementById('use-saved-address');
+            const savedAddressOption = document.getElementById('saved-address-option');
 
+            if (shippingValidation) shippingValidation.style.display = 'none';
+            if (paymentValidation) paymentValidation.style.display = 'none';
+
+            let isValid = true;
+            if (!selectedShipping) {
+                if (shippingValidation) shippingValidation.style.display = 'block';
+                isValid = false;
+            }
+            if (!selectedPayment) {
+                if (paymentValidation) paymentValidation.style.display = 'block';
+                isValid = false;
+            }
+            
+            const addressInput = document.getElementById('address');
+            const cityInput = document.getElementById('city');
+            const zipInput = document.getElementById('zipCode');
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+                
+            if ((!firstNameInput || !firstNameInput.value.trim()) ||
+                (!lastNameInput || !lastNameInput.value.trim()) ||
+                (!addressInput || !addressInput.value.trim()) || 
+                (!cityInput || !cityInput.value.trim()) || 
+                (!zipInput || !zipInput.value.trim())) {
+                if (document.getElementById('address-validation')) {
+                    document.getElementById('address-validation').style.display = 'block';
+                    document.getElementById('address-validation').textContent = 'Моля, попълнете всички задължителни полета за адрес';
+                }
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                return;
+            }
+
+            const allFields = form.querySelectorAll('input[readonly]');
+            allFields.forEach(field => {
+                field.removeAttribute('readonly');
+            });
+
+            if (selectedPayment.value === 'CARD' && typeof stripe !== 'undefined') {
+            }
+
+            form.submit();
+        });
+    }
+    
     const downPaymentInput = document.getElementById('downPayment');
     const installmentPeriod = document.getElementById('installmentPeriod');
     const monthlyInstallment = document.getElementById('monthlyInstallment');
@@ -190,48 +351,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     calculateInstallment();
-    
-    const form = document.querySelector('.checkout-form');
-    if (form) {
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const selectedShipping = document.querySelector('input[name="deliveryMethod"]:checked');
-            const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
-            const shippingValidation = document.getElementById('shipping-validation');
-            const paymentValidation = document.getElementById('payment-validation');
-
-            if (shippingValidation) shippingValidation.style.display = 'none';
-            if (paymentValidation) paymentValidation.style.display = 'none';
-
-            let isValid = true;
-            if (!selectedShipping) {
-                if (shippingValidation) shippingValidation.style.display = 'block';
-                isValid = false;
-            }
-            if (!selectedPayment) {
-                if (paymentValidation) paymentValidation.style.display = 'block';
-                isValid = false;
-            }
-            if (!isValid) {
-                return;
-            }
-
-            if (selectedPayment.value === 'CARD' && typeof stripe !== 'undefined') {
-                // Implement Stripe payment processing here
-                // For now, just submit the form
-            }
-
-            form.submit();
-        });
-    }
+    initAutocomplete();
 });
 
 function initAutocomplete() {
-    const addressInput = document.querySelector('.address-input');
-    const cityInput = document.getElementById('city-input');
-    const zipInput = document.getElementById('zip-input');
+    const addressInput = document.getElementById('address');
+    const cityInput = document.getElementById('city');
+    const zipInput = document.getElementById('zipCode');
     const validationMessage = document.getElementById('address-validation');
+    const useSavedAddressRadio = document.getElementById('use-saved-address');
 
     if (!addressInput || !cityInput || !zipInput) {
         console.error('Required elements not found');
@@ -255,7 +383,17 @@ function initAutocomplete() {
         region: 'bg'
     });
 
+    addressInput.addEventListener('focus', function() {
+        if (useSavedAddressRadio && useSavedAddressRadio.checked) {
+            addressInput.blur();
+        }
+    });
+
     autocomplete.addListener('place_changed', () => {
+        if (useSavedAddressRadio && useSavedAddressRadio.checked) {
+            return;
+        }
+        
         const place = autocomplete.getPlace();
         if (!place.address_components) {
             if (validationMessage) {
