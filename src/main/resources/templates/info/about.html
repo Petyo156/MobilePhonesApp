@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>За нас | MPH Phones</title>
+    <link rel="stylesheet" type="text/css" href="/css/info.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/categories.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/footer.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: header}">
+    <header></header>
+</div>
+<div class="filter-section" th:replace="~{fragments/categories :: categories}"></div>
+
+<div class="container">
+    <main class="about-page">
+        <h1>За нас</h1>
+
+        <section class="about-section">
+            <h2>Нашата история</h2>
+            <p>От създаването си през 2025г., нашата компания се стреми да предоставя най-добрите мобилни устройства и
+                аксесоари на българския пазар. С годините се превърнахме в един от водещите доставчици на смартфони и
+                мобилни технологии.</p>
+        </section>
+
+        <section class="about-section">
+            <h2>Нашата мисия</h2>
+            <p>Стремим се да предоставяме най-новите технологии на достъпни цени, съчетани с отлично обслужване на
+                клиентите. Вярваме, че всеки заслужава достъп до качествени мобилни устройства.</p>
+        </section>
+
+        <section class="about-section">
+            <h2>Защо да изберете нас</h2>
+            <ul class="benefits-list">
+                <li>Над 0 години опит на пазара</li>
+                <li>Оторизиран представител на водещи производители</li>
+                <li>Професионална консултация и следпродажбено обслужване</li>
+                <li>Гаранция за качество на всички продукти</li>
+            </ul>
+        </section>
+    </main>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

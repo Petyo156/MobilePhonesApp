@@ -2,45 +2,104 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Order Details</title>
-    <link rel="stylesheet" href="/css/user/order.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информация за поръчка | MPH Phones</title>
+    <link rel="stylesheet" type="text/css" href="/css/fragments/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/footer.css">
+    <link rel="stylesheet" type="text/css" href="/css/user/order.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
 <body>
-<div class="order-container">
-    <h1 class="order-title">Order Details</h1>
-
-    <!-- Basic Order Info -->
-    <section class="order-section order-info">
-        <h2>Order Info</h2>
-        <p><strong>Order Number:</strong> <span th:text="${orderResponse.orderNumber}"></span></p>
-        <p><strong>Order Date:</strong> <span th:text="${#temporals.format(orderResponse.orderDate, 'dd MMM yyyy HH:mm')}"></span></p>
-        <p><strong>Status:</strong> <span th:text="${orderResponse.status}"></span></p>
-        <p><strong>Total Price:</strong> <span th:text="${orderResponse.price} + ' BGN'"></span></p>
-    </section>
-
-    <!-- Extended Info -->
-    <section class="order-section shipping-info">
-        <h2>Shipping Info</h2>
-        <p><strong>Address:</strong> <span th:text="${extendedOrderResponse.address}"></span></p>
-        <p><strong>City:</strong> <span th:text="${extendedOrderResponse.city}"></span></p>
-        <p><strong>ZIP Code:</strong> <span th:text="${extendedOrderResponse.zipCode}"></span></p>
-        <p><strong>Delivery Method:</strong> <span th:text="${extendedOrderResponse.deliveryMethod.description}"></span></p>
-        <p><strong>Delivery Price:</strong> <span th:text="${extendedOrderResponse.deliveryMethod.price} + ' BGN'"></span></p>
-        <p><strong>Payment Method:</strong> <span th:text="${extendedOrderResponse.paymentMethod.description}"></span></p>
-    </section>
-
-    <!-- Order Items -->
-    <section class="order-section item-list">
-        <h2>Items</h2>
-        <div class="item" th:each="item : ${orderResponse.orderItemResponseList}">
-            <img th:src="@{${item.media}}" alt="Product Image" class="item-image"/>
-            <div class="item-details">
-                <p class="item-name" th:text="${item.itemName}"></p>
-                <p class="item-quantity">Quantity: <span th:text="${item.quantity}"></span></p>
-                <a th:href="@{'/phone/' + ${item.slug}}" class="item-link">View Product</a>
-            </div>
-        </div>
-    </section>
+<div th:replace="~{fragments/navbar :: header}">
+    <header></header>
 </div>
+
+<main>
+    <div class="order-container">
+        <div class="page-header">
+<!--            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Main Page</a>-->
+            <h1 class="order-title">Order Details</h1>
+        </div>
+
+        <section class="order-section order-info">
+            <h2><i class="fas fa-info-circle"></i> Order Info</h2>
+            <div class="order-info-grid">
+                <div class="info-item">
+                    <p><strong>Order Number:</strong> <span th:text="${orderResponse.orderNumber}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Order Date:</strong> <span th:text="${#temporals.format(orderResponse.orderDate, 'dd MMM yyyy HH:mm')}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Status:</strong> <span class="status" th:text="${orderResponse.status}" th:classappend="${'status-' + orderResponse.status}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Total Price:</strong> <span class="price" th:text="${orderResponse.price} + ' BGN'"></span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipient Info -->
+        <section class="order-section recipient-info">
+            <h2><i class="fas fa-user"></i> Recipient Info</h2>
+            <div class="recipient-info-grid">
+                <div class="info-item">
+                    <p><strong>Name:</strong> <span th:text="${user.firstName + ' ' + user.lastName}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Phone:</strong> <span th:text="${user.phoneNumber}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="order-section shipping-info">
+            <h2><i class="fas fa-truck"></i> Shipping Info</h2>
+            <div class="shipping-info-grid">
+                <div class="info-item">
+                    <p><strong>Address:</strong> <span th:text="${extendedOrderResponse.address}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>City:</strong> <span th:text="${extendedOrderResponse.city}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>ZIP Code:</strong> <span th:text="${extendedOrderResponse.zipCode}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Delivery Method:</strong> <span th:text="${extendedOrderResponse.deliveryMethod.description}"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Delivery Price:</strong> <span th:text="${extendedOrderResponse.deliveryMethod.price} + ' BGN'"></span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Payment Method:</strong> <span th:text="${extendedOrderResponse.paymentMethod.description}"></span></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="order-section item-list">
+            <h2><i class="fas fa-shopping-bag"></i> Items</h2>
+            <div class="item" th:each="item : ${orderResponse.orderItemResponseList}">
+                <div class="item-image-container">
+                    <img th:src="@{${item.media}}" alt="Product Image" class="item-image"/>
+                </div>
+                <div class="item-details">
+                    <p class="item-name" th:text="${item.itemName}"></p>
+                    <div class="item-info">
+                        <p class="item-quantity">Quantity: <span th:text="${item.quantity}"></span></p>
+                    </div>
+                    <a th:href="@{'/phone/' + ${item.slug}}" class="item-link">View Product</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

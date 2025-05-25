@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:HH="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 
-    <script src="/js/profile-navigation.js"></script>
+    <script src="/js/profile-navigation.js" defer></script>
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: header}">
@@ -22,103 +22,134 @@
 </div>
 <div class="filter-section" th:replace="~{fragments/categories :: categories}"></div>
 
-<main>
-    <nav class="profile-nav-strip bg-light border-bottom py-2 mb-4">
-        <div class="container d-flex justify-content-center gap-4">
-            <a href="#profile" class="nav-link">Profile</a>
-            <a href="#change-password" class="nav-link">Change Password</a>
-            <a href="#orders" class="nav-link">Orders</a>
+<main class="container">
+    <div class="profile-tabs">
+        <div class="tab-nav">
+            <a href="#profile" class="tab-link active" data-tab="profile">
+                <i class="fas fa-user"></i> Profile Info
+            </a>
+            <a href="#orders" class="tab-link" data-tab="orders">
+                <i class="fas fa-shopping-bag"></i> My Orders
+            </a>
+            <a href="#change-password" class="tab-link" data-tab="change-password">
+                <i class="fas fa-key"></i> Change Password
+            </a>
         </div>
-    </nav>
 
-    <section id="profile" class="mb-5">
-        <form th:action="@{/profile/update}" th:object="${user}" method="post" class="profile-section">
-            <h2>Profile</h2>
-            <input type="text" class="form-control" name="fullName" required
-                   th:value="|${user.firstName} ${user.lastName}|"
-                   th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}"/>
-            <input type="email" class="form-control" th:field="*{email}" disabled
-                   th:placeholder="${user.email} == null ? 'Email address' : ${user.email}"/>
-            <input type="text" class="form-control" th:field="*{city}" required
-                   th:placeholder="${user.city} == null ? 'City' : ${user.city}"/>
-            <input type="text" class="form-control" th:field="*{address}" required
-                   th:placeholder="${user.address} == null ? 'Street address' : ${user.address}"/>
-            <input type="tel" class="form-control" th:field="*{phoneNumber}" required
-                   th:placeholder="${user.phoneNumber} == null ? 'Phone number' : ${user.phoneNumber}"/>
-            <input type="text" class="form-control" th:field="*{createdAt}" disabled/>
-            <button type="submit" class="submitButton">Update Profile</button>
-        </form>
-    </section>
-
-    <section id="change-password" class="mb-5">
-        <div class="change_pass-section">
-            <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
-                <h2>Change Password</h2>
-                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-                <div th:if="${changePasswordError}" class="alert alert-danger" th:text="${changePasswordError}"></div>
-                <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}">
-                    <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{oldPassword}"
-                               placeholder="Current Password">
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content active">
+            <div class="content-card">
+                <h2>Personal Information</h2>
+                <form th:action="@{/profile/update}" th:object="${user}" method="post" class="profile-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" class="form-control" name="fullName" required
+                               th:value="|${user.firstName} ${user.lastName}|"
+                               th:placeholder="${user.firstName == null and user.lastName == null} ? 'Full name' : ${user.firstName} + ' ' + ${user.lastName}"/>
                     </div>
-                    <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{newPassword}"
-                               placeholder="New Password">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" class="form-control" th:field="*{email}" disabled
+                               th:placeholder="${user.email} == null ? 'Email address' : ${user.email}"/>
                     </div>
-                    <div class="mb-2">
-                        <input class="form-control" type="password" th:field="*{confirmNewPassword}"
-                               placeholder="Confirm New Password">
+                    <div class="form-group">
+                        <label><i class="fas fa-city"></i> City</label>
+                        <input type="text" class="form-control" th:field="*{city}" required
+                               th:placeholder="${user.city} == null ? 'City' : ${user.city}"/>
                     </div>
-                    <button type="submit" class="submitButton">Change</button>
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                        <input type="text" class="form-control" th:field="*{address}" required
+                               th:placeholder="${user.address} == null ? 'Street address' : ${user.address}"/>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" class="form-control" th:field="*{phoneNumber}" required
+                               th:placeholder="${user.phoneNumber} == null ? 'Phone number' : ${user.phoneNumber}"/>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Registration Date</label>
+                        <input type="text" class="form-control" th:field="*{createdAt}" disabled/>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Update Profile</button>
                 </form>
-            </form>
+            </div>
         </div>
-    </section>
 
-    <section id="orders">
-        <div class="orders-section">
-            <h1>Orders</h1>
-            <div th:each="order : ${orders}"
-                 class="product-container d-block mb-3 p-3 border rounded text-decoration-none text-dark">
-
-                <div class="order-row">
-                    <p class="order-info">
-                        <i class="fas fa-hashtag"></i> Order Number:
-                    </p>
-                    <span class="order-data relevant" th:text="${order.orderNumber}"></span>
-                </div>
-
-                <div class="order-row">
-                    <p class="order-info">
-                        <i class="fas fa-calendar-alt"></i> Order Date:
-                    </p>
-                    <span class="order-data" th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy')}"></span>
-                </div>
-
-                <div class="order-row">
-                    <p class="order-info">
-                        <i class="fas fa-clipboard-check"></i> Status:
-                    </p>
-                    <span class="order-data" th:text="${order.status}"></span>
-                </div>
-
-                <div class="order-row">
-                    <p class="order-info">
-                        <i class="fas fa-coins"></i> Total Price:
-                    </p>
-                    <span class="order-data" th:text="${order.price}"></span> лв
-                </div>
-                <div class="order-row-wrapper">
-                    <ul class="order-row-list">
-                        <li th:each="item : ${order.orderItemResponseList}" th:text="${item.itemName}"></li>
-                    </ul>
-                    <a th:href="@{/profile/order/{orderNumber}(orderNumber=${order.orderNumber})}"
-                       class="btn btn-redirect">View Details</a>
+        <!-- Orders Tab -->
+        <div id="orders" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-shopping-bag"></i> My Orders</h2>
+                <div class="orders-table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> Order Number</th>
+                                <th><i class="fas fa-calendar-alt"></i> Order Date</th>
+                                <th><i class="fas fa-clipboard-check"></i> Status</th>
+                                <th><i class="fas fa-coins"></i> Total Price</th>
+                                <th><i class="fas fa-list"></i> Items</th>
+                                <th><i class="fas fa-eye"></i> Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td><span class="order-number" th:text="${order.orderNumber}"></span></td>
+                                <td th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy')}"></td>
+                                <td>
+                                    <span class="order-status" th:classappend="${order.status}" th:text="${order.status}"></span>
+                                </td>
+                                <td><span class="price" th:text="${order.price}"></span> лв</td>
+                                <td>
+                                    <div class="items-preview">
+                                        <span th:text="${order.orderItemResponseList.size()} + ' item(s)'"></span>
+                                        <div class="items-tooltip">
+                                            <ul>
+                                                <li th:each="item : ${order.orderItemResponseList}" th:text="${item.itemName}"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a th:href="@{/profile/order/{orderNumber}(orderNumber=${order.orderNumber})}"
+                                       class="view-details-btn">View Details</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Change Password Tab -->
+        <div id="change-password" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-key"></i> Change Password</h2>
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+                <div th:if="${changePasswordError}" class="alert alert-danger" th:text="${changePasswordError}"></div>
+                
+                <form method="post" th:action="@{/profile/password}" th:object="${changePasswordRequest}" class="password-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Current Password</label>
+                        <input class="form-control" type="password" th:field="*{oldPassword}"
+                               placeholder="Current Password">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-key"></i> New Password</label>
+                        <input class="form-control" type="password" th:field="*{newPassword}"
+                               placeholder="New Password">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-check-circle"></i> Confirm New Password</label>
+                        <input class="form-control" type="password" th:field="*{confirmNewPassword}"
+                               placeholder="Confirm New Password">
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

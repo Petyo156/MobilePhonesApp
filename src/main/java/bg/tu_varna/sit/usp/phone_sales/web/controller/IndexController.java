@@ -42,7 +42,7 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping("/display")
+    @GetMapping("/phones")
     public ModelAndView getDisplayPage(@RequestParam(value = "search", required = false) String searchQuery,
                                        @RequestParam(value = "brands", required = false) List<String> brands,
                                        @RequestParam(value = "storages", required = false) List<Integer> storages,

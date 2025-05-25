@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Често задавани въпроси | MPH Phones</title>
+    <link rel="stylesheet" type="text/css" href="/css/info.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/categories.css">
+    <link rel="stylesheet" type="text/css" href="/css/fragments/footer.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: header}">
+    <header></header>
+</div>
+<div class="filter-section" th:replace="~{fragments/categories :: categories}"></div>
+
+<div class="container">
+        <main class="faq-page">
+            <h1>Често задавани въпроси</h1>
+            
+            <div class="faq-section">
+                <div class="faq-item">
+                    <h3>Как мога да направя поръчка?</h3>
+                    <p>Можете да направите поръчка онлайн чрез нашия уебсайт или да посетите някой от нашите физически магазини. При онлайн поръчка просто добавете желаните продукти в кошницата и следвайте стъпките за завършване на поръчката.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Какви са методите за плащане?</h3>
+                    <p>Приемаме следните методи на плащане:
+                        <ul>
+                            <li>Наложен платеж</li>
+                            <li>Банков превод</li>
+                            <li>Кредитна/дебитна карта</li>
+                            <li>PayPal</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Каква е политиката за връщане?</h3>
+                    <p>Имате право да върнете закупен продукт в рамките на 14 дни от получаването му, при условие че е в оригиналната опаковка и не е използван. Разходите по връщането са за сметка на клиента.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Колко време отнема доставката?</h3>
+                    <p>Стандартната доставка се извършва в рамките на 2-3 работни дни за големите градове и 3-5 работни дни за останалите населени места. Предлагаме и експресна доставка до 24 часа за определени региони.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Какъв е гаранционният срок на продуктите?</h3>
+                    <p>Всички наши продукти идват с 24-месечна гаранция от производителя. За определени модели предлагаме възможност за удължаване на гаранцията срещу допълнително заплащане.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Предлагате ли монтаж на защитно фолио/стъкло?</h3>
+                    <p>Да, предлагаме безплатен монтаж на защитно фолио или стъкло при покупка от нашите физически магазини. За онлайн поръчки можете да заявите тази услуга в най-близкия ни магазин.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html> 
