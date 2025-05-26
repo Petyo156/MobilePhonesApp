@@ -167,6 +167,7 @@
         <div class="form-group">
             <label for="description">Description:</label>
             <input type="text" id="description" step="0.5" th:field="*{description}" class="form-input"
+                   th:value="${originalPhone.description}"
                    placeholder="Enter description"/>
             <p class="form-error" th:if="${#fields.hasErrors('description')}"
                th:errors="*{description}"></p>
