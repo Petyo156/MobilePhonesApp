@@ -151,78 +151,102 @@
             </div>
         </div>
 
-        <form id="filterForm" action="/phones" method="get">
-            <div class="mb-4">
+        <form id="filterForm" action="/phones" method="get" th:data-max-price="${maxPhonePrice}">
+            <div class="mb-4 filter-section">
                 <h6>Brand</h6>
                 <div>
-                    <div class="form-check" th:each="brand : ${brands}">
+                    <div class="form-check filter-item" th:each="brand, iterStat : ${brands}">
                         <input class="form-check-input" type="checkbox" th:id="'brand' + ${brand}"
                                th:value="${brand}" name="brands"
                                th:checked="${param.brands != null && #lists.contains(param.brands, brand)}">
                         <label class="form-check-label" th:for="'brand' + ${brand}" th:text="${brand}"></label>
                     </div>
+                    <div class="show-more-container" th:if="${#lists.size(brands) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>Storage</h6>
                 <div>
-                    <div class="form-check" th:each="storage : ${storages}">
+                    <div class="form-check filter-item" th:each="storage, iterStat : ${storages}">
                         <input class="form-check-input" type="checkbox" th:id="'storage' + ${storage}"
                                th:value="${storage}" name="storages"
                                th:checked="${param.storages != null && #lists.contains(param.storages, storage.toString())}">
                         <label class="form-check-label" th:for="'storage' + ${storage}"
                                th:text="${storage} + ' GB'"></label>
                     </div>
+                    <div class="show-more-container" th:if="${#lists.size(storages) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>Color</h6>
                 <div>
-                    <div class="form-check" th:each="color : ${colors}">
+                    <div class="form-check filter-item" th:each="color, iterStat : ${colors}">
                         <input class="form-check-input" type="checkbox" th:id="'color' + ${color}"
                                th:value="${color}" name="colors"
                                th:checked="${param.colors != null && #lists.contains(param.colors, color)}">
                         <label class="form-check-label" th:for="'color' + ${color}" th:text="${color}"></label>
                     </div>
+                    <div class="show-more-container" th:if="${#lists.size(colors) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>RAM</h6>
                 <div>
-                    <div class="form-check" th:each="ram : ${ramOptions}">
+                    <div class="form-check filter-item" th:each="ram, iterStat : ${ramOptions}">
                         <input class="form-check-input" type="checkbox" th:id="'ram' + ${ram}"
                                th:value="${ram}" name="ram"
                                th:checked="${param.ram != null && #lists.contains(param.ram, ram.toString())}">
                         <label class="form-check-label" th:for="'ram' + ${ram}"
                                th:text="${ram} + ' GB'"></label>
                     </div>
+                    <div class="show-more-container" th:if="${#lists.size(ramOptions) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>Camera Resolution</h6>
                 <div>
-                    <div class="form-check" th:each="resolution : ${cameraResolutions}">
+                    <div class="form-check filter-item" th:each="resolution, iterStat : ${cameraResolutions}">
                         <input class="form-check-input" type="checkbox" th:id="'resolution' + ${resolution}"
                                th:value="${resolution}" name="cameraResolutions"
                                th:checked="${param.cameraResolutions != null && #lists.contains(param.cameraResolutions, resolution)}">
                         <label class="form-check-label" th:for="'resolution' + ${resolution}"
                                th:text="${resolution} + ' MP'"></label>
                     </div>
+                    <div class="show-more-container" th:if="${#lists.size(cameraResolutions) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>Screen Size</h6>
                 <div>
-                    <div class="form-check" th:each="screenSize : ${screenSizes}">
+                    <div class="form-check filter-item" th:each="screenSize, iterStat : ${screenSizes}">
                         <input class="form-check-input" type="checkbox" th:id="'screenSize' + ${screenSize}"
                                th:value="${screenSize}" name="screenSizes"
                                th:checked="${param.screenSizes != null && #lists.contains(param.screenSizes, screenSize)}">
                         <label class="form-check-label" th:for="'screenSize' + ${screenSize}" 
                                th:text="${screenSize} + ' inches'"></label>
                     </div>
+                    <div class="show-more-container" th:if="${#lists.size(screenSizes) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>Water Resistance</h6>
                 <div>
                     <div class="form-check">
@@ -234,15 +258,19 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            
+            <div class="mb-4 filter-section">
                 <h6>Battery Capacity</h6>
                 <div>
-                    <div class="form-check" th:each="capacity : ${batteryCapacities}">
+                    <div class="form-check filter-item" th:each="capacity, iterStat : ${batteryCapacities}">
                         <input class="form-check-input" type="checkbox" th:id="'battery' + ${capacity}"
                                th:value="${capacity}" name="batteryCapacities"
                                th:checked="${param.batteryCapacities != null && #lists.contains(param.batteryCapacities, capacity.toString())}">
                         <label class="form-check-label" th:for="'battery' + ${capacity}" 
                                th:text="${capacity} + ' mAh'"></label>
+                    </div>
+                    <div class="show-more-container" th:if="${#lists.size(batteryCapacities) > 5}">
+                        <a href="#" class="show-more-toggle">Show more</a>
                     </div>
                 </div>
             </div>
@@ -283,174 +311,4 @@
             <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
         </form>
     </aside>
-
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const slider = document.querySelector(".range-slider");
-            const progress = slider.querySelector(".progress");
-            const minPriceInput = slider.querySelector(".min-price");
-            const maxPriceInput = slider.querySelector(".max-price");
-            const minInput = slider.querySelector(".min-input");
-            const maxInput = slider.querySelector(".max-input");
-            const filterForm = document.getElementById('filterForm');
-            const maxPhonePrice = parseInt(minInput.max);
-            const priceGap = 100;
-
-            const updateProgress = () => {
-                const minValue = parseInt(minInput.value);
-                const maxValue = parseInt(maxInput.value);
-
-                const range = maxInput.max - minInput.min;
-                const valueRange = maxValue - minValue;
-                const width = (valueRange / range) * 100;
-                const minOffset = ((minValue - minInput.min) / range) * 100;
-
-                progress.style.width = width + "%";
-                progress.style.left = minOffset + "%";
-
-                minPriceInput.value = minValue;
-                maxPriceInput.value = maxValue;
-            };
-
-            const updateRange = (event) => {
-                const input = event.target;
-
-                let min = parseInt(minPriceInput.value);
-                let max = parseInt(maxPriceInput.value);
-
-                if (min < 0) min = 0;
-                if (max > maxPhonePrice) max = maxPhonePrice;
-
-                if (max - min < priceGap) {
-                    if (input === minPriceInput) {
-                        min = max - priceGap;
-                        minPriceInput.value = min;
-                    } else {
-                        max = min + priceGap;
-                        maxPriceInput.value = max;
-                    }
-                }
-
-                minInput.value = min;
-                maxInput.value = max;
-
-                updateProgress();
-            };
-
-            minPriceInput.addEventListener("input", updateRange);
-            maxPriceInput.addEventListener("input", updateRange);
-
-            minInput.addEventListener("input", () => {
-                const minVal = parseInt(minInput.value);
-                const maxVal = parseInt(maxInput.value);
-
-                if (maxVal - minVal < priceGap) {
-                    minInput.value = maxVal - priceGap;
-                }
-                updateProgress();
-            });
-
-            maxInput.addEventListener("input", () => {
-                const minVal = parseInt(minInput.value);
-                const maxVal = parseInt(maxInput.value);
-
-                if (maxVal - minVal < priceGap) {
-                    maxInput.value = minVal + priceGap;
-                }
-                updateProgress();
-            });
-
-            let isDragging = false;
-            let startOffsetX;
-
-            progress.addEventListener("mousedown", (e) => {
-                e.preventDefault();
-
-                isDragging = true;
-                startOffsetX = e.clientX - progress.getBoundingClientRect().left;
-                slider.classList.toggle("dragging", isDragging);
-            });
-
-            document.addEventListener("mousemove", (e) => {
-                if (isDragging) {
-                    const sliderRect = slider.getBoundingClientRect();
-                    const progressWidth = parseFloat(progress.style.width || 0);
-
-                    let newLeft = ((e.clientX - sliderRect.left - startOffsetX) / sliderRect.width) * 100;
-
-                    newLeft = Math.min(Math.max(newLeft, 0), 100 - progressWidth);
-
-                    progress.style.left = newLeft + "%";
-
-                    const range = maxInput.max - minInput.min;
-                    const newMin = Math.round((newLeft / 100) * range) + parseInt(minInput.min);
-                    const newMax = newMin + parseInt(maxInput.value) - parseInt(minInput.value);
-
-                    if (newMax <= maxPhonePrice) {
-                        minInput.value = newMin;
-                        maxInput.value = newMax;
-                        updateProgress();
-                    }
-                }
-                slider.classList.toggle("dragging", isDragging);
-            });
-
-            document.addEventListener("mouseup", () => {
-                if (isDragging) {
-                    isDragging = false;
-                }
-                slider.classList.toggle("dragging", isDragging);
-            });
-
-            updateProgress();
-
-            filterForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const brands = Array.from(document.querySelectorAll('input[name="brands"]:checked')).map(cb => cb.value);
-                const storages = Array.from(document.querySelectorAll('input[name="storages"]:checked')).map(cb => parseInt(cb.value));
-                const ram = Array.from(document.querySelectorAll('input[name="ram"]:checked')).map(cb => parseInt(cb.value));
-                const colors = Array.from(document.querySelectorAll('input[name="colors"]:checked')).map(cb => cb.value);
-                const cameraResolutions = Array.from(document.querySelectorAll('input[name="cameraResolutions"]:checked')).map(cb => cb.value);
-                const screenSizes = Array.from(document.querySelectorAll('input[name="screenSizes"]:checked')).map(cb => cb.value);
-                const waterResistant = document.getElementById('waterResistant').checked ? 'true' : null;
-                const batteryCapacities = Array.from(document.querySelectorAll('input[name="batteryCapacities"]:checked')).map(cb => parseInt(cb.value));
-                const discountedOnly = document.getElementById('discountedOnly').checked ? 'true' : null;
-                const minPrice = minPriceInput.value;
-                const maxPrice = maxPriceInput.value;
-                
-                const params = new URLSearchParams();
-                if (brands.length > 0) brands.forEach(b => params.append('brands', b));
-                if (storages.length > 0) storages.forEach(s => params.append('storages', s));
-                if (ram.length > 0) ram.forEach(r => params.append('ram', r));
-                if (colors.length > 0) colors.forEach(c => params.append('colors', c));
-                if (cameraResolutions.length > 0) cameraResolutions.forEach(r => params.append('cameraResolutions', r));
-                if (screenSizes.length > 0) screenSizes.forEach(s => params.append('screenSizes', s));
-                if (waterResistant) params.append('waterResistant', waterResistant);
-                if (batteryCapacities.length > 0) batteryCapacities.forEach(b => params.append('batteryCapacities', b));
-                if (discountedOnly) params.append('discountedOnly', discountedOnly);
-                if (minPrice > 0) params.append('minPrice', minPrice);
-                if (maxPrice < maxPhonePrice) params.append('maxPrice', maxPrice);
-                window.location.href = '/phones?' + params.toString();
-            });
-
-            // Fix the filter removal links to remove empty parameters
-            document.querySelectorAll('.filter-remove-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    let url = new URL(this.href);
-                    let params = new URLSearchParams(url.search);
-                    
-                    // Remove any empty parameters
-                    for (let key of [...params.keys()]) {
-                        if (params.get(key) === '' || params.get(key) === null) {
-                            params.delete(key);
-                        }
-                    }
-                    
-                    // Redirect to the cleaned URL
-                    window.location.href = url.pathname + (params.toString() ? '?' + params.toString() : '');
-                });
-            });
-        });
-    </script>
 </div>

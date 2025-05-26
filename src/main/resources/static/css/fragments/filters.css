@@ -404,3 +404,50 @@
     color: #222;
     margin: 0 8px;
 }
+
+/* Filter show/hide functionality */
+.filter-hidden {
+    display: none !important;
+}
+
+.show-more-container {
+    margin-top: 8px;
+    text-align: left;
+}
+
+.show-more-toggle {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 0;
+    font-weight: 500;
+    position: relative;
+}
+
+.show-more-toggle:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+.show-more-toggle::after {
+    content: "";
+    display: inline-block;
+    margin-left: 4px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #007bff;
+    vertical-align: middle;
+    transition: transform 0.2s ease;
+}
+
+.show-more-toggle:hover::after {
+    border-top-color: #0056b3;
+}
+
+.show-more-toggle.expanded::after {
+    transform: rotate(180deg);
+}
