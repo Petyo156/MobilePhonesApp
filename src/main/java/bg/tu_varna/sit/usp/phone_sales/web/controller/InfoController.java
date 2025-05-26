@@ -3,6 +3,7 @@ package bg.tu_varna.sit.usp.phone_sales.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class InfoController {
@@ -27,9 +28,8 @@ public class InfoController {
         return "info/privacy";
     }
 
-    @GetMapping("/contact/submit")
-    public String submitContact() {
-        // TODO: Implement contact form submission logic
+    @PostMapping("/contact/submit")
+    public String submitContactForm() {
         return "redirect:/contact?success";
     }
 } 
