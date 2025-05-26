@@ -56,11 +56,7 @@ public class UserController {
                               RedirectAttributes redirectAttributes) {
         User user = userService.getAuthenticatedUser(authenticationMetadata);
         
-        String[] nameParts = fullName.split(" ", 2);
-        String firstName = nameParts[0];
-        String lastName = nameParts.length > 1 ? nameParts[1] : "";
-        
-        userService.updateUserFirstAndLastNamePreference(firstName, lastName, user);
+        userService.updateUserFirstAndLastNamePreference(fullName, user);
         userService.updateUserPersonalInformationPreference(user.getZipCode(), address, city, phoneNumber, user);
         
         redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully");

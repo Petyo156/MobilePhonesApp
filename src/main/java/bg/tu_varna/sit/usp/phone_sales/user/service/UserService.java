@@ -102,6 +102,13 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public void updateUserFirstAndLastNamePreference(String fullName, User user) {
+        String[] nameParts = fullName.split(" ", 2);
+        String firstName = nameParts[0];
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";
+        updateUserFirstAndLastNamePreference(firstName, lastName, user);
+    }
+
     public void updateUserFirstAndLastNamePreference(String firstName, String lastName, User user) {
         boolean isNew = user.getFirstName() == null || user.getLastName() == null;
         boolean isUnchanged = Objects.equals(firstName, user.getFirstName()) &&
