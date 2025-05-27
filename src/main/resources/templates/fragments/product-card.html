@@ -5,7 +5,7 @@
 <div class="pc-product-card">
     <a th:href="@{'/phone/' + ${phone.slug}}" class="pc-product-link">
         <img th:src="${phone.images[0].imageUrl}" alt="Phone Image">
-        <h3 class="pc-card-title" th:text="${phone.brandAndModelResponse.brand + ' ' + phone.brandAndModelResponse.model + ' ' + phone.hardwareResponse.storage + 'GB ' + phone.dimensions.color }">
+        <h3 class="pc-card-title" th:text="${phone.name}">
             Brand</h3>
         <div class="pc-rating pc-product-rating" th:attr="data-rating=${phone.rating != null ? phone.rating : 0}">
             <div class="pc-rating-stars">

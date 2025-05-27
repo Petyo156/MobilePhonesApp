@@ -47,4 +47,6 @@ public class GetPhoneResponse {
     private BigDecimal rating;
 
     private String description;
+
+    private String name;
 }

@@ -6,6 +6,7 @@ import bg.tu_varna.sit.usp.phone_sales.user.model.User;
 import bg.tu_varna.sit.usp.phone_sales.user.service.UserService;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.LoginRequest;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.RegisterRequest;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.geticonphoneresponse.GetIconPhoneResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.GetPhoneResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class IndexController {
         ModelAndView modelAndView = new ModelAndView("home/display");
 
         User user = userService.getAuthenticatedUser(authenticationMetadata);
-        List<GetPhoneResponse> displayResults;
+        List<GetIconPhoneResponse> displayResults;
         
         if (searchQuery != null && !searchQuery.isEmpty()) {
             displayResults = phoneService.getSearchResult(searchQuery);
