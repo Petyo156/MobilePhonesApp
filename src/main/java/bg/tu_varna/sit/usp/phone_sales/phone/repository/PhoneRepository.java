@@ -2,6 +2,7 @@ package bg.tu_varna.sit.usp.phone_sales.phone.repository;
 
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PhoneRepository extends JpaRepository<Phone, UUID> {
+public interface PhoneRepository extends JpaRepository<Phone, UUID>, JpaSpecificationExecutor<Phone> {
 
     @Query("SELECT p FROM Phone p WHERE p.isVisible = true AND " +
             "(LOWER(p.phoneModel.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +

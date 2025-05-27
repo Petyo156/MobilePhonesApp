@@ -13,13 +13,16 @@ import bg.tu_varna.sit.usp.phone_sales.operatingsystem.service.OperatingSystemSe
 import bg.tu_varna.sit.usp.phone_sales.orderitem.model.SaleItem;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Image;
 import bg.tu_varna.sit.usp.phone_sales.phone.model.Phone;
+import bg.tu_varna.sit.usp.phone_sales.phone.model.PhoneSpecification;
 import bg.tu_varna.sit.usp.phone_sales.phone.repository.PhoneRepository;
 import bg.tu_varna.sit.usp.phone_sales.review.model.Review;
+import bg.tu_varna.sit.usp.phone_sales.web.dto.geticonphoneresponse.GetIconPhoneResponse;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.getphoneresponse.*;
 import bg.tu_varna.sit.usp.phone_sales.web.dto.submitphonerequest.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -110,11 +113,11 @@ public class PhoneService {
         return phone;
     }
 
-    public List<GetPhoneResponse> getSearchResult(String info) {
+    public List<GetIconPhoneResponse> getSearchResult(String info) {
         List<Phone> phones = phoneRepository.searchVisiblePhonesByModelOrBrand(info);
         log.info("Get search result - {}", info);
 
-        return initializeGetPhoneListResponse(phones);
+        return initializeGetIconPhoneListResponse(phones);
     }
 
     public List<GetPhoneResponse> getMostRecentPhones() {
@@ -403,6 +406,31 @@ public class PhoneService {
         return responses;
     }
 
+    private List<GetIconPhoneResponse> initializeGetIconPhoneListResponse(List<Phone> phones) {
+        List<GetIconPhoneResponse> responses = new ArrayList<>();
+        for (Phone phone : phones) {
+            GetIconPhoneResponse response = initializeGetIconPhoneResponse(phone);
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private GetIconPhoneResponse initializeGetIconPhoneResponse(Phone phone) {
+        List<ImageResponse> images = initializePhoneImagesResponse(phone);
+        String price = decimalFormat.format(phone.getPrice());
+        String discountPrice = getDiscountPrice(phone);
+        String discountPercent = String.format("%.0f", phone.getDiscountPercent());
+        return GetIconPhoneResponse.builder()
+                .name(slugToDisplayName(phone.getSlug()))
+                .rating(phone.getRating())
+                .discountPercent(discountPercent)
+                .discountPrice(discountPrice)
+                .images(images)
+                .price(price)
+                .slug(phone.getSlug())
+                .build();
+    }
+
     private GetPhoneResponse initializeGetPhoneResponse(Phone phone) {
         BrandAndModelResponse brandAndModel = initializeBrandAndModelResponse(phone);
         CameraResponse camera = initializeCameraResponse(phone);
@@ -421,6 +449,7 @@ public class PhoneService {
         String description = phone.getDescription();
 
         return GetPhoneResponse.builder()
+                .name(slugToDisplayName(slug))
                 .slug(slug)
                 .brandAndModelResponse(brandAndModel)
                 .cameraResponse(camera)
@@ -439,6 +468,28 @@ public class PhoneService {
                 .rating(rating)
                 .description(description)
                 .build();
+    }
+
+    private String slugToDisplayName(String slug) {
+        String[] parts = slug.split("-");
+
+        String color = parts[parts.length - 1];
+        String ram = parts[parts.length - 2];
+        String storage = parts[parts.length - 3];
+
+        String model = Arrays.stream(parts, 0, parts.length - 3)
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+
+        ram = ram.replaceAll("(\\d+)(ram)", "$1RAM");
+
+        storage = storage.toUpperCase();
+
+        color = color.substring(0, 1).toUpperCase() + color.substring(1);
+
+        String name = String.format("%s %s %s %s", model, storage, ram, color);
+        log.info("Converted slug {} to {}", slug, name);
+        return name;
     }
 
     private String getDiscountPrice(Phone phone) {
@@ -732,39 +783,22 @@ public class PhoneService {
                 .collect(Collectors.toList());
     }
 
-    public List<GetPhoneResponse> getFilteredPhones(List<String> brands, List<Integer> storages, 
-                                                  List<Integer> ram, Double minPrice, Double maxPrice,
-                                                  List<String> colors, List<String> cameraResolutions,
-                                                  List<String> screenSizes, Boolean waterResistant,
-                                                  List<Integer> batteryCapacities, Boolean discountedOnly) {
-        List<Phone> phones = phoneRepository.findAllByIsVisibleTrue();
-        
-        return phones.stream()
-                .filter(phone -> brands == null || brands.isEmpty() || 
-                        brands.contains(phone.getPhoneModel().getBrand().getName()))
-                .filter(phone -> storages == null || storages.isEmpty() || 
-                        storages.contains(phone.getHardware().getStorage()))
-                .filter(phone -> ram == null || ram.isEmpty() || 
-                        ram.contains(phone.getHardware().getRam()))
-                .filter(phone -> minPrice == null || 
-                        phone.getPrice().compareTo(BigDecimal.valueOf(minPrice)) >= 0)
-                .filter(phone -> maxPrice == null || 
-                        phone.getPrice().compareTo(BigDecimal.valueOf(maxPrice)) <= 0)
-                .filter(phone -> colors == null || colors.isEmpty() || 
-                        colors.contains(phone.getDimension().getColor()))
-                .filter(phone -> cameraResolutions == null || cameraResolutions.isEmpty() || 
-                        cameraResolutions.contains(phone.getHardware().getCamera().getResolution().toString()))
-                .filter(phone -> screenSizes == null || screenSizes.isEmpty() || 
-                        screenSizes.contains(String.format("%.1f", phone.getHardware().getScreenSize())))
-                .filter(phone -> waterResistant == null || 
-                        (!waterResistant || phone.getDimension().getIsWaterResistant()))
-                .filter(phone -> batteryCapacities == null || batteryCapacities.isEmpty() || 
-                        batteryCapacities.contains(phone.getHardware().getBatteryCapacity()))
-                .filter(phone -> discountedOnly == null || !discountedOnly || 
-                        (phone.getDiscountPercent() != null && phone.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0))
-                .map(this::initializeGetPhoneResponse)
+    public List<GetIconPhoneResponse> getFilteredPhones(
+            List<String> brands, List<Integer> storages, List<Integer> ram,
+            Double minPrice, Double maxPrice, List<String> colors, List<String> cameraResolutions,
+            List<String> screenSizes, Boolean waterResistant, List<Integer> batteryCapacities,
+            Boolean discountedOnly
+    ) {
+        Specification<Phone> spec = PhoneSpecification.getFilteredPhones(
+                brands, storages, ram, minPrice, maxPrice, colors, cameraResolutions,
+                screenSizes, waterResistant, batteryCapacities, discountedOnly
+        );
+
+        return phoneRepository.findAll(spec).stream()
+                .map(this::initializeGetIconPhoneResponse)
                 .collect(Collectors.toList());
     }
+
 
     public double getMaxVisiblePhonePrice() {
         return phoneRepository.findAllByIsVisibleTrue().stream()
